@@ -8,8 +8,10 @@ export default function robots(): MetadataRoute.Robots {
       {
         userAgent: "*",
         allow: "/",
-        // Auth screens and the internal gallery carry no search value.
-        disallow: ["/api/", "/design", "/sign-in", "/sign-up"],
+        // Auth screens, the internal gallery, and the fixture prototype carry
+        // no search value - and the prototype is fabricated data that must
+        // never surface in a search result about Cirqles.
+        disallow: ["/api/", "/design", "/prototype", "/sign-in", "/sign-up"],
       },
     ],
     sitemap: `${siteUrl}/sitemap.xml`,

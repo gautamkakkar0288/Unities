@@ -13,6 +13,15 @@ const publicRoutes = new Set([
   "/design",
 ])
 
+/**
+ * Public route subtrees. The prototype is many nested screens rather than one
+ * path, so an exact-match set cannot express it. Boundary-aware on purpose:
+ * `/prototypes-are-fun` must not become public because `/prototype` is.
+ *
+ * Removed alongside the `/design` gallery in Phase 16.
+ */
+const publicPrefixes = ["/prototype"]
+
 export default {
   pages: { signIn: "/sign-in" },
   providers: [],
@@ -20,6 +29,14 @@ export default {
     authorized({ auth, request }) {
       const { pathname } = request.nextUrl
       if (publicRoutes.has(pathname)) return true
+      if (
+        publicPrefixes.some(
+          (prefix) =>
+            pathname === prefix || pathname.startsWith(`${prefix}/`),
+        )
+      ) {
+        return true
+      }
       return Boolean(auth?.user)
     },
   },
