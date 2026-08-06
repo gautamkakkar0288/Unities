@@ -6,8 +6,11 @@ import { useRouter } from "next/navigation"
 import { useState, useTransition } from "react"
 import { useForm } from "react-hook-form"
 
+import { Alert } from "@/components/ui/alert"
 import { Button } from "@/components/ui/button"
+import { Field } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
+import { Spinner } from "@/components/ui/spinner"
 import { registerUser } from "@/features/auth/actions"
 import { signUpSchema, type SignUpInput } from "@/lib/schemas/auth"
 
@@ -47,69 +50,39 @@ export function SignUpForm() {
       className="flex flex-col gap-4"
       noValidate
     >
-      <div className="flex flex-col gap-1.5">
-        <label htmlFor="name" className="text-sm font-medium">
-          Full name
-        </label>
-        <Input
-          id="name"
-          autoComplete="name"
-          aria-invalid={Boolean(errors.name)}
-          aria-describedby={errors.name ? "name-error" : undefined}
-          {...register("name")}
-        />
-        {errors.name && (
-          <p id="name-error" className="text-sm text-destructive">
-            {errors.name.message}
-          </p>
+      <Field id="name" label="Full name" error={errors.name?.message} required>
+        {(field) => (
+          <Input autoComplete="name" {...field} {...register("name")} />
         )}
-      </div>
+      </Field>
 
-      <div className="flex flex-col gap-1.5">
-        <label htmlFor="email" className="text-sm font-medium">
-          Email
-        </label>
-        <Input
-          id="email"
-          type="email"
-          autoComplete="email"
-          aria-invalid={Boolean(errors.email)}
-          aria-describedby={errors.email ? "email-error" : undefined}
-          {...register("email")}
-        />
-        {errors.email && (
-          <p id="email-error" className="text-sm text-destructive">
-            {errors.email.message}
-          </p>
+      <Field id="email" label="Email" error={errors.email?.message} required>
+        {(field) => (
+          <Input type="email" autoComplete="email" {...field} {...register("email")} />
         )}
-      </div>
+      </Field>
 
-      <div className="flex flex-col gap-1.5">
-        <label htmlFor="password" className="text-sm font-medium">
-          Password
-        </label>
-        <Input
-          id="password"
-          type="password"
-          autoComplete="new-password"
-          aria-invalid={Boolean(errors.password)}
-          aria-describedby={errors.password ? "password-error" : undefined}
-          {...register("password")}
-        />
-        {errors.password && (
-          <p id="password-error" className="text-sm text-destructive">
-            {errors.password.message}
-          </p>
+      <Field
+        id="password"
+        label="Password"
+        hint="At least 8 characters."
+        error={errors.password?.message}
+        required
+      >
+        {(field) => (
+          <Input
+            type="password"
+            autoComplete="new-password"
+            {...field}
+            {...register("password")}
+          />
         )}
-      </div>
+      </Field>
 
-      {formError && (
-        <p role="alert" className="text-sm text-destructive">
-          {formError}
-        </p>
-      )}
+      {formError && <Alert variant="error">{formError}</Alert>}
 
       <Button type="submit" disabled={isPending} className="w-full">
+        {isPending && <Spinner size="sm" label={null} />}
         {isPending ? "Creating account…" : "Create account"}
       </Button>
     </form>

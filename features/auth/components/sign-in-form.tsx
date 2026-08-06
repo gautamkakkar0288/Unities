@@ -6,8 +6,11 @@ import { useRouter } from "next/navigation"
 import { useState, useTransition } from "react"
 import { useForm } from "react-hook-form"
 
+import { Alert } from "@/components/ui/alert"
 import { Button } from "@/components/ui/button"
+import { Field } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
+import { Spinner } from "@/components/ui/spinner"
 import { signInSchema, type SignInInput } from "@/lib/schemas/auth"
 
 export function SignInForm() {
@@ -41,51 +44,32 @@ export function SignInForm() {
       className="flex flex-col gap-4"
       noValidate
     >
-      <div className="flex flex-col gap-1.5">
-        <label htmlFor="email" className="text-sm font-medium">
-          Email
-        </label>
-        <Input
-          id="email"
-          type="email"
-          autoComplete="email"
-          aria-invalid={Boolean(errors.email)}
-          aria-describedby={errors.email ? "email-error" : undefined}
-          {...register("email")}
-        />
-        {errors.email && (
-          <p id="email-error" className="text-sm text-destructive">
-            {errors.email.message}
-          </p>
+      <Field id="email" label="Email" error={errors.email?.message} required>
+        {(field) => (
+          <Input type="email" autoComplete="email" {...field} {...register("email")} />
         )}
-      </div>
+      </Field>
 
-      <div className="flex flex-col gap-1.5">
-        <label htmlFor="password" className="text-sm font-medium">
-          Password
-        </label>
-        <Input
-          id="password"
-          type="password"
-          autoComplete="current-password"
-          aria-invalid={Boolean(errors.password)}
-          aria-describedby={errors.password ? "password-error" : undefined}
-          {...register("password")}
-        />
-        {errors.password && (
-          <p id="password-error" className="text-sm text-destructive">
-            {errors.password.message}
-          </p>
+      <Field
+        id="password"
+        label="Password"
+        error={errors.password?.message}
+        required
+      >
+        {(field) => (
+          <Input
+            type="password"
+            autoComplete="current-password"
+            {...field}
+            {...register("password")}
+          />
         )}
-      </div>
+      </Field>
 
-      {formError && (
-        <p role="alert" className="text-sm text-destructive">
-          {formError}
-        </p>
-      )}
+      {formError && <Alert variant="error">{formError}</Alert>}
 
       <Button type="submit" disabled={isPending} className="w-full">
+        {isPending && <Spinner size="sm" label={null} />}
         {isPending ? "Signing in…" : "Sign in"}
       </Button>
     </form>
