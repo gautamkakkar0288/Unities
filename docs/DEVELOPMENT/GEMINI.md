@@ -174,3 +174,59 @@ if necessary.
 # Goal
 
 Build software that could realistically be shipped to production.
+
+---
+
+# Cirqles Master Context
+
+## Product Vision
+
+Cirqles is the community-first evolution of Wonderer. The product helps students discover events, communities, opportunities, and official campus activity while giving organizers, universities, and operators the tooling they need to manage trust at scale.
+
+## Engineering Principles
+
+- Document-first before code.
+- Prefer composition and reuse over duplication.
+- Keep the architecture simple enough to scale across universities.
+- Treat authentication, roles, and moderation as core product infrastructure.
+- Optimize for clear loading, empty, error, and recovery states.
+
+## Design Philosophy
+
+- Premium but calm.
+- Community-first and trust-first.
+- Warm light mode as the default experience.
+- Purposeful motion only.
+- Cards, feeds, and detail pages should feel intentional rather than noisy.
+
+## Architecture
+
+- Next.js App Router frontend.
+- TypeScript across the stack.
+- Server Components by default where appropriate.
+- Client Components only where interactivity is necessary.
+- Design tokens, reusable components, and feature-based organization.
+
+## Implementation Workflow
+
+1. Read the relevant documentation first.
+2. Confirm the feature scope against PRD, design, and engineering docs.
+3. Reuse existing components and patterns before creating anything new.
+4. Implement the smallest coherent slice.
+5. Verify accessibility, responsiveness, and state handling.
+6. Update the roadmap or backlog when the feature changes release planning.
+
+## Important Constraints
+
+- Never invent new visual patterns outside the design system.
+- Never fetch directly inside UI components.
+- Keep server-state handling centralized.
+- Preserve trust and moderation boundaries.
+- Respect multi-university tenancy and role-based access.
+
+## Repository Rules
+
+- The documentation tree is the source of truth.
+- Preserve historical Wonderer notes unless a Cirqles section explicitly supersedes them.
+- Prefer updating existing docs over creating duplicate sources of truth.
+- Keep the implementation aligned with docs/PRD.md, DESIGN_SYSTEM.md, and docs/ENGINEERING/.

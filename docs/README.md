@@ -1,89 +1,57 @@
-# Wonderer
+# Cirqles
 
-> Discover. Connect. Experience.
+> Discover. Connect. Belong.
 
-Wonderer is a modern platform that helps university students discover events, trips, workshops, competitions, clubs, and communities in one place.
+Cirqles is the community-first evolution of Wonderer: a premium platform for student discovery, campus communities, official university workflows, and trusted opportunities.
 
-Instead of following dozens of Instagram pages or WhatsApp groups, students can explore everything happening around them through a beautiful, personalized experience.
-
----
-
-# Vision
-
-Become the default platform students use to discover everything happening on and around their campus.
+It helps students find events, communities, opportunities, and people in one place, while giving organizers, universities, and operations teams the structure they need to keep the platform trustworthy at scale.
 
 ---
 
-# Problem
+## Vision
 
-Students miss opportunities because information is scattered across:
-
-- Instagram pages
-- WhatsApp groups
-- Telegram channels
-- Club announcements
-- Friends
-
-Finding genuine organizers is difficult.
-
-There is no centralized trusted platform.
+Build the default campus community layer for multi-university student life.
 
 ---
 
-# Solution
+## Features
 
-Wonderer brings everything together.
-
-Students can:
-
-- Discover events
-- Discover trips
-- Join communities
-- Find workshops
-- Explore competitions
-- Follow organizers
-- Meet like-minded people
-
-All inside one application.
+- Personalized discovery feed
+- Communities and memberships
+- Events and registrations
+- Student profiles
+- Search and filters
+- Notifications and reminders
+- Messaging and announcements
+- Operations Center for moderation and verification
+- AI-assisted recommendations and summaries
 
 ---
 
-# Target Audience
+## Screenshots Placeholder
 
-Phase 1
-
-- Chitkara University students
-
-Phase 2
-
-- Chandigarh universities
-
-Phase 3
-
-- Universities across India
+Add product screenshots here once the core screens are implemented.
 
 ---
 
-# Core Features
+## Architecture Overview
 
-- Personalized home feed
-- Trending events
-- Trips
-- Communities
-- Verified organizers
-- User profiles
-- Search
-- Notifications
-- Event registration
-- Reviews
-- Trust badges
-- Admin dashboard
+- Next.js App Router frontend
+- TypeScript throughout
+- Reusable component system
+- Feature-based architecture
+- Server Components where possible
+- Client Components for interactivity
+- Centralized data fetching and state handling
+- Role-aware access control
+
+For the detailed engineering source of truth, see [docs/ENGINEERING/ARCHITECTURE.md](docs/ENGINEERING/ARCHITECTURE.md).
 
 ---
 
-# Tech Stack
+## Tech Stack
 
-Frontend
+### Frontend
 
 - Next.js
 - React
@@ -91,51 +59,91 @@ Frontend
 - Tailwind CSS
 - shadcn/ui
 - Motion
-- Lucide Icons
+- Lucide React
 
-Future Backend
+### Backend Direction
 
 - Node.js
-- Express
 - PostgreSQL
-- Prisma
 - Redis
-- Cloudinary
+- Prisma or another typed data layer
 
-Deployment
+### Deployment
 
-- Vercel
-
----
-
-# Design Inspiration
-
-- Apple
-- Airbnb
-- Linear
-- Stripe
-- Notion
-- Arc Browser
+- Vercel for the frontend
+- Managed infrastructure for data and background services
 
 ---
 
-# Current Status
+## Folder Structure
 
-Currently under active development.
+```text
+docs/
+	AI/
+	COMPONENTS/
+	DESIGN/
+	DEVELOPMENT/
+	ENGINEERING/
+	FRONTEND/
+	PRD/
+	REFERENCES/
+	SCREENS/
+	UX/
+```
 
-The project follows a product-first approach where documentation is completed before implementation.
+Each folder has a single responsibility and should stay that way.
 
 ---
 
-# Documentation
+## Getting Started
 
-- PRD.md
-- DESIGN_SYSTEM.md
-- GEMINI.md
-- TASKS.md
-- ROADMAP.md
+1. Read [PRD.md](PRD.md) for the current product direction.
+2. Read [DESIGN_SYSTEM.md](DESIGN_SYSTEM.md) for the visual and component rules.
+3. Read [docs/DEVELOPMENT/GEMINI.md](docs/DEVELOPMENT/GEMINI.md) for AI and workflow guidance.
+4. Review the detailed engineering docs in [docs/ENGINEERING/](docs/ENGINEERING).
 
-These documents serve as the source of truth for the project.
+---
+
+## Development
+
+- Keep implementation aligned with the documentation tree.
+- Reuse existing components before inventing new ones.
+- Maintain loading, empty, error, and offline states for every meaningful surface.
+- Validate accessibility and responsiveness before merging.
+
+---
+
+## Contributing
+
+Contributions should preserve product history while moving Cirqles forward.
+
+Before editing, read the relevant docs and update planning documents if the change affects scope or sequencing.
+
+---
+
+## Roadmap
+
+The roadmap is maintained in [docs/DEVELOPMENT/ROADMAP.md](docs/DEVELOPMENT/ROADMAP.md).
+
+---
+
+## Future
+
+Cirqles is designed to expand into multi-university operations, AI-assisted discovery, and mobile experiences without rewriting the core product model.
+
+---
+
+## Project Evolution
+
+Wonderer was the original product name and discovery concept.
+
+Cirqles keeps that historical context while expanding the product into a broader campus community platform with stronger identity, operations, and university workflows.
+
+---
+
+## License
+
+Add the final project license here when the repository license is finalized.
 
 ---
 
