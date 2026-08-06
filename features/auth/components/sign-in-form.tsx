@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button"
 import { Field } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import { Spinner } from "@/components/ui/spinner"
+import { appHomeHref } from "@/lib/navigation/config"
 import { signInSchema, type SignInInput } from "@/lib/schemas/auth"
 
 export function SignInForm() {
@@ -33,7 +34,8 @@ export function SignInForm() {
         setFormError("Invalid email or password.")
         return
       }
-      router.push("/")
+      // Land inside the product, not back on the marketing page.
+      router.push(appHomeHref)
       router.refresh()
     })
   }
