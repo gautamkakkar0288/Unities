@@ -1,21 +1,13 @@
 import type { AppNotification, NotificationKind } from "@/lib/domain/types"
 import type { Tone } from "@/lib/ui/tone"
 
-/**
- * Notification categories, their labels, and their tone.
- *
- * Categories exist so preferences can be granular. A student who mutes
- * community chatter but keeps event reminders stays on the platform; one forced
- * to choose between everything and nothing turns the lot off and never comes
- * back. That is the whole argument for per-category preferences in Phase 12.
- */
-
 export const notificationKindLabel: Record<NotificationKind, string> = {
-  EVENT_REMINDER: "Event reminders",
-  COMMUNITY_POST: "Community posts",
-  MENTION: "Replies and mentions",
-  MEMBERSHIP: "Membership updates",
-  MODERATION: "Moderation outcomes",
+  EVENT_REMINDER: "Event",
+  COMMUNITY_POST: "Community",
+  MENTION: "Mention",
+  MEMBERSHIP: "Membership",
+  MODERATION: "Moderation",
+  ACTIVITY: "Activity",
 }
 
 export const notificationKindTone: Record<NotificationKind, Tone> = {
@@ -24,14 +16,16 @@ export const notificationKindTone: Record<NotificationKind, Tone> = {
   MENTION: "support",
   MEMBERSHIP: "info",
   MODERATION: "warning",
+  ACTIVITY: "success",
 }
 
 /**
- * Categories a student cannot mute.
+ * Kinds a student cannot switch off.
  *
- * Moderation outcomes affect someone's standing on the platform, and membership
- * updates answer a question they explicitly asked. Silencing either would mean
- * a person never learns why their post disappeared.
+ * Everything else is a preference. These two are consequences - being removed
+ * from a community or having a report resolved is something you are owed
+ * regardless of your settings, and hiding it would leave people confused about
+ * why the product suddenly behaves differently for them.
  */
 export const requiredNotificationKinds: NotificationKind[] = [
   "MEMBERSHIP",

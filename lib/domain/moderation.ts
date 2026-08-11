@@ -6,15 +6,6 @@ import type {
 } from "@/lib/domain/types"
 import type { Tone } from "@/lib/ui/tone"
 
-/**
- * Moderation vocabulary and queue ordering.
- *
- * Ordering lives here rather than in the Operations Center component because it
- * is a policy decision, not a layout one: harassment outranks spam regardless of
- * report count, because ten people reporting a course advert is an annoyance
- * while one person reporting harassment may be in a bad situation right now.
- */
-
 export const reportReasonLabel: Record<ReportReason, string> = {
   SPAM: "Spam",
   HARASSMENT: "Harassment",
@@ -23,8 +14,14 @@ export const reportReasonLabel: Record<ReportReason, string> = {
   OTHER: "Other",
 }
 
-/** Lower number is handled first. */
-const reasonSeverity: Record<ReportReason, number> = {
+/**
+ * Triage order. Lower is more urgent.
+ *
+ * Harassment outranks everything because the cost of a slow response is borne
+ * by a person, not by the platform. Spam is annoying; harassment makes someone
+ * leave.
+ */
+export const reasonSeverity: Record<ReportReason, number> = {
   HARASSMENT: 0,
   MISINFORMATION: 1,
   SPAM: 2,
@@ -33,9 +30,9 @@ const reasonSeverity: Record<ReportReason, number> = {
 }
 
 export const reportReasonTone: Record<ReportReason, Tone> = {
-  SPAM: "warning",
   HARASSMENT: "error",
   MISINFORMATION: "warning",
+  SPAM: "neutral",
   OFF_TOPIC: "neutral",
   OTHER: "neutral",
 }
@@ -48,8 +45,8 @@ export const moderationStatusLabel: Record<ModerationStatus, string> = {
 }
 
 export const moderationStatusTone: Record<ModerationStatus, Tone> = {
-  OPEN: "error",
-  IN_REVIEW: "warning",
+  OPEN: "warning",
+  IN_REVIEW: "info",
   RESOLVED: "success",
   DISMISSED: "neutral",
 }
@@ -59,6 +56,7 @@ export const moderationTargetKindLabel: Record<ModerationTargetKind, string> = {
   COMMENT: "Comment",
   EVENT: "Event",
   COMMUNITY: "Community",
+  ACTIVITY: "Activity",
   USER: "Person",
 }
 
@@ -67,24 +65,19 @@ export function isActionable(status: ModerationStatus): boolean {
 }
 
 /**
- * Queue order: unhandled before handled, then by severity, then by how many
- * people reported it, then oldest first. Oldest-last would let an item rot at
- * the bottom of the list forever.
+ * Severity first, then age - never report volume.
+ *
+ * Sorting by report count would let a coordinated pile-on jump the queue ahead
+ * of a single credible harassment report, which is exactly backwards.
  */
 export function compareModerationItems(
   a: ModerationItem,
   b: ModerationItem,
 ): number {
-  const actionable = Number(isActionable(b.status)) - Number(isActionable(a.status))
-  if (actionable !== 0) return actionable
+  const bySeverity = reasonSeverity[a.reason] - reasonSeverity[b.reason]
+  if (bySeverity !== 0) return bySeverity
 
-  const severity = reasonSeverity[a.reason] - reasonSeverity[b.reason]
-  if (severity !== 0) return severity
-
-  const reports = b.reportCount - a.reportCount
-  if (reports !== 0) return reports
-
-  return a.reportedAt.localeCompare(b.reportedAt)
+  return Date.parse(a.reportedAt) - Date.parse(b.reportedAt)
 }
 
 export function sortModerationQueue(items: ModerationItem[]): ModerationItem[] {
