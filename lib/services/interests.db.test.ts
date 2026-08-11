@@ -94,7 +94,7 @@ describe.skipIf(!hasDatabase)("interest service, against Postgres", () => {
       })
 
       expect(result.ok).toBe(false)
-      if (!result.ok) expect(result.error.code).toBe("INVALID")
+      if (!result.ok) expect(result.code).toBe("INVALID")
     })
 
     it("accepts three", async () => {
@@ -135,7 +135,7 @@ describe.skipIf(!hasDatabase)("interest service, against Postgres", () => {
       })
 
       expect(result.ok).toBe(false)
-      if (!result.ok) expect(result.error.code).toBe("INVALID")
+      if (!result.ok) expect(result.code).toBe("INVALID")
     })
 
     it("refuses an interest that does not exist", async () => {
@@ -145,7 +145,7 @@ describe.skipIf(!hasDatabase)("interest service, against Postgres", () => {
       })
 
       expect(result.ok).toBe(false)
-      if (!result.ok) expect(result.error.code).toBe("INVALID")
+      if (!result.ok) expect(result.code).toBe("INVALID")
     })
 
     it("refuses a retired interest", async () => {
@@ -155,7 +155,7 @@ describe.skipIf(!hasDatabase)("interest service, against Postgres", () => {
       })
 
       expect(result.ok).toBe(false)
-      if (!result.ok) expect(result.error.code).toBe("INVALID")
+      if (!result.ok) expect(result.code).toBe("INVALID")
     })
 
     it("leaves the previous selection intact when a set is refused", async () => {
@@ -238,10 +238,13 @@ describe.skipIf(!hasDatabase)("interest service, against Postgres", () => {
     })
 
     it("refuses something that is not a name", async () => {
-      const result = await suggestInterest({ userId: STUDENT, input: { label: "?!" } })
+      const result = await suggestInterest({
+        userId: STUDENT,
+        input: { label: "?!" },
+      })
 
       expect(result.ok).toBe(false)
-      if (!result.ok) expect(result.error.code).toBe("INVALID")
+      if (!result.ok) expect(result.code).toBe("INVALID")
     })
   })
 })

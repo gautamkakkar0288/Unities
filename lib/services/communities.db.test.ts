@@ -63,7 +63,6 @@ const ALL_COMMUNITIES = [
   FOREIGN_C,
 ]
 const ALL_USERS = [STUDENT, SECOND, OWNER, CO_OWNER]
-const ALL_PLACES = [CAMPUS, OTHER_CAMPUS, CITY]
 
 async function memberCountOf(communityId: string): Promise<number> {
   const [row] = await db
@@ -103,7 +102,13 @@ describe.skipIf(!hasDatabase)("community service, against Postgres", () => {
     await cleanup()
 
     await db.insert(places).values([
-      { id: CITY, kind: "CITY", name: "Test City", slug: "vt-city", status: "ACTIVE" },
+      {
+        id: CITY,
+        kind: "CITY",
+        name: "Test City",
+        slug: "vt-city",
+        status: "ACTIVE",
+      },
     ])
     await db.insert(places).values([
       {
@@ -129,22 +134,91 @@ describe.skipIf(!hasDatabase)("community service, against Postgres", () => {
       .values({ id: INTEREST, slug: "vt-sports", label: "Sports", sortOrder: 1 })
 
     await db.insert(users).values([
-      { id: STUDENT, name: "Student", email: "student@vt.test", universityId: CAMPUS },
-      { id: SECOND, name: "Second", email: "second@vt.test", universityId: CAMPUS },
+      {
+        id: STUDENT,
+        name: "Student",
+        email: "student@vt.test",
+        universityId: CAMPUS,
+      },
+      {
+        id: SECOND,
+        name: "Second",
+        email: "second@vt.test",
+        universityId: CAMPUS,
+      },
       { id: OWNER, name: "Owner", email: "owner@vt.test", universityId: CAMPUS },
-      { id: CO_OWNER, name: "Co-owner", email: "coowner@vt.test", universityId: CAMPUS },
+      {
+        id: CO_OWNER,
+        name: "Co-owner",
+        email: "coowner@vt.test",
+        universityId: CAMPUS,
+      },
     ])
 
     const base = { interestId: INTEREST, kind: "STUDENT" as const, tagline: "t" }
 
     await db.insert(communities).values([
-      { ...base, id: OPEN_C, slug: "vt-badminton", name: "Badminton", scope: "UNIVERSITY", placeId: CAMPUS, joinPolicy: "OPEN" },
-      { ...base, id: APPROVAL_C, slug: "vt-ecell", name: "Entrepreneurship", scope: "UNIVERSITY", placeId: CAMPUS, joinPolicy: "APPROVAL" },
-      { ...base, id: INVITE_C, slug: "vt-leadership", name: "Leadership", scope: "UNIVERSITY", placeId: CAMPUS, joinPolicy: "INVITE" },
-      { ...base, id: CITY_C, slug: "vt-runners", name: "Runners", scope: "CITY", placeId: CITY, joinPolicy: "OPEN" },
-      { ...base, id: INTEREST_C, slug: "vt-sports-community", name: "Sports Community", scope: "INTEREST", joinPolicy: "OPEN" },
-      { ...base, id: GLOBAL_C, slug: "vt-everywhere", name: "Everywhere", scope: "GLOBAL", joinPolicy: "OPEN" },
-      { ...base, id: FOREIGN_C, slug: "vt-foreign", name: "Foreign Campus Club", scope: "UNIVERSITY", placeId: OTHER_CAMPUS, joinPolicy: "OPEN" },
+      {
+        ...base,
+        id: OPEN_C,
+        slug: "vt-badminton",
+        name: "Badminton",
+        scope: "UNIVERSITY",
+        placeId: CAMPUS,
+        joinPolicy: "OPEN",
+      },
+      {
+        ...base,
+        id: APPROVAL_C,
+        slug: "vt-ecell",
+        name: "Entrepreneurship",
+        scope: "UNIVERSITY",
+        placeId: CAMPUS,
+        joinPolicy: "APPROVAL",
+      },
+      {
+        ...base,
+        id: INVITE_C,
+        slug: "vt-leadership",
+        name: "Leadership",
+        scope: "UNIVERSITY",
+        placeId: CAMPUS,
+        joinPolicy: "INVITE",
+      },
+      {
+        ...base,
+        id: CITY_C,
+        slug: "vt-runners",
+        name: "Runners",
+        scope: "CITY",
+        placeId: CITY,
+        joinPolicy: "OPEN",
+      },
+      {
+        ...base,
+        id: INTEREST_C,
+        slug: "vt-sports-community",
+        name: "Sports Community",
+        scope: "INTEREST",
+        joinPolicy: "OPEN",
+      },
+      {
+        ...base,
+        id: GLOBAL_C,
+        slug: "vt-everywhere",
+        name: "Everywhere",
+        scope: "GLOBAL",
+        joinPolicy: "OPEN",
+      },
+      {
+        ...base,
+        id: FOREIGN_C,
+        slug: "vt-foreign",
+        name: "Foreign Campus Club",
+        scope: "UNIVERSITY",
+        placeId: OTHER_CAMPUS,
+        joinPolicy: "OPEN",
+      },
     ])
   })
 
@@ -154,7 +228,10 @@ describe.skipIf(!hasDatabase)("community service, against Postgres", () => {
     beforeAll(clearMemberships)
 
     it("OPEN: joins immediately and counts +1", async () => {
-      const result = await joinCommunity({ userId: STUDENT, communityId: OPEN_C })
+      const result = await joinCommunity({
+        userId: STUDENT,
+        communityId: OPEN_C,
+      })
 
       expect(result.ok).toBe(true)
       if (result.ok) expect(result.data).toBe("MEMBER")
@@ -162,7 +239,10 @@ describe.skipIf(!hasDatabase)("community service, against Postgres", () => {
     })
 
     it("joining twice is a success and counts +0", async () => {
-      const result = await joinCommunity({ userId: STUDENT, communityId: OPEN_C })
+      const result = await joinCommunity({
+        userId: STUDENT,
+        communityId: OPEN_C,
+      })
 
       expect(result.ok).toBe(true)
       expect(await memberCountOf(OPEN_C)).toBe(1)
@@ -174,14 +254,20 @@ describe.skipIf(!hasDatabase)("community service, against Postgres", () => {
     })
 
     it("leaving twice counts +0 and does not go negative", async () => {
-      const result = await leaveCommunity({ userId: STUDENT, communityId: OPEN_C })
+      const result = await leaveCommunity({
+        userId: STUDENT,
+        communityId: OPEN_C,
+      })
 
       expect(result.ok).toBe(true)
       expect(await memberCountOf(OPEN_C)).toBe(0)
     })
 
     it("APPROVAL: records a request without counting a member", async () => {
-      const result = await joinCommunity({ userId: STUDENT, communityId: APPROVAL_C })
+      const result = await joinCommunity({
+        userId: STUDENT,
+        communityId: APPROVAL_C,
+      })
 
       expect(result.ok).toBe(true)
       if (result.ok) expect(result.data).toBe("PENDING")
@@ -189,7 +275,10 @@ describe.skipIf(!hasDatabase)("community service, against Postgres", () => {
     })
 
     it("APPROVAL: requesting twice stays pending", async () => {
-      const result = await joinCommunity({ userId: STUDENT, communityId: APPROVAL_C })
+      const result = await joinCommunity({
+        userId: STUDENT,
+        communityId: APPROVAL_C,
+      })
 
       expect(result.ok).toBe(true)
       if (result.ok) expect(result.data).toBe("PENDING")
@@ -197,10 +286,13 @@ describe.skipIf(!hasDatabase)("community service, against Postgres", () => {
     })
 
     it("INVITE: refuses self-service entry", async () => {
-      const result = await joinCommunity({ userId: STUDENT, communityId: INVITE_C })
+      const result = await joinCommunity({
+        userId: STUDENT,
+        communityId: INVITE_C,
+      })
 
       expect(result.ok).toBe(false)
-      if (!result.ok) expect(result.error.code).toBe("FORBIDDEN")
+      if (!result.ok) expect(result.code).toBe("FORBIDDEN")
       expect(await memberCountOf(INVITE_C)).toBe(0)
     })
 
@@ -211,7 +303,10 @@ describe.skipIf(!hasDatabase)("community service, against Postgres", () => {
         state: "INVITED",
       })
 
-      const result = await joinCommunity({ userId: SECOND, communityId: INVITE_C })
+      const result = await joinCommunity({
+        userId: SECOND,
+        communityId: INVITE_C,
+      })
 
       expect(result.ok).toBe(true)
       if (result.ok) expect(result.data).toBe("MEMBER")
@@ -223,7 +318,12 @@ describe.skipIf(!hasDatabase)("community service, against Postgres", () => {
     beforeAll(async () => {
       await clearMemberships()
       await db.insert(memberships).values([
-        { communityId: APPROVAL_C, userId: OWNER, state: "OWNER", joinedAt: new Date() },
+        {
+          communityId: APPROVAL_C,
+          userId: OWNER,
+          state: "OWNER",
+          joinedAt: new Date(),
+        },
       ])
       await joinCommunity({ userId: STUDENT, communityId: APPROVAL_C })
     })
@@ -237,7 +337,7 @@ describe.skipIf(!hasDatabase)("community service, against Postgres", () => {
       })
 
       expect(result.ok).toBe(false)
-      if (!result.ok) expect(result.error.code).toBe("FORBIDDEN")
+      if (!result.ok) expect(result.code).toBe("FORBIDDEN")
     })
 
     it("lets an owner approve, and counts +1", async () => {
@@ -264,7 +364,7 @@ describe.skipIf(!hasDatabase)("community service, against Postgres", () => {
       })
 
       expect(result.ok).toBe(false)
-      if (!result.ok) expect(result.error.code).toBe("NOT_FOUND")
+      if (!result.ok) expect(result.code).toBe("NOT_FOUND")
     })
   })
 
@@ -283,7 +383,7 @@ describe.skipIf(!hasDatabase)("community service, against Postgres", () => {
       const result = await leaveCommunity({ userId: OWNER, communityId: OPEN_C })
 
       expect(result.ok).toBe(false)
-      if (!result.ok) expect(result.error.code).toBe("CONFLICT")
+      if (!result.ok) expect(result.code).toBe("CONFLICT")
     })
 
     it("can leave once someone else owns it too", async () => {
@@ -306,7 +406,9 @@ describe.skipIf(!hasDatabase)("community service, against Postgres", () => {
       const list = await listCommunitiesForViewer({ viewerId: STUDENT })
       const ids = list.map((community) => community.id)
 
-      expect(ids).toEqual(expect.arrayContaining([OPEN_C, CITY_C, INTEREST_C, GLOBAL_C]))
+      expect(ids).toEqual(
+        expect.arrayContaining([OPEN_C, CITY_C, INTEREST_C, GLOBAL_C]),
+      )
       // Another university's community is not discovery, it is noise.
       expect(ids).not.toContain(FOREIGN_C)
     })
@@ -322,7 +424,10 @@ describe.skipIf(!hasDatabase)("community service, against Postgres", () => {
     it("orders in SQL, not after the fact: a LIMIT 1 still returns the campus", async () => {
       // If the sort happened in JS after fetching, a limited query would return
       // an arbitrary row. This is the assertion that pins where ordering runs.
-      const [first] = await listCommunitiesForViewer({ viewerId: STUDENT, limit: 1 })
+      const [first] = await listCommunitiesForViewer({
+        viewerId: STUDENT,
+        limit: 1,
+      })
 
       expect(first.scope).toBe("UNIVERSITY")
       expect(first.place?.id).toBe(CAMPUS)
@@ -367,7 +472,7 @@ describe.skipIf(!hasDatabase)("community service, against Postgres", () => {
       })
 
       expect(result.ok).toBe(false)
-      if (!result.ok) expect(result.error.code).toBe("INVALID")
+      if (!result.ok) expect(result.code).toBe("INVALID")
     })
 
     it("catches a near-duplicate of an existing campus community", async () => {
