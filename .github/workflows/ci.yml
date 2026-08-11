@@ -5,10 +5,15 @@ on:
     branches: [main]
   pull_request:
 
+# Needed so the job can post the verification report back to the pull request.
+permissions:
+  contents: read
+  pull-requests: write
+
 jobs:
   verify:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 25
 
     # The database-backed half of the verification matrix needs a real Postgres.
     # Mocks cannot be wrong about transactional count arithmetic or unique
@@ -37,30 +42,109 @@ jobs:
         with:
           node-version: 22
 
-      # NOTE: switch to `npm ci` once package-lock.json is regenerated
-      - run: npm install
+      # One step runs the whole matrix rather than one step per command. A
+      # step-per-command stops at the first failure, which tells you the
+      # earliest problem and nothing else; running them all tells you whether
+      # you have one bug or ten.
+      - name: Run the Phase 6 verification matrix
+        id: matrix
+        shell: bash
+        run: |
+          set +e
+          : > report.md
+          : > detail.md
+          overall=0
 
-      - run: npm run typecheck
-      - run: npm run lint
+          {
+            echo "## Phase 6 verification matrix"
+            echo ""
+            echo "Commit \`${GITHUB_SHA::7}\`"
+            echo ""
+            echo "| Step | Result |"
+            echo "| --- | --- |"
+          } >> report.md
 
-      # Without DATABASE_URL the database suites skip themselves, so this run
-      # proves the pure domain and schema tests stand on their own.
-      - name: Unit tests (no database)
-        run: npm run test
+          run() {
+            local name="$1"; shift
+            local out code
+            echo "::group::${name}"
+            out="$("$@" 2>&1)"
+            code=$?
+            printf '%s\n' "${out}"
+            echo "::endgroup::"
 
-      - run: npm run build
+            if [ "${code}" -eq 0 ]; then
+              echo "| ${name} | pass |" >> report.md
+            else
+              echo "| ${name} | **FAIL** (exit ${code}) |" >> report.md
+              {
+                echo ""
+                echo "<details><summary>${name} - exit ${code}</summary>"
+                echo ""
+                echo '```'
+                printf '%s\n' "${out}" | tail -n 120
+                echo '```'
+                echo ""
+                echo "</details>"
+              } >> detail.md
+              overall=1
+            fi
+          }
 
-      - name: Apply the schema to the test database
-        run: npm run db:push -- --force
+          run "npm install" npm install
+          run "typecheck" npm run typecheck
+          run "lint" npm run lint
+
+          # DATABASE_URL is deliberately unset here, so the database suites skip
+          # themselves and this run proves the pure suites stand on their own.
+          run "unit tests (no database)" npm run test
+
+          run "build" npm run build
+          run "db:generate" env DATABASE_URL="${TEST_DATABASE_URL}" npm run db:generate
+          run "db:push" env DATABASE_URL="${TEST_DATABASE_URL}" npm run db:push -- --force
+          run "db:seed" env DATABASE_URL="${TEST_DATABASE_URL}" npm run db:seed
+          run "verification matrix (with database)" env DATABASE_URL="${TEST_DATABASE_URL}" npm run test
+
+          cat detail.md >> report.md
+
+          {
+            echo ""
+            echo "### Migration drizzle-kit generated"
+            echo ""
+          } >> report.md
+
+          if ls drizzle/*.sql >/dev/null 2>&1; then
+            {
+              echo '```sql'
+              head -n 300 drizzle/*.sql
+              echo '```'
+              echo ""
+              echo "Left uncommitted by the generate step:"
+              echo '```'
+              git status --porcelain drizzle
+              echo '```'
+            } >> report.md
+          else
+            echo "_drizzle-kit produced no SQL files._" >> report.md
+          fi
+
+          echo "${overall}" > status.txt
+
+      - name: Post the report to the pull request
+        if: always() && github.event_name == 'pull_request'
         env:
-          DATABASE_URL: ${{ env.TEST_DATABASE_URL }}
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh pr comment "${{ github.event.number }}" \
+            --repo "${{ github.repository }}" \
+            --body-file report.md
 
-      - name: Seed Chitkara, Tricity, and the taxonomy
-        run: npm run db:seed
-        env:
-          DATABASE_URL: ${{ env.TEST_DATABASE_URL }}
-
-      - name: Phase 6 verification matrix (against Postgres)
-        run: npm run test
-        env:
-          DATABASE_URL: ${{ env.TEST_DATABASE_URL }}
+      - name: Fail the job if any step failed
+        if: always()
+        shell: bash
+        run: |
+          status="$(cat status.txt 2>/dev/null || echo 1)"
+          if [ "${status}" != "0" ]; then
+            echo "One or more verification steps failed. See the report on the pull request."
+            exit 1
+          fi
