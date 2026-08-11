@@ -23,6 +23,14 @@ export const MINIMUM_INTERESTS = 3
  * review queue fills with the same word in five casings and the reviewer cannot
  * see that forty students asked for the same thing - the demand signal, which
  * is the entire point of collecting suggestions, is destroyed by punctuation.
+ *
+ * The plural rule deliberately stops short of a stemmer. Two guards keep it
+ * honest: words of three characters or fewer are left alone, and words ending
+ * in a double s are left alone. Without the second guard "Chess" becomes
+ * "ches" and - more damagingly - the taxonomy's own "Fitness" becomes
+ * "fitnes", so a student suggesting "Fitness" would not match the interest that
+ * already exists. Anything more ambitious than this belongs in a real stemming
+ * library, not in a hand-rolled regex.
  */
 export function normaliseInterestLabel(label: string): string {
   const cleaned = label
@@ -31,7 +39,9 @@ export function normaliseInterestLabel(label: string): string {
     .split(/\s+/)
     .filter(Boolean)
     .map((word) =>
-      word.length > 3 && word.endsWith("s") ? word.slice(0, -1) : word,
+      word.length > 3 && word.endsWith("s") && !word.endsWith("ss")
+        ? word.slice(0, -1)
+        : word,
     )
 
   return cleaned.join(" ")

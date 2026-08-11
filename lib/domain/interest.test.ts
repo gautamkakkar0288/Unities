@@ -20,6 +20,20 @@ describe("normaliseInterestLabel", () => {
     expect(normaliseInterestLabel("Chess")).toBe("chess")
   })
 
+  it("does not singularise words in the taxonomy that end in double s", () => {
+    // Regression: "Fitness" became "fitnes", so a student suggesting the exact
+    // name of an existing interest would not have matched it.
+    expect(normaliseInterestLabel("Fitness")).toBe("fitness")
+    expect(normaliseInterestLabel("fitness")).toBe(
+      normaliseInterestLabel("Fitness"),
+    )
+  })
+
+  it("still collapses ordinary plurals", () => {
+    expect(normaliseInterestLabel("Movies")).toBe(normaliseInterestLabel("Movie"))
+    expect(normaliseInterestLabel("Sports")).toBe(normaliseInterestLabel("Sport"))
+  })
+
   it("normalises multi-word labels consistently", () => {
     expect(normaliseInterestLabel("Competitive  Programming")).toBe(
       "competitive programming",

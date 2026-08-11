@@ -49,7 +49,10 @@ describe("how many interests are enough", () => {
   })
 
   it("states the minimum in one place", () => {
-    expect(setInterestsSchema.safeParse({ interestIds: ids(MINIMUM_INTERESTS) }).success).toBe(true)
+    expect(
+      setInterestsSchema.safeParse({ interestIds: ids(MINIMUM_INTERESTS) })
+        .success,
+    ).toBe(true)
     expect(
       setInterestsSchema.safeParse({ interestIds: ids(MINIMUM_INTERESTS - 1) })
         .success,
@@ -65,9 +68,8 @@ describe("case and spacing collapse to one interest", () => {
     expect(normalised.size).toBe(1)
   })
 
-  it("does not mangle short words while collapsing plurals", () => {
-    expect(normaliseInterestLabel("Chess")).toBe(normaliseInterestLabel("chess"))
-    // "Chess" must not become "Ches", or it stops matching itself.
-    expect(normaliseInterestLabel("Chess")).toContain("chess")
+  it("does not mangle words that end in double s", () => {
+    expect(normaliseInterestLabel("Chess")).toBe("chess")
+    expect(normaliseInterestLabel("Fitness")).toBe("fitness")
   })
 })
