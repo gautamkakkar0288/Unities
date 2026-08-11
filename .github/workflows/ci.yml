@@ -8,14 +8,59 @@ on:
 jobs:
   verify:
     runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    # The database-backed half of the verification matrix needs a real Postgres.
+    # Mocks cannot be wrong about transactional count arithmetic or unique
+    # constraints, which is precisely what those tests are checking.
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: cirqles_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 10
+
+    env:
+      TEST_DATABASE_URL: postgres://postgres:postgres@localhost:5432/cirqles_test
+
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: 22
+
       # NOTE: switch to `npm ci` once package-lock.json is regenerated
       - run: npm install
+
       - run: npm run typecheck
       - run: npm run lint
-      - run: npm run test
+
+      # Without DATABASE_URL the database suites skip themselves, so this run
+      # proves the pure domain and schema tests stand on their own.
+      - name: Unit tests (no database)
+        run: npm run test
+
       - run: npm run build
+
+      - name: Apply the schema to the test database
+        run: npm run db:push -- --force
+        env:
+          DATABASE_URL: ${{ env.TEST_DATABASE_URL }}
+
+      - name: Seed Chitkara, Tricity, and the taxonomy
+        run: npm run db:seed
+        env:
+          DATABASE_URL: ${{ env.TEST_DATABASE_URL }}
+
+      - name: Phase 6 verification matrix (against Postgres)
+        run: npm run test
+        env:
+          DATABASE_URL: ${{ env.TEST_DATABASE_URL }}

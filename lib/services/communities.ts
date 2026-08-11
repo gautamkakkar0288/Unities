@@ -15,6 +15,7 @@ import {
   normaliseCommunityName,
   toCommunityRef,
 } from "@/lib/domain/community"
+import { resolveJoinOutcome } from "@/lib/domain/join-policy"
 import { canModerate } from "@/lib/domain/membership"
 import type {
   CommunityRef,
@@ -33,10 +34,10 @@ import { fail, ok, type ServiceResult } from "@/lib/services/result"
  * Everything in this file is server-only and is the single place membership
  * rules are enforced. The equivalent display rules live in `lib/domain/*` and
  * are imported rather than restated - `describeMembershipAction` decides what
- * the button says, and this file decides what actually happens, but both read
+ * the button says, `resolveJoinOutcome` decides what happens, and both read
  * from the same `joinPolicy`. When they disagree, a student sees "Join", clicks
  * it, and gets an error, which is the specific failure this arrangement exists
- * to prevent.
+ * to prevent. `lib/domain/join-policy.test.ts` asserts they cannot disagree.
  *
  * Components never call Drizzle. They call these functions, or a server action
  * that calls these functions.
@@ -171,13 +172,15 @@ export async function scopePlaceIdsForUser(userId: string): Promise<string[]> {
  *
  * Ordering is by scope rank first and member count second, so the campus a
  * student actually attends is never below a large global community. The rank is
- * computed in SQL rather than sorted in JS because this list paginates later,
- * and a page boundary applied before an in-memory sort produces a shuffled
- * directory.
+ * computed in SQL rather than sorted in JS because this list paginates, and a
+ * page boundary applied before an in-memory sort produces a shuffled directory.
+ * `limit` exists partly so that property is testable: take the first row of a
+ * limited query and it must still be the campus community.
  */
 export async function listCommunitiesForViewer(args: {
   viewerId: string | null
   placeIds?: string[]
+  limit?: number
 }): Promise<CommunitySummary[]> {
   const placeIds =
     args.placeIds ??
@@ -194,7 +197,7 @@ export async function listCommunitiesForViewer(args: {
       ? or(inArray(communities.placeId, placeIds), isNull(communities.placeId))
       : isNull(communities.placeId)
 
-  const rows = await db
+  const query = db
     .select(communitySelection)
     .from(communities)
     .innerJoin(interests, eq(interests.id, communities.interestId))
@@ -202,6 +205,8 @@ export async function listCommunitiesForViewer(args: {
     .leftJoin(memberships, viewerMembershipJoin(args.viewerId))
     .where(and(isNull(communities.archivedAt), visible))
     .orderBy(asc(scopeRank), desc(communities.memberCount), asc(communities.name))
+
+  const rows = args.limit ? await query.limit(args.limit) : await query
 
   return rows.map(toSummary)
 }
@@ -220,7 +225,7 @@ export async function getCommunityBySlug(args: {
     .innerJoin(interests, eq(interests.id, communities.interestId))
     .leftJoin(places, eq(places.id, communities.placeId))
     .leftJoin(memberships, viewerMembershipJoin(args.viewerId))
-    .where(eq(communities.slug, args.slug))
+    .where(and(eq(communities.slug, args.slug), isNull(communities.archivedAt)))
     .limit(1)
 
   if (!row) return null
@@ -273,57 +278,54 @@ export async function joinCommunity(args: {
       )
       .limit(1)
 
-    // Already inside, or already waiting. Say so rather than erroring.
-    if (existing && PARTICIPATING.includes(existing.state)) {
-      return ok(existing.state)
+    const current: MembershipState = existing?.state ?? "NONE"
+
+    // The one decision point, shared with the UI.
+    switch (resolveJoinOutcome(community.joinPolicy, current)) {
+      case "UNCHANGED":
+        return ok(current)
+
+      case "REFUSED":
+        return fail(
+          "FORBIDDEN",
+          "This community is invite only. A moderator has to add you.",
+        )
+
+      case "PENDING":
+        await tx.insert(memberships).values({
+          communityId: args.communityId,
+          userId: args.userId,
+          state: "PENDING",
+          requestedAt: new Date(),
+        })
+        // Deliberately no count change: a request is not a member.
+        return ok("PENDING")
+
+      case "MEMBER": {
+        if (existing) {
+          await tx
+            .update(memberships)
+            .set({ state: "MEMBER", joinedAt: new Date() })
+            .where(eq(memberships.id, existing.id))
+        } else {
+          await tx.insert(memberships).values({
+            communityId: args.communityId,
+            userId: args.userId,
+            state: "MEMBER",
+            joinedAt: new Date(),
+          })
+        }
+
+        // Same transaction as the membership write, so the denormalised count
+        // cannot drift from the rows it summarises.
+        await tx
+          .update(communities)
+          .set({ memberCount: sql`${communities.memberCount} + 1` })
+          .where(eq(communities.id, args.communityId))
+
+        return ok("MEMBER")
+      }
     }
-    if (existing?.state === "PENDING") return ok("PENDING")
-
-    // An invitation is an offer; accepting it ignores the join policy, which is
-    // the entire point of an invite-only community.
-    if (existing?.state === "INVITED") {
-      await tx
-        .update(memberships)
-        .set({ state: "MEMBER", joinedAt: new Date() })
-        .where(eq(memberships.id, existing.id))
-      await tx
-        .update(communities)
-        .set({ memberCount: sql`${communities.memberCount} + 1` })
-        .where(eq(communities.id, args.communityId))
-      return ok("MEMBER")
-    }
-
-    if (community.joinPolicy === "INVITE") {
-      return fail(
-        "FORBIDDEN",
-        "This community is invite only. A moderator has to add you.",
-      )
-    }
-
-    if (community.joinPolicy === "APPROVAL") {
-      await tx.insert(memberships).values({
-        communityId: args.communityId,
-        userId: args.userId,
-        state: "PENDING",
-        requestedAt: new Date(),
-      })
-      return ok("PENDING")
-    }
-
-    await tx.insert(memberships).values({
-      communityId: args.communityId,
-      userId: args.userId,
-      state: "MEMBER",
-      joinedAt: new Date(),
-    })
-    // Same transaction as the insert, so the denormalised count cannot drift
-    // from the rows it summarises.
-    await tx
-      .update(communities)
-      .set({ memberCount: sql`${communities.memberCount} + 1` })
-      .where(eq(communities.id, args.communityId))
-
-    return ok("MEMBER")
   })
 }
 
@@ -466,6 +468,14 @@ export type ProposalOutcome =
  * action is a public endpoint and "the form checked it" is not a guarantee.
  * Both call the same `findSimilarCommunities`, so they cannot disagree about
  * what counts as a duplicate.
+ *
+ * The candidate set is the proposer's own discovery scope *plus* any place they
+ * named. An earlier version passed `[]` when the form omitted a place, which
+ * silently reduced the candidate set to placeless communities only - so
+ * proposing "Chitkara Football" was compared against global interest
+ * communities and never against the campus communities it would actually
+ * duplicate. That is the exact failure the check exists to prevent, so the
+ * scope is now derived rather than taken from the request.
  */
 export async function proposeCommunity(args: {
   userId: string
@@ -482,9 +492,14 @@ export async function proposeCommunity(args: {
   const input: ProposeCommunityInput = parsed.data
 
   if (!input.acknowledgedDuplicates) {
+    const scopeIds = await scopePlaceIdsForUser(args.userId)
+    const placeIds = input.placeId
+      ? Array.from(new Set([...scopeIds, input.placeId]))
+      : scopeIds
+
     const candidates = await listCommunitiesForViewer({
       viewerId: args.userId,
-      placeIds: input.placeId ? [input.placeId] : [],
+      placeIds,
     })
 
     const matches = findSimilarCommunities(input.name, candidates)
