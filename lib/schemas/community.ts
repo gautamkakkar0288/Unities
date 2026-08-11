@@ -55,13 +55,22 @@ export const suggestInterestSchema = z.object({
 export type SuggestInterestInput = z.infer<typeof suggestInterestSchema>
 
 export const setInterestsSchema = z.object({
+  /**
+   * The minimum is checked over the *distinct* set, not the array length.
+   *
+   * `setUserInterests` deduplicates before writing, so validating length here
+   * meant `["a", "a", "a"]` satisfied "pick at least three" and then stored
+   * one - a student onboarded with a single interest and an empty
+   * recommendation feed, with nothing having errored anywhere. The rule is now
+   * expressed once, in the same terms the write uses.
+   */
   interestIds: z
     .array(z.string().min(1))
-    .min(
-      MINIMUM_INTERESTS,
+    .max(17, "That is all of them - pick the ones you actually care about.")
+    .refine(
+      (ids) => new Set(ids).size >= MINIMUM_INTERESTS,
       `Pick at least ${MINIMUM_INTERESTS} interests so we can show you things worth turning up to.`,
-    )
-    .max(17, "That is all of them - pick the ones you actually care about."),
+    ),
 })
 
 export type SetInterestsInput = z.infer<typeof setInterestsSchema>
