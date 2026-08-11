@@ -1,9 +1,8 @@
 import {
   Bell,
-  Bookmark,
   Compass,
   Home,
-  Search,
+  Plus,
   User,
   Users,
   type LucideIcon,
@@ -21,14 +20,19 @@ export type NavItem = {
  * Mobile bottom navigation.
  *
  * Exactly the five items mandated by docs/UX/02-Navigation-System.md: no hidden
- * tabs, no horizontal scrolling, no nested bars. Communities and Saved are
- * deliberately absent - docs/UX/00-Information-Architecture.md states they are
- * reached through the primary screens rather than occupying permanent slots.
+ * tabs, no horizontal scrolling, no nested bars. Create sits in the centre slot
+ * (D36) because creating an activity, event, or community request is core to
+ * the product's identity - Discover → Connect → Create → Experience - and a
+ * creation entry hidden behind other screens reads as a product that does not
+ * expect you to create anything. Search moved to the top bar, which both
+ * navigation documents already agree owns global search; Communities and Saved
+ * are reached through the primary screens rather than occupying permanent
+ * slots.
  */
 export const mobileNav: NavItem[] = [
   { label: "Home", href: "/home", icon: Home },
   { label: "Explore", href: "/explore", icon: Compass },
-  { label: "Search", href: "/search", icon: Search },
+  { label: "Create", href: "/create", icon: Plus },
   { label: "Notifications", href: "/notifications", icon: Bell, shortLabel: "Alerts" },
   { label: "Profile", href: "/profile", icon: User },
 ]
@@ -36,18 +40,23 @@ export const mobileNav: NavItem[] = [
 /**
  * Desktop sidebar.
  *
- * The two navigation documents disagree on this list (see DECISIONS.md D18).
- * `00-Information-Architecture.md` includes Search and Notifications in the
- * sidebar, while `02-Navigation-System.md` omits them - and both documents
- * agree the top bar owns global search and the notification indicator. Listing
- * them in the sidebar too would give one destination two competing entry
- * points on the same screen, so we follow the navigation-specific document.
+ * The six-item primary navigation locked on 2026-08-11 (D36): Home, Explore,
+ * Communities, Create, Notifications, Profile.
+ *
+ * Two earlier decisions are amended by this list. Saved loses its slot - it is
+ * reached through Profile → Saved and bookmark affordances in Home and Explore,
+ * because a bookmark list is a utility, not a destination the product is about.
+ * And Notifications joins the sidebar (partially superseding D18): the top bar
+ * keeps the indicator, but the product owner locked Notifications as primary
+ * navigation, and the navigation documents' own tiebreak rule - sidebar for
+ * places, top bar for tools - reads a notification inbox as a place.
  */
 export const sidebarNav: NavItem[] = [
   { label: "Home", href: "/home", icon: Home },
   { label: "Explore", href: "/explore", icon: Compass },
   { label: "Communities", href: "/communities", icon: Users },
-  { label: "Saved", href: "/saved", icon: Bookmark },
+  { label: "Create", href: "/create", icon: Plus },
+  { label: "Notifications", href: "/notifications", icon: Bell },
   { label: "Profile", href: "/profile", icon: User },
 ]
 
