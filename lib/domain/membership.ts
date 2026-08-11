@@ -20,28 +20,45 @@ export type MembershipAction = {
 }
 
 export function describeMembershipAction(
-  community: Pick<
-    CommunitySummary,
-    "name" | "joinPolicy" | "viewerMembership"
-  >,
+  community: Pick<CommunitySummary, "name" | "joinPolicy" | "viewerMembership">,
 ): MembershipAction {
   const { name, joinPolicy, viewerMembership } = community
 
   switch (viewerMembership) {
     case "NONE":
-      return joinPolicy === "REQUEST"
-        ? {
-            label: "Request to join",
-            variant: "outline",
-            disabled: false,
-            accessibleLabel: `Request to join ${name}`,
-          }
-        : {
+      switch (joinPolicy) {
+        case "OPEN":
+          return {
             label: "Join",
             variant: "default",
             disabled: false,
             accessibleLabel: `Join ${name}`,
           }
+        case "APPROVAL":
+          return {
+            label: "Request to join",
+            variant: "outline",
+            disabled: false,
+            accessibleLabel: `Request to join ${name}`,
+          }
+        case "INVITE":
+          // Not a disabled Join button. A control that looks actionable and
+          // is not teaches the student nothing; naming the rule does.
+          return {
+            label: "Invite only",
+            variant: "outline",
+            disabled: true,
+            accessibleLabel: `${name} is invite only. Members are added by a moderator.`,
+          }
+      }
+    // eslint-disable-next-line no-fallthrough
+    case "INVITED":
+      return {
+        label: "Accept invite",
+        variant: "default",
+        disabled: false,
+        accessibleLabel: `Accept your invitation to ${name}`,
+      }
     case "PENDING":
       return {
         label: "Requested",
@@ -83,10 +100,7 @@ export function canModerate(state: MembershipState): boolean {
   return state === "MODERATOR" || state === "OWNER"
 }
 
-export const verificationTone: Record<
-  CommunitySummary["verification"],
-  Tone
-> = {
+export const verificationTone: Record<CommunitySummary["verification"], Tone> = {
   VERIFIED: "info",
   PENDING: "warning",
   UNVERIFIED: "neutral",
