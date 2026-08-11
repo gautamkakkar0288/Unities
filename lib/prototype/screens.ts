@@ -27,7 +27,7 @@ export const prototypeScreenGroups: PrototypeScreenGroup[] = [
         href: "/prototype/onboarding",
         title: "Onboarding",
         description:
-          "The interests step that turns a new account into a personalised feed.",
+          "Verified email, a campus that already exists, and the curated interest picker.",
         phase: "Phase 6",
       },
     ],
@@ -37,22 +37,30 @@ export const prototypeScreenGroups: PrototypeScreenGroup[] = [
     screens: [
       {
         href: "/prototype/home",
-        title: "Home feed",
+        title: "Home",
         description:
-          "What is happening now: upcoming events, community posts, announcements.",
+          "Trending, happening soon, recommended, find people, your communities, then the feed.",
         phase: "Phase 7",
       },
       {
         href: "/prototype/explore",
         title: "Explore",
         description:
-          "Discovery by interest for students who have not joined anything yet.",
+          "Trips, sports, tech, and the curated interest taxonomy.",
         phase: "Phase 6",
+      },
+      {
+        href: "/prototype/activities",
+        title: "Find people",
+        description:
+          "Badminton partners, hackathon teammates, study groups - light, and self-expiring.",
+        phase: "Unscheduled",
       },
       {
         href: "/prototype/search",
         title: "Search results",
-        description: "One query across events, communities, people, and posts.",
+        description:
+          "One query across events, activities, communities, people, and posts.",
         phase: "Phase 10",
       },
     ],
@@ -63,13 +71,21 @@ export const prototypeScreenGroups: PrototypeScreenGroup[] = [
       {
         href: "/prototype/communities",
         title: "Community directory",
-        description: "Every community on campus, filterable by interest.",
+        description:
+          "The seeded campus, then city, then interest communities.",
         phase: "Phase 6",
       },
       {
         href: "/prototype/community",
         title: "Community detail",
         description: "About, members, moderators, posts, and upcoming events.",
+        phase: "Phase 6",
+      },
+      {
+        href: "/prototype/community/propose",
+        title: "Propose a community",
+        description:
+          "The student request flow, with live duplicate detection before submit.",
         phase: "Phase 6",
       },
       {
@@ -128,7 +144,8 @@ export const prototypeScreenGroups: PrototypeScreenGroup[] = [
       {
         href: "/prototype/messages",
         title: "Messages",
-        description: "Scoped conversations: official, community, event, direct.",
+        description:
+          "Scoped conversations: official, community, event, activity, direct.",
         phase: "Phase 11",
       },
     ],
@@ -140,7 +157,7 @@ export const prototypeScreenGroups: PrototypeScreenGroup[] = [
         href: "/prototype/operations",
         title: "Operations Center",
         description:
-          "Moderation queue, verification requests, and the audit trail.",
+          "Reports, community proposals, interest suggestions, verification, audit trail.",
         phase: "Phase 13",
       },
     ],
