@@ -17,7 +17,10 @@ import {
   communityKindTone,
   joinPolicyLabel,
 } from "@/lib/domain/community"
-import { describeMembershipAction } from "@/lib/domain/membership"
+import {
+  describeMembershipAction,
+  membershipBadgeLabel,
+} from "@/lib/domain/membership"
 import type { CommunitySummary } from "@/lib/domain/types"
 import { formatCount } from "@/lib/format"
 
@@ -37,11 +40,29 @@ import { formatCount } from "@/lib/format"
 export function CommunityCard({
   community,
   href,
+  joinAction = true,
 }: {
   community: CommunitySummary
   href: string
+  /**
+   * Whether to render the join control.
+   *
+   * Defaults to true so the prototype screens this card was built for are
+   * untouched. The real directory passes false: the button below has no
+   * handler, and a control that looks actionable and silently does nothing is
+   * worse on a live screen than no control at all. When joining actually works
+   * (Phase 1.4) this becomes a real client control and the flag goes away.
+   */
+  joinAction?: boolean
 }) {
   const action = describeMembershipAction(community)
+
+  /**
+   * Without the button, nothing else on the card would tell a student they are
+   * already a member - the button was carrying that. The badge says the same
+   * thing without pretending to be actionable.
+   */
+  const membership = membershipBadgeLabel[community.viewerMembership]
 
   return (
     <Card interactive className="h-full gap-4">
@@ -59,6 +80,9 @@ export function CommunityCard({
               {joinPolicyLabel[community.joinPolicy]}
             </Badge>
           )}
+          {!joinAction && membership && (
+            <Badge variant="brand">{membership}</Badge>
+          )}
         </div>
         <CardTitle>
           <Link
@@ -74,8 +98,8 @@ export function CommunityCard({
       <CardContent className="mt-auto flex flex-col gap-1">
         <p className="flex items-center gap-1.5 text-caption text-muted-foreground">
           <Users aria-hidden="true" className="size-3.5" />
-          <span data-numeric>{formatCount(community.memberCount)}</span>
-          members
+          <span data-numeric>{formatCount(community.memberCount)}</span>{" "}
+          {community.memberCount === 1 ? "member" : "members"}
         </p>
         {community.place && (
           <p className="text-caption text-muted-foreground">
@@ -84,17 +108,19 @@ export function CommunityCard({
         )}
       </CardContent>
 
-      <CardFooter>
-        <Button
-          type="button"
-          variant={action.variant}
-          size="lg"
-          disabled={action.disabled}
-          aria-label={action.accessibleLabel}
-        >
-          {action.label}
-        </Button>
-      </CardFooter>
+      {joinAction && (
+        <CardFooter>
+          <Button
+            type="button"
+            variant={action.variant}
+            size="lg"
+            disabled={action.disabled}
+            aria-label={action.accessibleLabel}
+          >
+            {action.label}
+          </Button>
+        </CardFooter>
+      )}
     </Card>
   )
 }

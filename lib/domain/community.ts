@@ -58,6 +58,19 @@ export const communityScopeOrder: CommunityScope[] = [
   "GLOBAL",
 ]
 
+/**
+ * Narrow an untrusted query-string value to a scope.
+ *
+ * `?scope=DROP` and `?scope=university` are both simply "no filter" rather than
+ * an error page. A directory is a browsing surface, and a malformed URL that a
+ * student got from a stale link should show them everything, not a crash.
+ */
+export function parseCommunityScope(
+  value: string | null | undefined,
+): CommunityScope | null {
+  return communityScopeOrder.find((scope) => scope === value) ?? null
+}
+
 export const joinPolicyLabel: Record<JoinPolicy, string> = {
   OPEN: "Open to all",
   APPROVAL: "Approval needed",
@@ -247,4 +260,51 @@ export function groupByScope(
       communities: communities.filter((community) => community.scope === scope),
     }))
     .filter((group) => group.communities.length > 0)
+}
+
+export type DirectoryFilter = {
+  scope?: CommunityScope | null
+  query?: string | null
+}
+
+/**
+ * The scope tab and the search box, applied to a viewer's visible directory.
+ *
+ * This is a filter over the rows the service already decided this viewer may
+ * see, never a way to widen that set - `listCommunitiesForViewer` remains the
+ * only thing that decides visibility, and nothing here can add a community back.
+ *
+ * Deliberately substring rather than the token matching used for duplicate
+ * detection. `nameSimilarity` is tuned to catch "Football Chitkara" as a
+ * near-copy of "Chitkara Football", which is the right instinct when comparing
+ * two whole names and the wrong one for a search box: a student typing "foot"
+ * has not typed a name yet, and token overlap scores that as zero.
+ *
+ * Tagline, interest, and place are searched as well as the name, because
+ * students look for "photography" or "Patiala" far more often than they recall
+ * what a club actually calls itself.
+ *
+ * It runs in memory because the directory is not paginated: the page already
+ * holds every community the viewer can see, so this returns exactly what SQL
+ * would. That stops being true the moment a limit is applied, and at that point
+ * this belongs in the query, not here.
+ */
+export function filterCommunities(
+  communities: CommunitySummary[],
+  filters: DirectoryFilter,
+): CommunitySummary[] {
+  const scope = filters.scope ?? null
+  const query = filters.query?.trim().toLowerCase() ?? ""
+
+  return communities.filter((community) => {
+    if (scope && community.scope !== scope) return false
+    if (!query) return true
+
+    return [
+      community.name,
+      community.tagline,
+      community.interest.label,
+      community.place?.name ?? "",
+    ].some((field) => field.toLowerCase().includes(query))
+  })
 }
