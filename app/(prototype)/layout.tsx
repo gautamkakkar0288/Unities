@@ -1,11 +1,13 @@
 import { ArrowUpRight, ChevronDown } from "lucide-react"
 import type { Metadata } from "next"
 import Link from "next/link"
+import { notFound } from "next/navigation"
 import type { ReactNode } from "react"
 
 import { Logo } from "@/components/brand/logo"
 import { ThemeToggle } from "@/components/ui/theme-toggle"
 import { PrototypeScreenNav } from "@/features/prototype/components/screen-nav"
+import { prototypeRoutesEnabled } from "@/lib/prototype/access"
 
 /**
  * Prototype shell.
@@ -15,6 +17,10 @@ import { PrototypeScreenNav } from "@/features/prototype/components/screen-nav"
  * a prototype that borrows production chrome is one screenshot away from being
  * mistaken for the product. The banner is permanent and unmissable for the
  * same reason.
+ *
+ * The whole subtree 404s unless prototypeRoutesEnabled(): these screens include
+ * a payment flow for a feature that does not exist, and a student who reaches
+ * it on a production URL has no way to know that.
  */
 export const metadata: Metadata = {
   title: "Prototype",
@@ -26,6 +32,8 @@ export default function PrototypeLayout({
 }: {
   children: ReactNode
 }) {
+  if (!prototypeRoutesEnabled()) notFound()
+
   return (
     <div className="min-h-screen bg-background">
       <a
@@ -40,7 +48,8 @@ export default function PrototypeLayout({
           <span className="font-medium">Prototype</span>
           <span className="hidden sm:inline">
             Every name, number, and post on these screens is fabricated fixture
-            data.
+            data. Nothing here is saved, no registration is real, and the
+            payment screens take no money.
           </span>
           <Link
             href="/home"
