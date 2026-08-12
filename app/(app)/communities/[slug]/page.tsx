@@ -1,5 +1,6 @@
 import { Users } from "lucide-react"
 import type { Metadata } from "next"
+import Link from "next/link"
 import { notFound } from "next/navigation"
 import { cache } from "react"
 
@@ -7,6 +8,7 @@ import { auth } from "@/auth"
 import { VerificationBadge } from "@/components/domain/verification-badge"
 import { Avatar } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
+import { buttonVariants } from "@/components/ui/button"
 import {
   Card,
   CardContent,
@@ -23,10 +25,11 @@ import {
   joinPolicyDescription,
   joinPolicyLabel,
 } from "@/lib/domain/community"
-import { membershipBadgeLabel } from "@/lib/domain/membership"
+import { canModerate, membershipBadgeLabel } from "@/lib/domain/membership"
 import { formatCount } from "@/lib/format"
 import { getCommunityBySlug } from "@/lib/services/communities"
 import { listCommunityLeads } from "@/lib/services/community-members"
+import { cn } from "@/lib/utils"
 
 /**
  * Memoised for the duration of one request, because `generateMetadata` and the
@@ -173,6 +176,31 @@ export default async function CommunityPage({
               <JoinButton community={community} />
             </CardContent>
           </Card>
+
+          {/*
+            Shown to moderators whatever the join policy is. Pending rows
+            outlive a policy change - a community switched from APPROVAL to OPEN
+            still has people waiting, and hiding the queue would leave them
+            waiting permanently.
+          */}
+          {canModerate(community.viewerMembership) && (
+            <Card>
+              <CardHeader>
+                <CardTitle>Moderating</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <Link
+                  href={`/communities/${community.slug}/requests`}
+                  className={cn(
+                    buttonVariants({ variant: "outline" }),
+                    "w-full",
+                  )}
+                >
+                  Join requests
+                </Link>
+              </CardContent>
+            </Card>
+          )}
 
           <Card>
             <CardHeader>
