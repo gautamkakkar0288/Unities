@@ -115,46 +115,68 @@ export function canRequestVerification(kind: CommunityKind): boolean {
 }
 
 /**
+ * Drop a trailing plural `s` so "Trekkers" and "Trekker" collide.
+ *
+ * Words ending in a double s are left alone: "Chess" is not the plural of
+ * "Ches", and mangling it would split a real community from itself.
+ */
+function singularise(word: string): string {
+  return word.length > 3 && word.endsWith("s") && !word.endsWith("ss")
+    ? word.slice(0, -1)
+    : word
+}
+
+/**
  * Words that carry no distinguishing information in a campus community name.
  *
  * "Chitkara" is a stopword here on purpose: inside a university-scoped
  * community, naming the university adds nothing, so "Chitkara Football" and
  * "Football" are the same request.
+ *
+ * The list is written in the form students actually type it and then
+ * singularised to match, because `nameTokens` singularises before filtering.
+ * Comparing raw "lovers" against an already-singularised "lover" silently let
+ * "Chitkara Football Lovers" survive as a distinct name.
  */
-const NOISE_WORDS = new Set([
-  "the",
-  "a",
-  "an",
-  "of",
-  "and",
-  "for",
-  "at",
-  "in",
-  "chitkara",
-  "university",
-  "college",
-  "campus",
-  "official",
-  "club",
-  "society",
-  "cell",
-  "group",
-  "community",
-  "team",
-  "lovers",
-  "fans",
-  "enthusiasts",
-  "squad",
-  "crew",
-])
+const NOISE_WORDS = new Set(
+  [
+    "the",
+    "a",
+    "an",
+    "of",
+    "and",
+    "for",
+    "at",
+    "in",
+    "chitkara",
+    "university",
+    "college",
+    "campus",
+    "official",
+    "club",
+    "clubs",
+    "society",
+    "cell",
+    "group",
+    "groups",
+    "community",
+    "team",
+    "teams",
+    "lovers",
+    "fans",
+    "enthusiasts",
+    "squad",
+    "crew",
+  ].map(singularise),
+)
 
 /**
  * Reduce a community name to the words that actually identify it.
  *
- * Lowercased, punctuation stripped, noise words removed, and a trailing plural
- * `s` dropped so "Trekkers" and "Trekker" collide. Deliberately crude: this is
- * a duplicate *warning*, and a false positive costs a student one glance while
- * a false negative costs the platform a permanently split community.
+ * Lowercased, punctuation stripped, singularised, then noise words removed.
+ * Deliberately crude: this is a duplicate *warning*, and a false positive costs
+ * a student one glance while a false negative costs the platform a permanently
+ * split community.
  */
 export function nameTokens(name: string): string[] {
   return name
@@ -162,7 +184,7 @@ export function nameTokens(name: string): string[] {
     .replace(/[^a-z0-9\s]/g, " ")
     .split(/\s+/)
     .filter(Boolean)
-    .map((word) => (word.length > 3 && word.endsWith("s") ? word.slice(0, -1) : word))
+    .map(singularise)
     .filter((word) => !NOISE_WORDS.has(word))
 }
 

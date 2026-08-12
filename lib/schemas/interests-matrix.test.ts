@@ -41,8 +41,14 @@ describe("how many interests are enough", () => {
     const repeated = { interestIds: ["coding", "coding", "coding"] }
     expect(setInterestsSchema.safeParse(repeated).success).toBe(false)
 
+    // Four entries, two distinct. Raw length would pass this; the rule must not.
+    const padded = { interestIds: ["coding", "coding", "coding", "music"] }
+    expect(setInterestsSchema.safeParse(padded).success).toBe(false)
+
+    // Four entries, three distinct. A repeat is careless, not disqualifying:
+    // the student has genuinely chosen enough, so let them through.
     const mixed = { interestIds: ["coding", "coding", "music", "travel"] }
-    expect(setInterestsSchema.safeParse(mixed).success).toBe(false)
+    expect(setInterestsSchema.safeParse(mixed).success).toBe(true)
 
     const distinct = { interestIds: ["coding", "music", "travel"] }
     expect(setInterestsSchema.safeParse(distinct).success).toBe(true)
