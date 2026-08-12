@@ -1,6 +1,7 @@
 import {
   Bell,
   CalendarClock,
+  Handshake,
   MessageCircle,
   ShieldAlert,
   UserPlus,
@@ -25,8 +26,14 @@ import { cn } from "@/lib/utils"
 
 export const metadata = { title: "Notifications" }
 
+/**
+ * Typed as a total Record on purpose: adding a notification kind should break
+ * the build here rather than render a blank square in production. ACTIVITY was
+ * added with D31 and this map is how we found out.
+ */
 const kindIcon: Record<NotificationKind, LucideIcon> = {
   EVENT_REMINDER: CalendarClock,
+  ACTIVITY: Handshake,
   COMMUNITY_POST: Bell,
   MENTION: MessageCircle,
   MEMBERSHIP: UserPlus,

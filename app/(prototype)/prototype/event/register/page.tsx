@@ -40,7 +40,12 @@ function Outcome({
   icon: ReactNode
   title: string
   children: ReactNode
-  actions: ReactNode
+  /**
+   * Optional: on this comparison screen the actions are shared across all
+   * three cards and live in one row underneath. An always-rendered slot would
+   * leave an empty flex row and uneven card heights.
+   */
+  actions?: ReactNode
 }) {
   return (
     <Card
@@ -76,7 +81,9 @@ function Outcome({
         <div className="flex flex-col gap-2 text-body-sm text-muted-foreground">
           {children}
         </div>
-        <div className="mt-auto flex flex-col gap-2">{actions}</div>
+        {actions ? (
+          <div className="mt-auto flex flex-col gap-2">{actions}</div>
+        ) : null}
       </CardContent>
     </Card>
   )

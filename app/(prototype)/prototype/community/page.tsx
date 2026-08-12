@@ -16,6 +16,7 @@ import { EventCard } from "@/features/events/components/event-card"
 import { PostCard } from "@/features/posts/components/post-card"
 import { ScreenHeader } from "@/features/prototype/components/screen-header"
 import { roleBadgeVariant, roleLabels } from "@/lib/auth/roles"
+import { communityScopeLabel } from "@/lib/domain/community"
 import { describeMembershipAction } from "@/lib/domain/membership"
 import {
   communityPosts,
@@ -60,10 +61,10 @@ export default function PrototypeCommunityPage() {
             <div className="flex flex-wrap items-center gap-2">
               <Badge variant="outline">{community.interest.label}</Badge>
               <VerificationBadge state={community.verification} />
+              {/* Scope is who can see and join, and it is the one fact a student
+                  needs before reading anything else on the page. */}
               <Badge variant="neutral">
-                {community.visibility === "UNIVERSITY"
-                  ? "Chitkara only"
-                  : "Public"}
+                {communityScopeLabel[community.scope]}
               </Badge>
             </div>
             <h2 className="text-h2">{community.name}</h2>
