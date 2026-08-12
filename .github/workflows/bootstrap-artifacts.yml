@@ -1,0 +1,57 @@
+name: Bootstrap Phase 0 artifacts
+
+# package-lock.json and the Drizzle migration files must be *generated*, not
+# written by hand. A hand-rolled lockfile is a fiction about what npm actually
+# resolves, and a hand-rolled migration is a fiction about what drizzle-kit
+# actually diffs - and the snapshot in drizzle/meta is not something a human
+# can produce correctly at all.
+#
+# So they are generated here, on the branch, by the same toolchain CI uses, and
+# committed back. Once they exist this workflow has done its job and can be
+# deleted; the regular CI job then verifies them with `npm ci` and `db:migrate`.
+
+on:
+  push:
+    branches: [phase-0/foundation]
+
+permissions:
+  contents: write
+
+jobs:
+  bootstrap:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      # `npm install` rather than `npm ci`, because the whole point of this run
+      # is that the lockfile does not exist yet. .npmrc supplies the legacy peer
+      # resolution that next-auth's stale peer range requires.
+      - name: Install dependencies and write the lockfile
+        run: npm install
+
+      # generate diffs the schema against the migration folder; it does not
+      # connect to the database. The URL is present only because the config
+      # reads it.
+      - name: Generate Drizzle migrations
+        env:
+          DATABASE_URL: postgres://postgres:postgres@localhost:5432/cirqles
+        run: npm run db:generate
+
+      - name: Commit the generated artifacts
+        run: |
+          if [ -z "$(git status --porcelain package-lock.json drizzle)" ]; then
+            echo "Lockfile and migrations are already committed and current."
+            exit 0
+          fi
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add package-lock.json drizzle
+          git commit -m "chore(phase-0): commit generated lockfile and Drizzle migrations"
+          git push

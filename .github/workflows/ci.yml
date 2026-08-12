@@ -18,6 +18,9 @@ jobs:
     # The database-backed half of the verification matrix needs a real Postgres.
     # Mocks cannot be wrong about transactional count arithmetic or unique
     # constraints, which is precisely what those tests are checking.
+    #
+    # It also starts empty on every run, which is what makes the migrate step
+    # meaningful: clean database -> migrate -> seed -> tests, from nothing.
     services:
       postgres:
         image: postgres:16
@@ -46,7 +49,7 @@ jobs:
       # step-per-command stops at the first failure, which tells you the
       # earliest problem and nothing else; running them all tells you whether
       # you have one bug or ten.
-      - name: Run the Phase 6 verification matrix
+      - name: Run the verification matrix
         id: matrix
         shell: bash
         run: |
@@ -56,7 +59,7 @@ jobs:
           overall=0
 
           {
-            echo "## Phase 6 verification matrix"
+            echo "## Verification matrix"
             echo ""
             echo "Commit \`${GITHUB_SHA::7}\`"
             echo ""
@@ -91,7 +94,11 @@ jobs:
             fi
           }
 
-          run "npm install" npm install
+          # ci, not install: install may resolve a tree the lockfile does not
+          # describe, so a green run would say nothing about what a deployment
+          # installs. ci fails when package.json and the lockfile disagree.
+          run "npm ci" npm ci
+
           run "typecheck" npm run typecheck
           run "lint" npm run lint
 
@@ -100,8 +107,38 @@ jobs:
           run "unit tests (no database)" npm run test
 
           run "build" npm run build
-          run "db:generate" env DATABASE_URL="${TEST_DATABASE_URL}" npm run db:generate
-          run "db:push" env DATABASE_URL="${TEST_DATABASE_URL}" npm run db:push -- --force
+
+          # The committed migrations must already describe the schema, so
+          # generate has to be a no-op. If it writes a file, someone changed a
+          # table without generating the migration for it.
+          run "db:generate (drift check)" env DATABASE_URL="${TEST_DATABASE_URL}" npm run db:generate
+
+          drift="$(git status --porcelain drizzle)"
+          if [ -n "${drift}" ]; then
+            echo "| migrations are current | **FAIL** |" >> report.md
+            {
+              echo ""
+              echo "<details><summary>migrations are current - drift detected</summary>"
+              echo ""
+              echo "\`db:generate\` produced changes, so the schema in \`lib/db/schema\` is ahead of the committed migrations in \`drizzle/\`. Run \`npm run db:generate\` locally and commit the result."
+              echo ""
+              echo '```'
+              printf '%s\n' "${drift}"
+              echo '```'
+              echo ""
+              echo "</details>"
+            } >> detail.md
+            overall=1
+          else
+            echo "| migrations are current | pass |" >> report.md
+          fi
+
+          # migrate, not push. push diffs the live database against the schema
+          # file and mutates it in place: it can arrive at a state no migration
+          # could produce, and leaves nothing to roll back. Against an empty
+          # service container this proves the chain a deployment actually runs.
+          run "db:migrate (clean database)" env DATABASE_URL="${TEST_DATABASE_URL}" npm run db:migrate
+
           run "db:seed" env DATABASE_URL="${TEST_DATABASE_URL}" npm run db:seed
           run "verification matrix (with database)" env DATABASE_URL="${TEST_DATABASE_URL}" npm run test
 
@@ -109,23 +146,19 @@ jobs:
 
           {
             echo ""
-            echo "### Migration drizzle-kit generated"
+            echo "### Committed migrations"
             echo ""
           } >> report.md
 
           if ls drizzle/*.sql >/dev/null 2>&1; then
             {
-              echo '```sql'
-              head -n 300 drizzle/*.sql
               echo '```'
-              echo ""
-              echo "Left uncommitted by the generate step:"
-              echo '```'
-              git status --porcelain drizzle
+              ls -1 drizzle/*.sql
               echo '```'
             } >> report.md
           else
-            echo "_drizzle-kit produced no SQL files._" >> report.md
+            echo "_No migration files are committed._" >> report.md
+            overall=1
           fi
 
           echo "${overall}" > status.txt
