@@ -44,6 +44,34 @@ export const proposeCommunitySchema = z.object({
 
 export type ProposeCommunityInput = z.infer<typeof proposeCommunitySchema>
 
+/**
+ * What the proposal *form* collects, which is deliberately less than what the
+ * service accepts.
+ *
+ * `placeId` is absent because it is derived from the proposer's own campus in
+ * the server action. A browser that can name any place can attach a proposal to
+ * a university the student does not attend, and the reviewer would have no way
+ * of telling. Deriving it means the worst a forged request can do is propose
+ * something to the student's own campus, which is what they were allowed to do
+ * anyway.
+ *
+ * `acknowledgedDuplicates` is absent for a related reason: it is a decision the
+ * student makes *after* seeing the warning, not a field the form ships with its
+ * first submission. It is added by the confirm step, so a client that never
+ * renders the warning can never pre-acknowledge it.
+ *
+ * GLOBAL is not offered. A student choosing "everywhere" is almost always
+ * proposing a campus community and picking the widest-sounding option, and an
+ * over-scoped community is invisible work for a reviewer to undo.
+ */
+export const proposeCommunityFormSchema = proposeCommunitySchema
+  .omit({ placeId: true, scope: true, acknowledgedDuplicates: true })
+  .extend({ scope: z.enum(["UNIVERSITY", "CITY", "INTEREST"]) })
+
+export type ProposeCommunityFormInput = z.infer<
+  typeof proposeCommunityFormSchema
+>
+
 export const suggestInterestSchema = z.object({
   label: z
     .string()

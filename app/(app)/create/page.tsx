@@ -39,10 +39,7 @@ const options: CreateOption[] = [
     description:
       "Start a club, society, or interest group. Students propose a community and it goes to review; verified organisers and staff create one directly.",
     icon: Users,
-    href: null,
-    unavailableLabel: "Phase 1",
-    unavailableReason:
-      "The proposal service and duplicate detection exist and are tested. The screen that calls them is the next thing being built.",
+    href: "/communities/propose",
   },
   {
     title: "Event",
