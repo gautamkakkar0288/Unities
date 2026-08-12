@@ -97,7 +97,15 @@ export default async function CommunitiesPage({
             </Link>
           }
           secondaryAction={
-            <Link href="/create" className={buttonVariants({ variant: "ghost" })}>
+            /*
+              Straight to the form. This pointed at /create until 1.5 built the
+              proposal form: a student who has just been told nothing matches
+              does not need to be shown a chooser first.
+            */
+            <Link
+              href="/communities/propose"
+              className={buttonVariants({ variant: "ghost" })}
+            >
               Propose a community
             </Link>
           }
@@ -133,7 +141,10 @@ export default async function CommunitiesPage({
         <p className="pt-8 text-center text-body-sm text-muted-foreground">
           <Compass className="mr-1 inline size-4 align-text-bottom" aria-hidden="true" />
           Cannot find what you are looking for?{" "}
-          <Link href="/create" className="text-primary underline underline-offset-4">
+          <Link
+            href="/communities/propose"
+            className="text-primary underline underline-offset-4"
+          >
             Propose a community
           </Link>
         </p>

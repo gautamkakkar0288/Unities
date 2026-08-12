@@ -10,8 +10,11 @@ a table rather than a rewrite.
 
 ## Current status
 
-Cirqles is **pre-MVP**. The data layer and domain rules for communities and
-interests are built and tested; almost none of it is connected to a screen yet.
+Cirqles has a **working communities product**. A student can sign up, be sent
+through onboarding, pick interests, browse the directory, open a community, join
+or leave it, ask for a new one, and manage their profile - all of it against
+PostgreSQL, none of it against fixtures. Events, verification, and the social
+layer do not exist yet.
 
 This table is the honest state of the project. A phase is only complete when
 database, service, authorization, UI, validation, error handling, tests, and a
@@ -19,29 +22,38 @@ real end-to-end flow all work.
 
 | Phase                                     | Status      | What actually exists                                                                                       |
 | ----------------------------------------- | ----------- | ---------------------------------------------------------------------------------------------------------- |
-| 0 — Foundation                            | In progress | Stack landed on `main`; create chooser, proxy convention, README, prototype gating done                      |
-| 1 — Onboarding, communities, profile      | Not started | Services and tests exist; the screens that call them do not                                                  |
+| 0 — Foundation                            | Complete    | One branch on `main`, committed migrations, reproducible install, create chooser, proxy convention, README    |
+| 1 — Onboarding, communities, profile      | Complete    | Onboarding, directory, community detail, join/leave, proposals, moderator queue, profile — all on real data   |
 | 2 — University and organiser verification | Not started | Schema has `verification_tokens` and roles; no verification flow                                             |
 | 3 — Events and registration               | Not started | No event schema, service, or route                                                                           |
 | 4 — Engagement (home, posts, reminders)   | Not started | Home renders static placeholder content                                                                      |
 | 5 — Activities, search, moderation        | Not started | Domain types only                                                                                            |
 | 6 — Launch hardening                      | Not started | —                                                                                                            |
 
-What is genuinely working today:
+What is genuinely working today, end to end:
 
 - Sign-up and sign-in with Auth.js credentials, hashed passwords, roles on the session
 - Route protection, plus a server-side session guard in the app shell
-- The design system, the marketing site, and the authenticated shell
-- A tested domain and service layer for interests, communities, memberships, and proposals
+- Onboarding: a new account is redirected into it and cannot skip it
+- The communities directory, with scope filtering and search
+- Community detail pages, including guidelines and who runs the community
+- Joining and leaving, including request-to-join and the last-owner rule
+- Proposing a community, with duplicate detection before submission
+- The moderator queue for approving or declining join requests
+- Profile: display name, interests, and the communities you belong to
 - A seed that populates Chitkara, the Tricity places, 17 interests, and their communities
 - An interactive prototype of all 16 screens, on fixture data, at `/prototype`
 
 What is **not** working, despite appearing to exist:
 
-- Onboarding, the communities directory, community detail, join/leave, and
-  proposals have no UI. The prototype versions are fixtures.
 - Home, Explore, Notifications, Saved, and Search are placeholder screens.
-- Nothing on `/create` can be created yet.
+- `/create` can create a community proposal. Events and Activities are marked
+  unavailable on it, because they are.
+- Nothing verifies that an account belongs to a real Chitkara student yet, and
+  no email is ever sent. That is Phase 2.
+- A submitted community proposal reaches the database and stops there. There is
+  no review screen and no supporter UI, so a proposal cannot yet be approved.
+- Avatars are read, never uploaded; there is no file storage.
 
 ---
 
@@ -55,6 +67,7 @@ What is **not** working, despite appearing to exist:
 | Auth       | Auth.js v5 (next-auth beta) with the Drizzle adapter        |
 | Validation | Zod                                                         |
 | Styling    | Tailwind CSS v4 with design tokens, Base UI primitives      |
+| Forms      | React Hook Form with the Zod resolver                       |
 | Testing    | Vitest, Testing Library, real Postgres for the db suites    |
 | CI         | GitHub Actions — a single verification matrix per pull request |
 
@@ -93,10 +106,17 @@ The boundaries that matter:
 - **Business rules live in `lib/domain`**, never in a component. A rule in a
   React component is a rule the server does not enforce.
 - **Authorization lives inside services**, not in the caller. A service is
-  responsible for refusing.
+  responsible for refusing. The moderator queue is the clearest example: the
+  page asks for the list and renders the refusal, it does not decide who may
+  look.
 - **Services return `ServiceResult`** rather than throwing; the UI renders the
-  failure instead of showing a blank page.
+  failure instead of showing a blank page. Server actions used by client
+  components return `ServiceFailure | void`, because a server-rendered screen
+  shows success by re-rendering.
 - **Components never query the database directly.**
+- **Services project, they do not return rows.** A server component serialises
+  whatever it is handed, so `select *` on `users` is how a password hash ends up
+  in a page payload.
 
 ---
 
@@ -213,7 +233,14 @@ TEST_DATABASE_URL=postgres://... npm run test   # everything, including db suite
 Domain and schema logic is unit tested with no I/O. Service behaviour that
 depends on transactions, unique constraints, or count arithmetic is tested
 against a real PostgreSQL instance — a mock cannot be wrong about a unique
-constraint, which is precisely the thing worth testing.
+constraint, which is precisely the thing worth testing. The same reasoning
+applies to authorization: `lib/services/pending-requests.db.test.ts` asks the
+real database who moderates, because that answer is the only thing keeping a
+private queue private.
+
+Component tests cover the states a screen can be in - loading, empty, submitted,
+and each way a service can refuse - since a form that cannot show a failure is a
+form that lies.
 
 ---
 
@@ -233,6 +260,12 @@ Every feature, in order:
 
 A feature is not done because a component renders. It is done when a real user
 action reaches the database and comes back.
+
+**Read the file before you write it.** Several components take optional props
+that exist because a caller elsewhere needs them - the interest picker is used by
+both onboarding and the profile, and the community card is used by five
+prototype screens. Replacing one of these with a fresh version compiles locally
+and breaks a screen you never opened.
 
 ## Branches and pull requests
 
