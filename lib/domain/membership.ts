@@ -90,6 +90,26 @@ export function describeMembershipAction(
   }
 }
 
+/**
+ * The word for the viewer's own relationship to a community, as a badge.
+ *
+ * Separate from `describeMembershipAction` because that describes a *control*.
+ * Reusing its labels here would put "Accept invite" on a card that cannot
+ * accept anything, which is a button-shaped promise the card does not keep.
+ *
+ * `NONE` is deliberately null rather than "Not a member": a badge on every
+ * single card carries no information and costs a line of vertical space on the
+ * smallest screen this has to work on.
+ */
+export const membershipBadgeLabel: Record<MembershipState, string | null> = {
+  NONE: null,
+  INVITED: "Invited",
+  PENDING: "Requested",
+  MEMBER: "Joined",
+  MODERATOR: "Moderator",
+  OWNER: "Owner",
+}
+
 /** Whether this membership state may post, comment, or register as a member. */
 export function canParticipate(state: MembershipState): boolean {
   return state === "MEMBER" || state === "MODERATOR" || state === "OWNER"

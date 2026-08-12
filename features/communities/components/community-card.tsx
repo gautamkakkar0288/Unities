@@ -1,100 +1,84 @@
-import { Users } from "lucide-react"
+import { MapPin, Users } from "lucide-react"
 import Link from "next/link"
 
-import { VerificationBadge } from "@/components/domain/verification-badge"
 import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
 import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
+import { communityKindLabel, communityKindTone } from "@/lib/domain/community"
 import {
-  communityKindLabel,
-  communityKindTone,
-  joinPolicyLabel,
-} from "@/lib/domain/community"
-import { describeMembershipAction } from "@/lib/domain/membership"
+  membershipBadgeLabel,
+  verificationLabel,
+  verificationTone,
+} from "@/lib/domain/membership"
 import type { CommunitySummary } from "@/lib/domain/types"
 import { formatCount } from "@/lib/format"
 
 /**
- * A community in a list.
+ * One community in the directory.
  *
- * The whole card is not a single link. A card that is one big anchor cannot
- * also contain a working Join button - nested interactive elements are invalid
- * and keyboard users end up unable to reach the inner control. Instead the
- * title is the link and the card lifts on hover, which gives the same feel with
- * two clean, separately focusable targets.
+ * A server component with no join control. Joining is Phase 1.4, and a button
+ * that opens nothing is worse than no button: the student learns the platform
+ * does not work. The card links to the community instead, which is a promise it
+ * can keep.
  *
- * The kind badge is shown only for official communities. Labelling every
- * student-run community "Student-run" would read as a demotion, while marking
- * the official ones carries the useful information.
+ * The whole card is the target via a stretched link rather than an anchor
+ * wrapped around everything, so screen readers announce the community name as
+ * the link text instead of reading out every badge and count in the card.
  */
-export function CommunityCard({
-  community,
-  href,
-}: {
-  community: CommunitySummary
-  href: string
-}) {
-  const action = describeMembershipAction(community)
+export function CommunityCard({ community }: { community: CommunitySummary }) {
+  const membership = membershipBadgeLabel[community.viewerMembership]
 
   return (
-    <Card interactive className="h-full gap-4">
-      <CardHeader className="gap-2">
-        <div className="flex flex-wrap items-center gap-2">
-          {community.kind === "OFFICIAL" && (
-            <Badge variant={communityKindTone.OFFICIAL}>
-              {communityKindLabel.OFFICIAL}
-            </Badge>
-          )}
-          <Badge variant="outline">{community.interest.label}</Badge>
-          <VerificationBadge state={community.verification} />
-          {community.joinPolicy !== "OPEN" && (
-            <Badge variant="neutral">
-              {joinPolicyLabel[community.joinPolicy]}
-            </Badge>
-          )}
+    <Card interactive className="relative gap-4">
+      <CardHeader>
+        <div className="flex items-start justify-between gap-3">
+          <CardTitle>
+            <Link
+              href={`/communities/${community.slug}`}
+              className="rounded-sm after:absolute after:inset-0 focus-visible:outline-none"
+            >
+              {community.name}
+            </Link>
+          </CardTitle>
+          {membership && <Badge variant="brand">{membership}</Badge>}
         </div>
-        <CardTitle>
-          <Link
-            href={href}
-            className="rounded-sm hover:text-primary focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none"
-          >
-            {community.name}
-          </Link>
-        </CardTitle>
         <CardDescription>{community.tagline}</CardDescription>
       </CardHeader>
 
-      <CardContent className="mt-auto flex flex-col gap-1">
-        <p className="flex items-center gap-1.5 text-caption text-muted-foreground">
-          <Users aria-hidden="true" className="size-3.5" />
-          <span data-numeric>{formatCount(community.memberCount)}</span>
-          members
-        </p>
+      <CardContent className="flex flex-wrap items-center gap-x-3 gap-y-2">
+        <Badge variant={communityKindTone[community.kind]}>
+          {communityKindLabel[community.kind]}
+        </Badge>
+
+        {/*
+          Only a claim worth making gets a badge. Labelling every unverified
+          community "Unverified" reads as a warning about communities that have
+          simply never applied, most of which are perfectly real.
+        */}
+        {community.verification !== "UNVERIFIED" && (
+          <Badge variant={verificationTone[community.verification]}>
+            {verificationLabel[community.verification]}
+          </Badge>
+        )}
+
+        <span className="inline-flex items-center gap-1 text-caption text-muted-foreground">
+          <Users className="size-3.5 shrink-0" aria-hidden="true" />
+          {formatCount(community.memberCount)}
+          {community.memberCount === 1 ? " member" : " members"}
+        </span>
+
         {community.place && (
-          <p className="text-caption text-muted-foreground">
+          <span className="inline-flex items-center gap-1 text-caption text-muted-foreground">
+            <MapPin className="size-3.5 shrink-0" aria-hidden="true" />
             {community.place.name}
-          </p>
+          </span>
         )}
       </CardContent>
-
-      <CardFooter>
-        <Button
-          type="button"
-          variant={action.variant}
-          size="lg"
-          disabled={action.disabled}
-          aria-label={action.accessibleLabel}
-        >
-          {action.label}
-        </Button>
-      </CardFooter>
     </Card>
   )
 }
