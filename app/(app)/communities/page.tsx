@@ -114,7 +114,15 @@ export default async function CommunitiesPage({
               <ul className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
                 {group.communities.map((community) => (
                   <li key={community.id}>
-                    <CommunityCard community={community} />
+                    {/*
+                      No join control until joining works. The card links to the
+                      community, which is a promise this page can keep.
+                    */}
+                    <CommunityCard
+                      community={community}
+                      href={`/communities/${community.slug}`}
+                      joinAction={false}
+                    />
                   </li>
                 ))}
               </ul>
