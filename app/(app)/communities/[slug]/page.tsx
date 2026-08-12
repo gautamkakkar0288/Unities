@@ -13,6 +13,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
+import { JoinButton } from "@/features/communities/components/join-button"
 import { PageHeader } from "@/features/shell/components/page-header"
 import { roleBadgeVariant, roleLabels } from "@/lib/auth/roles"
 import {
@@ -61,9 +62,6 @@ export async function generateMetadata({
  * this screen shows posts, an upcoming-event count, and a founding date, all
  * from fixtures - posts and events have no tables yet, so putting them on a
  * real page would mean inventing them.
- *
- * There is still no join control. Joining is 1.4, and the page says what the
- * policy is instead of offering a button that cannot honour it.
  */
 export default async function CommunityPage({
   params,
@@ -163,21 +161,16 @@ export default async function CommunityPage({
             <CardHeader>
               <CardTitle>Joining</CardTitle>
             </CardHeader>
-            <CardContent className="flex flex-col gap-2">
-              <p className="text-body-sm">
-                {joinPolicyLabel[community.joinPolicy]}
-              </p>
+            <CardContent className="flex flex-col gap-3">
+              {/*
+                The policy is stated above the control rather than left for the
+                student to infer from its wording: "Request to join" does not by
+                itself explain that a moderator has to approve it.
+              */}
               <p className="text-body-sm text-muted-foreground">
                 {joinPolicyDescription[community.joinPolicy]}
               </p>
-              {/*
-                Said plainly rather than shown as a dead button. A student who
-                reads this knows where they stand; a disabled control would just
-                look broken.
-              */}
-              <p className="text-caption text-muted-foreground">
-                Joining from Cirqles is not switched on yet.
-              </p>
+              <JoinButton community={community} />
             </CardContent>
           </Card>
 

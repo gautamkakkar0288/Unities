@@ -1,5 +1,6 @@
 import { Users } from "lucide-react"
 import Link from "next/link"
+import type { ReactNode } from "react"
 
 import { VerificationBadge } from "@/components/domain/verification-badge"
 import { Badge } from "@/components/ui/badge"
@@ -41,26 +42,34 @@ export function CommunityCard({
   community,
   href,
   joinAction = true,
+  action,
 }: {
   community: CommunitySummary
   href: string
   /**
-   * Whether to render the join control.
+   * Whether to render the card's own static join control.
    *
    * Defaults to true so the prototype screens this card was built for are
-   * untouched. The real directory passes false: the button below has no
-   * handler, and a control that looks actionable and silently does nothing is
-   * worse on a live screen than no control at all. When joining actually works
-   * (Phase 1.4) this becomes a real client control and the flag goes away.
+   * untouched. That button has no handler - it is prototype furniture - so real
+   * screens pass false and supply `action` instead.
    */
   joinAction?: boolean
+  /**
+   * A working control, supplied by the caller.
+   *
+   * The card stays a server component this way. The real join control needs
+   * state and an event handler, and hoisting it in as a prop keeps the browser
+   * bundle to the button rather than every card in the directory.
+   */
+  action?: ReactNode
 }) {
-  const action = describeMembershipAction(community)
+  const staticAction = describeMembershipAction(community)
 
   /**
-   * Without the button, nothing else on the card would tell a student they are
-   * already a member - the button was carrying that. The badge says the same
-   * thing without pretending to be actionable.
+   * Without the static button, nothing else on the card would tell a student
+   * they are already a member - the button was carrying that. The badge says the
+   * same thing without pretending to be actionable, and it still earns its place
+   * next to a real control, which says "Leave" rather than naming the state.
    */
   const membership = membershipBadgeLabel[community.viewerMembership]
 
@@ -108,18 +117,22 @@ export function CommunityCard({
         )}
       </CardContent>
 
-      {joinAction && (
-        <CardFooter>
-          <Button
-            type="button"
-            variant={action.variant}
-            size="lg"
-            disabled={action.disabled}
-            aria-label={action.accessibleLabel}
-          >
-            {action.label}
-          </Button>
-        </CardFooter>
+      {action ? (
+        <CardFooter>{action}</CardFooter>
+      ) : (
+        joinAction && (
+          <CardFooter>
+            <Button
+              type="button"
+              variant={staticAction.variant}
+              size="lg"
+              disabled={staticAction.disabled}
+              aria-label={staticAction.accessibleLabel}
+            >
+              {staticAction.label}
+            </Button>
+          </CardFooter>
+        )
       )}
     </Card>
   )
