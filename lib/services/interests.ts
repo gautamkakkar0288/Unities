@@ -1,4 +1,4 @@
-import { asc, eq, sql } from "drizzle-orm"
+import { and, asc, eq, sql } from "drizzle-orm"
 
 import { db } from "@/lib/db"
 import {
@@ -7,7 +7,10 @@ import {
   interests,
   userInterests,
 } from "@/lib/db/schema"
-import { normaliseInterestLabel } from "@/lib/domain/interest"
+import {
+  MINIMUM_INTERESTS,
+  normaliseInterestLabel,
+} from "@/lib/domain/interest"
 import type { Interest } from "@/lib/domain/types"
 import {
   setInterestsSchema,
@@ -31,6 +34,37 @@ export async function getUserInterests(userId: string): Promise<Interest[]> {
     .innerJoin(interests, eq(interests.id, userInterests.interestId))
     .where(eq(userInterests.userId, userId))
     .orderBy(asc(interests.sortOrder))
+}
+
+/**
+ * Whether this student has finished onboarding.
+ *
+ * "Finished" is defined here, in the same file as the write that satisfies it,
+ * so the layout gate and the picker cannot drift apart. It is deliberately not
+ * a boolean column on the user: a flag would have to be kept in step with the
+ * rows by hand, and the first time it drifts a student is either stuck in a
+ * loop or let past with an empty selection.
+ *
+ * Only ACTIVE interests count. A student whose three picks were all later
+ * retired has an empty recommendation feed, which is exactly the state
+ * onboarding exists to prevent - counting the rows alone would call that done.
+ *
+ * A count rather than getUserInterests, because this runs on every render of
+ * every authenticated page and does not need the labels.
+ */
+export async function hasCompletedOnboarding(userId: string): Promise<boolean> {
+  const [row] = await db
+    .select({ count: sql<number>`count(*)::int` })
+    .from(userInterests)
+    .innerJoin(interests, eq(interests.id, userInterests.interestId))
+    .where(
+      and(
+        eq(userInterests.userId, userId),
+        eq(interests.status, "ACTIVE"),
+      ),
+    )
+
+  return (row?.count ?? 0) >= MINIMUM_INTERESTS
 }
 
 /**

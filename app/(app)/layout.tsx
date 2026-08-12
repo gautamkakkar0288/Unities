@@ -5,16 +5,23 @@ import { auth } from "@/auth"
 import { AppSidebar } from "@/features/shell/components/app-sidebar"
 import { AppTopBar } from "@/features/shell/components/app-top-bar"
 import { MobileNav } from "@/features/shell/components/mobile-nav"
+import { hasCompletedOnboarding } from "@/lib/services/interests"
 
 /**
  * Authenticated product shell.
  *
- * The session check duplicates what middleware already enforces, and that is
- * deliberate. Middleware is an optimisation, not a security boundary: it can be
+ * The session check duplicates what the proxy already enforces, and that is
+ * deliberate. The proxy is an optimisation, not a security boundary: it can be
  * bypassed by matcher gaps or misconfiguration, and it does not run for every
  * server-side render path. Authorising again here means the shell can never
  * render without a user, and it is also where we get the user object we need
  * anyway - so the guard costs nothing extra.
+ *
+ * The onboarding gate lives here for the same reason: it covers every page in
+ * the shell at once, so a new student cannot reach one by typing its URL. It
+ * costs one indexed count per render, which is the price of the guarantee that
+ * no authenticated surface ever renders for a student with no interests - every
+ * one of them would be empty.
  */
 export default async function AppLayout({
   children,
@@ -24,6 +31,8 @@ export default async function AppLayout({
   const session = await auth()
 
   if (!session?.user) redirect("/sign-in")
+
+  if (!(await hasCompletedOnboarding(session.user.id))) redirect("/onboarding")
 
   const { name, email, role } = session.user
 
