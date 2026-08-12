@@ -39,7 +39,10 @@ export function SignUpForm() {
         password: values.password,
         redirect: false,
       })
-      router.push("/")
+      // Into the product rather than the marketing page. The shell sends a
+      // student with no interests to onboarding, so this is what makes sign up
+      // land on the first real step instead of the homepage.
+      router.push("/home")
       router.refresh()
     })
   }
