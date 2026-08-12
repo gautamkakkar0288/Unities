@@ -2,6 +2,8 @@ import { and, asc, eq, inArray, sql } from "drizzle-orm"
 
 import { db } from "@/lib/db"
 import { memberships, users, type UserRole } from "@/lib/db/schema"
+import { canModerate } from "@/lib/domain/membership"
+import { fail, ok, type ServiceResult } from "@/lib/services/result"
 
 /**
  * Reads about the people in a community, as opposed to the community itself.
@@ -75,4 +77,81 @@ export async function listCommunityLeads(args: {
     // Narrowed rather than asserted blindly: the query filters to these two.
     state: row.state === "OWNER" ? "OWNER" : "MODERATOR",
   }))
+}
+
+/**
+ * Someone waiting for a decision on an approval community.
+ *
+ * Same projection discipline as `CommunityLead`, and for a stronger reason: a
+ * pending request is private between the applicant and the moderators, so this
+ * shape is never handed to anyone else.
+ */
+export type JoinRequest = {
+  userId: string
+  name: string | null
+  avatarUrl: string | null
+  role: UserRole
+  /** ISO-8601, per the domain's timestamp convention. */
+  requestedAt: string | null
+}
+
+/**
+ * The pending queue for one community.
+ *
+ * The authorization is here rather than in the page, matching
+ * `reviewJoinRequest`: the read and the write that follows it have to agree
+ * about who may act, and the only way to guarantee that is for both to ask the
+ * same layer. A page-level check would also have to be repeated in every future
+ * caller, and the one that forgets is the one that leaks a list of students who
+ * asked to join a selective society.
+ *
+ * Oldest first, because a queue that is not ordered by waiting time is how
+ * someone waits a month.
+ */
+export async function listPendingRequests(args: {
+  moderatorId: string
+  communityId: string
+}): Promise<ServiceResult<JoinRequest[]>> {
+  const [viewer] = await db
+    .select({ state: memberships.state })
+    .from(memberships)
+    .where(
+      and(
+        eq(memberships.communityId, args.communityId),
+        eq(memberships.userId, args.moderatorId),
+      ),
+    )
+    .limit(1)
+
+  if (!viewer || !canModerate(viewer.state)) {
+    return fail("FORBIDDEN", "You do not moderate this community.")
+  }
+
+  const rows = await db
+    .select({
+      userId: users.id,
+      name: users.name,
+      avatarUrl: users.image,
+      role: users.role,
+      requestedAt: memberships.requestedAt,
+    })
+    .from(memberships)
+    .innerJoin(users, eq(users.id, memberships.userId))
+    .where(
+      and(
+        eq(memberships.communityId, args.communityId),
+        eq(memberships.state, "PENDING"),
+      ),
+    )
+    .orderBy(asc(memberships.requestedAt))
+
+  return ok(
+    rows.map((row) => ({
+      userId: row.userId,
+      name: row.name,
+      avatarUrl: row.avatarUrl,
+      role: row.role,
+      requestedAt: row.requestedAt ? row.requestedAt.toISOString() : null,
+    })),
+  )
 }
