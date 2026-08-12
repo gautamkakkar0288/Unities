@@ -9,16 +9,33 @@ import { Spinner } from "@/components/ui/spinner"
 import { saveOnboardingInterests } from "@/features/onboarding/actions"
 import { MINIMUM_INTERESTS } from "@/lib/domain/interest"
 import type { Interest } from "@/lib/domain/types"
+import type { ServiceFailure } from "@/lib/services/result"
 import { cn } from "@/lib/utils"
 
 type InterestPickerProps = {
   interests: Interest[]
   /** Interests already stored, so a returning student sees their picks. */
   initialSelectedIds: string[]
+  /**
+   * Where the selection is sent. Defaults to onboarding, which redirects on
+   * success and therefore never resolves.
+   *
+   * This exists so the profile can edit interests with the same picker instead
+   * of a second copy of it. A forked picker would be a second place the
+   * minimum, the toggle behaviour, and the accessible pressed state have to be
+   * kept right, and the copy is always the one that rots.
+   */
+  save?: (input: { interestIds: string[] }) => Promise<ServiceFailure | void>
+  submitLabel?: string
+  /**
+   * Shown when `save` resolves without a failure. Onboarding leaves this unset
+   * because it navigates away; an editor stays put and needs to say so.
+   */
+  savedMessage?: string
 }
 
 /**
- * The onboarding interest picker.
+ * The interest picker, used by onboarding and by profile editing.
  *
  * MINIMUM_INTERESTS is imported rather than written as a number, and the
  * disabled Continue button is a courtesy rather than the rule - the same
@@ -32,15 +49,21 @@ type InterestPickerProps = {
 export function InterestPicker({
   interests,
   initialSelectedIds,
+  save = saveOnboardingInterests,
+  submitLabel = "Continue",
+  savedMessage,
 }: InterestPickerProps) {
   const [selectedIds, setSelectedIds] = useState<string[]>(initialSelectedIds)
   const [error, setError] = useState<string | null>(null)
+  const [saved, setSaved] = useState(false)
   const [isPending, startTransition] = useTransition()
 
   const remaining = MINIMUM_INTERESTS - selectedIds.length
 
   function toggle(id: string) {
     setError(null)
+    // A stale "Saved" above a changed selection is a lie about the database.
+    setSaved(false)
     setSelectedIds((current) =>
       current.includes(id)
         ? current.filter((selected) => selected !== id)
@@ -50,12 +73,18 @@ export function InterestPicker({
 
   function submit() {
     setError(null)
+    setSaved(false)
     startTransition(async () => {
-      const failure = await saveOnboardingInterests({ interestIds: selectedIds })
+      const failure = await save({ interestIds: selectedIds })
 
-      // Success redirects and never resolves here, so anything returned is a
+      // Onboarding redirects and never resolves here, so anything returned is a
       // failure the student needs to read.
-      if (failure) setError(failure.message)
+      if (failure) {
+        setError(failure.message)
+        return
+      }
+
+      if (savedMessage) setSaved(true)
     })
   }
 
@@ -91,6 +120,7 @@ export function InterestPicker({
       </div>
 
       {error && <Alert variant="error">{error}</Alert>}
+      {saved && savedMessage && <Alert variant="success">{savedMessage}</Alert>}
 
       <div className="flex flex-col gap-3 border-t border-border pt-4 sm:flex-row sm:items-center sm:justify-between">
         <p aria-live="polite" className="text-body-sm text-muted-foreground">
@@ -106,7 +136,7 @@ export function InterestPicker({
           className="w-full sm:w-auto"
         >
           {isPending && <Spinner size="sm" label={null} />}
-          {isPending ? "Saving…" : "Continue"}
+          {isPending ? "Saving…" : submitLabel}
         </Button>
       </div>
     </div>
