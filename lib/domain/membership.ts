@@ -91,6 +91,64 @@ export function describeMembershipAction(
 }
 
 /**
+ * Which write, if any, the control should perform.
+ *
+ * Kept here beside `describeMembershipAction` rather than decided inside the
+ * button, for the same reason that function exists: the label and the write
+ * have to be read from one place or they eventually disagree, and the way that
+ * failure shows up is a student clicking "Join" and being removed from
+ * something.
+ *
+ * `PENDING` is `LEAVE` because withdrawing a request is what `leaveCommunity`
+ * does with a pending row - it deletes it and, correctly, does not touch the
+ * member count, since a request was never a member.
+ *
+ * Owners and moderators get `LEAVE` too. The service refuses a sole owner with
+ * an explanation, and that refusal is worth showing; silently hiding the exit
+ * would leave someone who has genuinely handed over the community unable to
+ * step away.
+ */
+export type MembershipIntent = "JOIN" | "LEAVE" | "NONE"
+
+export function membershipIntent(
+  community: Pick<CommunitySummary, "joinPolicy" | "viewerMembership">,
+): MembershipIntent {
+  switch (community.viewerMembership) {
+    case "NONE":
+      // An invite-only community has nothing for a non-member to press.
+      return community.joinPolicy === "INVITE" ? "NONE" : "JOIN"
+    case "INVITED":
+      return "JOIN"
+    case "PENDING":
+    case "MEMBER":
+    case "MODERATOR":
+    case "OWNER":
+      return "LEAVE"
+  }
+}
+
+/**
+ * The word on the control when the intent is to leave.
+ *
+ * Separate from `describeMembershipAction`, whose labels for these states are
+ * statuses - "Joined", "Owner" - because a button has to say what pressing it
+ * does. "Withdraw request" rather than "Leave" for a pending row, since there
+ * is nothing yet to leave.
+ */
+export function describeLeaveAction(
+  community: Pick<CommunitySummary, "name" | "viewerMembership">,
+): Pick<MembershipAction, "label" | "accessibleLabel"> {
+  if (community.viewerMembership === "PENDING") {
+    return {
+      label: "Withdraw request",
+      accessibleLabel: `Withdraw your request to join ${community.name}`,
+    }
+  }
+
+  return { label: "Leave", accessibleLabel: `Leave ${community.name}` }
+}
+
+/**
  * The word for the viewer's own relationship to a community, as a badge.
  *
  * Separate from `describeMembershipAction` because that describes a *control*.

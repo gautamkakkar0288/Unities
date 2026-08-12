@@ -8,6 +8,7 @@ import { buttonVariants } from "@/components/ui/button"
 import { EmptyState } from "@/components/ui/empty-state"
 import { CommunityCard } from "@/features/communities/components/community-card"
 import { DirectoryFilters } from "@/features/communities/components/directory-filters"
+import { JoinButton } from "@/features/communities/components/join-button"
 import { PageHeader } from "@/features/shell/components/page-header"
 import {
   communityScopeLabel,
@@ -114,14 +115,11 @@ export default async function CommunitiesPage({
               <ul className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
                 {group.communities.map((community) => (
                   <li key={community.id}>
-                    {/*
-                      No join control until joining works. The card links to the
-                      community, which is a promise this page can keep.
-                    */}
                     <CommunityCard
                       community={community}
                       href={`/communities/${community.slug}`}
                       joinAction={false}
+                      action={<JoinButton community={community} size="sm" />}
                     />
                   </li>
                 ))}
