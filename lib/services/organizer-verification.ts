@@ -33,8 +33,8 @@ import { fail, ok, type ServiceResult } from "@/lib/services/result"
  * once per caller forever, and the caller that forgets is the one that ships.
  *
  * The verified state itself is written to `communities.verification`, the column
- * the whole UI already reads. This module owns the transition; nothing else may
- * write that column.
+ * the whole UI already reads. This module owns that transition; nothing else
+ * may write it.
  */
 
 /**
@@ -60,7 +60,7 @@ export type OrganizerVerificationRequest = {
     verification: VerificationState
   }
   /** Null when the requester has since deleted their account. */
-  requestedBy: { id: string; name: string | null } | null
+  requestedBy: { id: string; name: string | null; role: UserRole } | null
 }
 
 /**
@@ -229,6 +229,7 @@ export async function listVerificationRequests(args: {
       communityVerification: communities.verification,
       requestedById: users.id,
       requestedByName: users.name,
+      requestedByRole: users.role,
     })
     .from(verificationRequests)
     .innerJoin(
@@ -255,9 +256,14 @@ export async function listVerificationRequests(args: {
         name: row.communityName,
         verification: row.communityVerification,
       },
-      requestedBy: row.requestedById
-        ? { id: row.requestedById, name: row.requestedByName }
-        : null,
+      requestedBy:
+        row.requestedById && row.requestedByRole
+          ? {
+              id: row.requestedById,
+              name: row.requestedByName,
+              role: row.requestedByRole,
+            }
+          : null,
     })),
   )
 }
@@ -313,7 +319,7 @@ export async function reviewVerificationRequest(args: {
 
   /**
    * An admin may not verify their own club.
- *
+   *
    * This is the whole point of having a review step. Without it, the one person
    * who both wants recognition and can grant it is the one person who needs no
    * approval at all - and being an admin is not evidence that a club is real.
