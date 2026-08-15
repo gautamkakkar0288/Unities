@@ -1,4 +1,4 @@
-import type { EventKind, EventMode, Timestamp } from "@/lib/domain/types"
+import type { EventKind, Timestamp } from "@/lib/domain/types"
 
 /**
  * Event vocabulary, slugs, and the timing rules.
@@ -9,6 +9,10 @@ import type { EventKind, EventMode, Timestamp } from "@/lib/domain/types"
  * projection uses it to decide whether a viewer sees `CLOSED`. A student who is
  * shown an open button and then told registration closed is the exact failure
  * this arrangement prevents.
+ *
+ * Mode labels are deliberately not here. `lib/domain/registration.ts` exports
+ * `eventModeLabel`, every card already uses it, and a second map of the same
+ * strings is one that eventually disagrees with the first.
  */
 
 export const eventKindLabel: Record<EventKind, string> = {
@@ -40,12 +44,6 @@ export const creatableEventKinds: EventKind[] = [
 
 export function isCreatableKind(kind: EventKind): boolean {
   return creatableEventKinds.includes(kind)
-}
-
-export const eventModeLabels: Record<EventMode, string> = {
-  IN_PERSON: "In person",
-  ONLINE: "Online",
-  HYBRID: "Hybrid",
 }
 
 /**
