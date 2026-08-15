@@ -62,20 +62,7 @@ export default async function EventPage({ params }: { params: Params }) {
 
   return (
     <>
-      <PageHeader
-        title={event.title}
-        description={
-          <>
-            Hosted by{" "}
-            <Link
-              href={`/communities/${event.community.slug}`}
-              className="text-primary underline underline-offset-4"
-            >
-              {event.community.name}
-            </Link>
-          </>
-        }
-      />
+      <PageHeader title={event.title} />
 
       {isCancelled && (
         <Alert variant="error">
@@ -86,6 +73,16 @@ export default async function EventPage({ params }: { params: Params }) {
 
       <div className="flex flex-col gap-6 lg:flex-row lg:items-start">
         <div className="flex min-w-0 flex-1 flex-col gap-6">
+          <p className="text-body text-muted-foreground">
+            Hosted by{" "}
+            <Link
+              href={`/communities/${event.community.slug}`}
+              className="text-primary underline underline-offset-4"
+            >
+              {event.community.name}
+            </Link>
+          </p>
+
           <div className="flex flex-wrap items-center gap-2">
             <Badge variant="outline">{eventKindLabel[event.kind]}</Badge>
             <Badge variant="outline">{eventModeLabel[event.mode]}</Badge>
@@ -179,8 +176,7 @@ export default async function EventPage({ params }: { params: Params }) {
                     <span className="sr-only">Registration closes</span>
                   </dt>
                   <dd>
-                    Registration closes{" "}
-                    {formatDay(event.registrationClosesAt)},{" "}
+                    Registration closes {formatDay(event.registrationClosesAt)},{" "}
                     {formatTime(event.registrationClosesAt)}
                   </dd>
                 </div>
