@@ -3,15 +3,20 @@ import { describe, expect, it } from "vitest"
 import type {
   CommunityKind,
   CommunityScope,
+  EventKind,
+  EventMode,
   JoinPolicy,
   MembershipState,
   PlaceKind,
   ProposalStatus,
+  RegistrationState,
   VerificationState,
 } from "@/lib/domain/types"
 
 import { communityKinds, communityScopes, joinPolicies } from "./communities"
 import { reviewStatuses, verificationStates } from "./enums"
+import { registrationStates } from "./event-registrations"
+import { eventKinds, eventModes } from "./events"
 import { membershipStates } from "./memberships"
 import { placeKinds } from "./places"
 
@@ -104,5 +109,46 @@ describe("schema and domain vocabulary agree", () => {
       OWNER: true,
     }
     sameMembers(membershipStates, Object.keys(domain))
+  })
+
+  it("event kinds", () => {
+    const domain: Record<EventKind, true> = {
+      WORKSHOP: true,
+      TALK: true,
+      TOURNAMENT: true,
+      PERFORMANCE: true,
+      TRIP: true,
+      MEETUP: true,
+      DRIVE: true,
+    }
+    sameMembers(eventKinds, Object.keys(domain))
+  })
+
+  it("event modes", () => {
+    const domain: Record<EventMode, true> = {
+      IN_PERSON: true,
+      ONLINE: true,
+      HYBRID: true,
+    }
+    sameMembers(eventModes, Object.keys(domain))
+  })
+
+  it("registration states, excluding the two the viewer computes", () => {
+    /**
+     * This one does not line up one-to-one, and the mismatch is the point.
+     *
+     * `NONE` is the absence of a row. `CLOSED` is a fact about the clock that
+     * `describeRegistration` derives at read time - stored, it would be wrong
+     * the moment the event started. `CANCELLED` runs the other way: the
+     * database needs it so a student can drop out and sign up again without
+     * colliding with the unique constraint, but no viewer is ever in it, so
+     * the domain union has no reason to carry it.
+     */
+    const domain: Record<Exclude<RegistrationState, "NONE" | "CLOSED">, true> =
+      {
+        REGISTERED: true,
+        WAITLISTED: true,
+      }
+    sameMembers(registrationStates, [...Object.keys(domain), "CANCELLED"])
   })
 })
