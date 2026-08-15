@@ -10,9 +10,9 @@ import {
   isVerificationTokenExpired,
   verificationExpiresAt,
 } from "@/lib/domain/university"
+import type { PlaceRef } from "@/lib/domain/types"
 import { sendEmail } from "@/lib/email"
 import { verificationEmail } from "@/lib/email/templates"
-import type { PlaceRef } from "@/lib/domain/types"
 import { verifyEmailSchema } from "@/lib/schemas/verification"
 import { fail, ok, type ServiceResult } from "@/lib/services/result"
 
@@ -55,7 +55,7 @@ export function hashVerificationToken(token: string): string {
  * Which campus, if any, claims this address.
  *
  * `null` means "no active university has registered this domain", which is the
- * answer for a gmail address and for a real campus nobody has added yet. The
+ * answer for a personal address and for a real campus nobody has added yet. The
  * caller decides what to tell the student; this only reports the fact.
  *
  * Only ACTIVE places count. A SUSPENDED campus should stop admitting new
@@ -165,9 +165,10 @@ export async function requestEmailVerification(args: {
 /**
  * Redeem a link.
  *
- * Verifying also links the account to its campus. Doing it here rather than at
- * registration means the university on a profile is one a student proved they
- * can receive mail at, which is the only reason to trust it at all.
+ * Verifying also confirms the account's campus. The domain was already checked
+ * at registration, so this is not new information - but it is now information
+ * somebody proved they can receive mail for, which is the only reason to trust
+ * it at all.
  *
  * The token row is deleted on success, so a link works exactly once. Re-clicking
  * an already-used link on an already-verified account reports success rather
@@ -202,27 +203,17 @@ export async function verifyEmailToken(args: {
     .limit(1)
 
   if (!row) {
-    // Covers a forged token, a used one, and a superseded one. They are all the
-    // same thing to the student: ask for a new link.
-    const [alreadyVerified] = await db
-      .select({ email: users.email, universityId: users.universityId })
+    // Covers a forged token, a used one, and a superseded one. Only one of
+    // those deserves a different answer: the student who clicked their own
+    // link twice should not be told something went wrong.
+    const [account] = await db
+      .select({ emailVerified: users.emailVerified })
       .from(users)
       .where(eq(users.email, email))
       .limit(1)
 
-    if (alreadyVerified) {
-      const [verified] = await db
-        .select({ emailVerified: users.emailVerified })
-        .from(users)
-        .where(eq(users.email, email))
-        .limit(1)
-
-      if (verified?.emailVerified) {
-        return ok({
-          email,
-          university: await findUniversityForEmail(email),
-        })
-      }
+    if (account?.emailVerified) {
+      return ok({ email, university: await findUniversityForEmail(email) })
     }
 
     return fail(
@@ -255,7 +246,7 @@ export async function verifyEmailToken(args: {
     .update(users)
     .set({
       emailVerified: now,
-      // Only ever set, never cleared: if the domain has since been retired from
+      // Only ever set, never cleared: if the domain is later retired from
       // places, an already-linked account keeps the campus it proved.
       ...(university ? { universityId: university.id } : {}),
     })

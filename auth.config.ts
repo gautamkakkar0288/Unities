@@ -6,7 +6,17 @@ import { prototypeRoutesEnabled } from "@/lib/prototype/access"
  * Edge-safe auth config. Intentionally imports no database or bcrypt code so
  * the proxy can run on the edge runtime. The full config lives in `auth.ts`.
  */
-const publicRoutes = new Set(["/", "/sign-in", "/sign-up"])
+
+/**
+ * `/verify-email` is public for the same reason `/sign-in` is: the student
+ * arriving on it is holding a link from their inbox and has no session yet.
+ * Requiring one would make the link only work in the browser that registered,
+ * which is exactly the case email verification exists to handle - a student who
+ * signed up on a laptop and reads mail on their phone.
+ *
+ * The token is the credential. The page grants nothing without one.
+ */
+const publicRoutes = new Set(["/", "/sign-in", "/sign-up", "/verify-email"])
 
 /**
  * Development-only route subtrees: the interactive prototype and the design
