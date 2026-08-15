@@ -1,5 +1,6 @@
 import { Clock, MapPin, Users } from "lucide-react"
 import Link from "next/link"
+import type { ReactNode } from "react"
 
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -22,15 +23,24 @@ import { formatDay, formatTime } from "@/lib/format"
  * choosing what to attend is fundamentally a scanning task. Fee and seats are
  * always visible: they are the two facts that decide whether a student clicks,
  * and hiding them behind a detail page wastes the trip.
+ *
+ * `action` replaces the footer control. The default is a button that only
+ * reports state and does nothing, which is honest in the prototype where no
+ * registration exists to perform. Any real surface must pass something that
+ * works - a link that navigates, or the register button from the events
+ * feature - because a button that looks live and is not is worse than no
+ * button at all.
  */
 export function EventCard({
   event,
   now,
   href,
+  action,
 }: {
   event: EventSummary
   now: string
   href: string
+  action?: ReactNode
 }) {
   const registration = describeRegistration(event, now)
   const isFree = event.feeInPaise === null || event.feeInPaise === 0
@@ -108,21 +118,23 @@ export function EventCard({
       </CardContent>
 
       <CardFooter>
-        <Button
-          type="button"
-          size="lg"
-          variant={
-            registration.ctaDisabled
-              ? "outline"
-              : event.viewerRegistration === "NONE"
-                ? "default"
-                : "secondary"
-          }
-          disabled={registration.ctaDisabled}
-          aria-label={registration.accessibleCtaLabel}
-        >
-          {registration.ctaLabel}
-        </Button>
+        {action ?? (
+          <Button
+            type="button"
+            size="lg"
+            variant={
+              registration.ctaDisabled
+                ? "outline"
+                : event.viewerRegistration === "NONE"
+                  ? "default"
+                  : "secondary"
+            }
+            disabled={registration.ctaDisabled}
+            aria-label={registration.accessibleCtaLabel}
+          >
+            {registration.ctaLabel}
+          </Button>
+        )}
       </CardFooter>
     </Card>
   )
