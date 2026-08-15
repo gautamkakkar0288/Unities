@@ -33,3 +33,45 @@ export const verificationStates = [
 ] as const
 
 export type VerificationState = (typeof verificationStates)[number]
+
+/**
+ * The lifecycle of an organiser verification request.
+ *
+ * A deliberate subset of `reviewStatuses` rather than a reuse of it. `MERGED`
+ * answers a question a proposal can ask - "this already exists as Football" -
+ * and no question a verification request can: a club either proved it is real
+ * or it did not. Borrowing the wider vocabulary would put a fourth status on
+ * this table that no code path can ever produce, and every future switch over
+ * it would still have to handle that impossible case.
+ *
+ * Matches `VerificationRequest["status"]` in lib/domain/types.ts, which the
+ * prototype was written against. parity.test.ts enforces the agreement.
+ */
+export const verificationRequestStatuses = [
+  "PENDING",
+  "APPROVED",
+  "REJECTED",
+] as const
+
+export type VerificationRequestStatus =
+  (typeof verificationRequestStatuses)[number]
+
+/**
+ * What an audited action was performed on.
+ *
+ * Shares its vocabulary with `ModerationTargetKind` in the domain model rather
+ * than inventing a second list, because the moderation queue and the audit log
+ * are two views of the same set of things. Reports arrive in Phase 5 and will
+ * point at exactly these kinds; a separate enum here would guarantee they
+ * disagree by one member within a month.
+ */
+export const auditTargetKinds = [
+  "POST",
+  "COMMENT",
+  "EVENT",
+  "COMMUNITY",
+  "ACTIVITY",
+  "USER",
+] as const
+
+export type AuditTargetKind = (typeof auditTargetKinds)[number]
