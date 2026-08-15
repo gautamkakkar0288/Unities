@@ -1,3 +1,4 @@
+import { Users } from "lucide-react"
 import type { Metadata } from "next"
 import Link from "next/link"
 import { notFound, redirect } from "next/navigation"
@@ -17,7 +18,6 @@ import { CancelEventButton } from "@/features/events/components/cancel-event-but
 import { PageHeader } from "@/features/shell/components/page-header"
 import { formatDay, formatTime } from "@/lib/format"
 import { getEventBySlug, listRegistrations } from "@/lib/services/events"
-import { Users } from "lucide-react"
 
 export const metadata: Metadata = { title: "Manage event" }
 
@@ -51,8 +51,12 @@ export default async function ManageEventPage({
   // rather than as an explanation, for the same reason as the create screen.
   if (!registrations.ok) notFound()
 
-  const going = registrations.data.filter((entry) => entry.state === "REGISTERED")
-  const waiting = registrations.data.filter((entry) => entry.state === "WAITLISTED")
+  const going = registrations.data.filter(
+    (entry) => entry.state === "REGISTERED",
+  )
+  const waiting = registrations.data.filter(
+    (entry) => entry.state === "WAITLISTED",
+  )
 
   return (
     <>
