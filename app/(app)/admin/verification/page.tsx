@@ -1,5 +1,6 @@
 import type { Metadata } from "next"
 import Link from "next/link"
+import { redirect } from "next/navigation"
 
 import { auth } from "@/auth"
 import { Alert } from "@/components/ui/alert"
@@ -7,8 +8,6 @@ import { Badge } from "@/components/ui/badge"
 import { RoleControl } from "@/features/admin/components/role-control"
 import { VerificationDecisionButtons } from "@/features/admin/components/verification-decision-buttons"
 import { PageHeader } from "@/features/shell/components/page-header"
-import { redirect } from "next/navigation"
-
 import { roleBadgeVariant, roleLabels } from "@/lib/auth/roles"
 import {
   listAuditEntries,
