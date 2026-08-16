@@ -17,6 +17,8 @@ type CreateOption = {
   icon: LucideIcon
   /** Where this path goes once it exists. `null` while it is still unbuilt. */
   href: string | null
+  /** Overrides "Create <title>" when the link is a step rather than the form. */
+  ctaLabel?: string
   /** Shown when `href` is null, so the card never pretends to be usable. */
   unavailableLabel?: string
   unavailableReason?: string
@@ -44,12 +46,14 @@ const options: CreateOption[] = [
   {
     title: "Event",
     description:
-      "A scheduled, ticketed-by-registration happening with a venue, a start time, and a capacity - a workshop, a fest, a talk.",
+      "A scheduled happening with a venue, a start time, and a capacity - a workshop, a fest, a talk. Events are published by a community, so you start from the one hosting it.",
     icon: CalendarDays,
-    href: null,
-    unavailableLabel: "Phase 3",
-    unavailableReason:
-      "Events need their own schema, service, and registration rules before a create form can honestly save one.",
+    href: "/communities",
+    // Not a create form. There is no such thing as an event without a host,
+    // and only an owner of a verified community may publish one - so the
+    // honest first step is choosing which community is running it, where that
+    // permission can actually be checked.
+    ctaLabel: "Choose a community",
   },
   {
     title: "Activity",
@@ -102,7 +106,8 @@ export default function CreatePage() {
                       href={option.href as string}
                       className={cn(buttonVariants(), "mt-2 w-fit")}
                     >
-                      Create {option.title.toLowerCase()}
+                      {option.ctaLabel ??
+                        `Create ${option.title.toLowerCase()}`}
                     </Link>
                   ) : (
                     <p className="mt-2 text-body-sm text-muted-foreground">
