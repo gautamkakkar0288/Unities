@@ -7,14 +7,21 @@ import type {
   EventMode,
   JoinPolicy,
   MembershipState,
+  ModerationTargetKind,
   PlaceKind,
   ProposalStatus,
   RegistrationState,
+  VerificationRequest,
   VerificationState,
 } from "@/lib/domain/types"
 
 import { communityKinds, communityScopes, joinPolicies } from "./communities"
-import { reviewStatuses, verificationStates } from "./enums"
+import {
+  auditTargetKinds,
+  reviewStatuses,
+  verificationRequestStatuses,
+  verificationStates,
+} from "./enums"
 import { registrationStates } from "./event-registrations"
 import { eventKinds, eventModes } from "./events"
 import { membershipStates } from "./memberships"
@@ -93,6 +100,36 @@ describe("schema and domain vocabulary agree", () => {
       MERGED: true,
     }
     sameMembers(reviewStatuses, Object.keys(domain))
+  })
+
+  it("verification request statuses, which exclude MERGED", () => {
+    /**
+     * Narrower than `reviewStatuses` on purpose. A club either proved it is
+     * real or it did not; there is nothing to merge it into.
+     */
+    const domain: Record<VerificationRequest["status"], true> = {
+      PENDING: true,
+      APPROVED: true,
+      REJECTED: true,
+    }
+    sameMembers(verificationRequestStatuses, Object.keys(domain))
+  })
+
+  it("audit target kinds match the moderation vocabulary", () => {
+    /**
+     * The audit log and the moderation queue point at the same set of things.
+     * Keeping one list means a report and its audit entry can never disagree
+     * about what kind of thing was acted on.
+     */
+    const domain: Record<ModerationTargetKind, true> = {
+      POST: true,
+      COMMENT: true,
+      EVENT: true,
+      COMMUNITY: true,
+      ACTIVITY: true,
+      USER: true,
+    }
+    sameMembers(auditTargetKinds, Object.keys(domain))
   })
 
   it("membership states, excluding NONE", () => {
