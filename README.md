@@ -10,29 +10,29 @@ a table rather than a rewrite.
 
 ## Current status
 
-Cirqles has a **working communities product**. A student can sign up, be sent
-through onboarding, pick interests, browse the directory, open a community, join
-or leave it, ask for a new one, and manage their profile - all of it against
-PostgreSQL, none of it against fixtures. Events, verification, and the social
-layer do not exist yet.
+Cirqles has a **working MVP: communities, verification, and events**. A student
+can sign up, verify their university email, onboard, join communities, have their
+club verified as an organiser, create and publish events, and register for them.
+All of this runs against PostgreSQL with real migrations.
 
 This table is the honest state of the project. A phase is only complete when
 database, service, authorization, UI, validation, error handling, tests, and a
 real end-to-end flow all work.
 
-| Phase                                     | Status      | What actually exists                                                                                       |
-| ----------------------------------------- | ----------- | ---------------------------------------------------------------------------------------------------------- |
-| 0 — Foundation                            | Complete    | One branch on `main`, committed migrations, reproducible install, create chooser, proxy convention, README    |
-| 1 — Onboarding, communities, profile      | Complete    | Onboarding, directory, community detail, join/leave, proposals, moderator queue, profile — all on real data   |
-| 2 — University and organiser verification | Not started | Schema has `verification_tokens` and roles; no verification flow                                             |
-| 3 — Events and registration               | Not started | No event schema, service, or route                                                                           |
-| 4 — Engagement (home, posts, reminders)   | Not started | Home renders static placeholder content                                                                      |
-| 5 — Activities, search, moderation        | Not started | Domain types only                                                                                            |
-| 6 — Launch hardening                      | Not started | —                                                                                                            |
+| Phase                                     | Status      | What actually exists                                                                                                    |
+| ----------------------------------------- | ----------- | ----------------------------------------------------------------------------------------------------------------------- |
+| 0 — Foundation                            | ✅ Complete  | One branch on `main`, committed migrations, reproducible install, create chooser, proxy convention, README               |
+| 1 — Onboarding, communities, profile      | ✅ Complete  | Onboarding, directory, community detail, join/leave, proposals, moderator queue, profile — all on real data              |
+| 2 — University and organiser verification | ✅ Complete  | University email verification (console transport), organiser verification request/review/audit, role promotion           |
+| 3 — Events and registration               | ✅ Complete  | Event schema, discovery, detail, creation, registration, capacity, waitlist, auto-promotion, organiser management        |
+| 4 — Engagement (home, posts, reminders)   | Not started | Home renders static placeholder content                                                                                 |
+| 5 — Activities, search, moderation        | Not started | Domain types only                                                                                                       |
+| 6 — Launch hardening                      | Not started | —                                                                                                                       |
 
 What is genuinely working today, end to end:
 
 - Sign-up and sign-in with Auth.js credentials, hashed passwords, roles on the session
+- University email verification with a console transport (dev-only; SMTP not yet configured)
 - Route protection, plus a server-side session guard in the app shell
 - Onboarding: a new account is redirected into it and cannot skip it
 - The communities directory, with scope filtering and search
@@ -41,19 +41,28 @@ What is genuinely working today, end to end:
 - Proposing a community, with duplicate detection before submission
 - The moderator queue for approving or declining join requests
 - Profile: display name, interests, and the communities you belong to
+- **Organiser verification**: submit evidence → admin review → approve/reject → role promotion, with full audit log
+- **Events**: create, publish, discover, open event detail, register, capacity enforcement, waitlist, auto-promotion on cancellation
+- Organiser event management: cancel event, view registration list (names only, not emails)
 - A seed that populates Chitkara, the Tricity places, 17 interests, and their communities
 - An interactive prototype of all 16 screens, on fixture data, at `/prototype`
+
+### Migration history
+
+| File | Covers |
+| --- | --- |
+| `drizzle/0000_certain_living_lightning.sql` | All Phase 0–1 tables (users, communities, memberships, interests, proposals, places) |
+| `drizzle/0001_unusual_midnight.sql` | Phase 2.3: `verification_requests`, `audit_log` |
+| `drizzle/0002_tired_speed_demon.sql` | Phase 3.1: `events`, `event_registrations` |
 
 What is **not** working, despite appearing to exist:
 
 - Home, Explore, Notifications, Saved, and Search are placeholder screens.
-- `/create` can create a community proposal. Events and Activities are marked
-  unavailable on it, because they are.
-- Nothing verifies that an account belongs to a real Chitkara student yet, and
-  no email is ever sent. That is Phase 2.
-- A submitted community proposal reaches the database and stops there. There is
-  no review screen and no supporter UI, so a proposal cannot yet be approved.
+- Production email (SMTP) is not configured; verification emails only print to the console.
+- Event editing is not implemented (organiser can cancel, but not edit after publish).
 - Avatars are read, never uploaded; there is no file storage.
+- Browser end-to-end validation requires a running Postgres instance with migrations applied.
+
 
 ---
 

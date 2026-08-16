@@ -19,11 +19,11 @@
 | Tables | Landed in | Present on |
 | --- | --- | --- |
 | `places`, `users`, `accounts`, `sessions`, `verification_tokens`, `interests`, `user_interests`, `interest_suggestions`, `interest_suggestion_supporters`, `communities`, `memberships`, `community_proposals`, `community_proposal_supporters` | Phase 0–1 | `main` |
-| `verification_requests`, `audit_log` | Phase 2.3 (PR #18) | `phase-2/organizer-verification` |
-| `events`, `event_registrations` | Phase 3.1 (PR #19) | `phase-3/events` |
+| `verification_requests`, `audit_log` | Phase 2.3 (PR #18) | `main` |
+| `events`, `event_registrations` | Phase 3.1 (PR #19) | `main` |
 
-This document describes `main` as it will be once PR #18 and PR #19 have both
-merged, in that order. Until then the last two rows describe branches.
+All migrations have been merged. `main` is at **Phase 0–3 complete**.
+
 
 ---
 
