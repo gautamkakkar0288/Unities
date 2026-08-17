@@ -13,6 +13,7 @@ import {
   refuseEventEdit,
   seatsAvailableAfter,
 } from "@/lib/domain/event-edit"
+import type { EventSummary } from "@/lib/domain/types"
 import { updateEventSchema } from "@/lib/schemas/event-edit"
 import { fail, ok, type ServiceResult } from "@/lib/services/result"
 
@@ -40,6 +41,123 @@ export type EventEdit = {
   slug: string
   /** Waitlisted students who took a seat because capacity went up. */
   promoted: string[]
+}
+
+/**
+ * An event as its organiser needs to see it in a form.
+ *
+ * Deliberately not `EventDetailProjection`. That one is built for students and
+ * resolves `registrationClosesAt` to the start time when it is unset, which is
+ * correct on a listing and wrong in a form - prefilling it would write the
+ * default in as an explicit value, and an organiser who later moved the start
+ * would be left with a close time nobody chose.
+ *
+ * `communityVerified` is reported rather than enforced here so the screen can
+ * explain a lapse instead of pretending the event is missing. The save is still
+ * refused by `updateEvent`, which is where it counts.
+ */
+export type EventEditable = {
+  id: string
+  slug: string
+  title: string
+  description: string
+  kind: EventSummary["kind"]
+  mode: EventSummary["mode"]
+  venue: string
+  startsAt: string
+  endsAt: string
+  registrationClosesAt: string | null
+  capacity: number | null
+  feeInPaise: number | null
+  status: "DRAFT" | "PUBLISHED" | "CANCELLED"
+  registeredCount: number
+  waitlistCount: number
+  communityVerified: boolean
+}
+
+/**
+ * Load an event for editing, for the person who runs it.
+ *
+ * Owner-only, which is stricter than the attendee list on purpose: a moderator
+ * may see who is coming, but rewriting what students signed up for belongs to
+ * whoever is accountable for the community.
+ */
+export async function getEventForEdit(args: {
+  actorId: string
+  slug: string
+}): Promise<ServiceResult<EventEditable>> {
+  const [row] = await db
+    .select({
+      id: events.id,
+      slug: events.slug,
+      title: events.title,
+      description: events.description,
+      kind: events.kind,
+      mode: events.mode,
+      venue: events.venue,
+      startsAt: events.startsAt,
+      endsAt: events.endsAt,
+      registrationClosesAt: events.registrationClosesAt,
+      capacity: events.capacity,
+      feeInPaise: events.feeInPaise,
+      status: events.status,
+      registeredCount: events.registeredCount,
+      verification: communities.verification,
+      archivedAt: communities.archivedAt,
+      viewerState: memberships.state,
+    })
+    .from(events)
+    .innerJoin(communities, eq(communities.id, events.communityId))
+    .leftJoin(
+      memberships,
+      and(
+        eq(memberships.communityId, communities.id),
+        eq(memberships.userId, args.actorId),
+      ),
+    )
+    .where(eq(events.slug, args.slug))
+    .limit(1)
+
+  if (!row || row.archivedAt) {
+    return fail("NOT_FOUND", "That event no longer exists.")
+  }
+
+  if (row.viewerState !== "OWNER") {
+    return fail(
+      "FORBIDDEN",
+      "Only an owner of this community can change this event.",
+    )
+  }
+
+  const [waitlist] = await db
+    .select({ count: sql<number>`count(*)::int` })
+    .from(eventRegistrations)
+    .where(
+      and(
+        eq(eventRegistrations.eventId, row.id),
+        eq(eventRegistrations.state, "WAITLISTED"),
+      ),
+    )
+
+  return ok({
+    id: row.id,
+    slug: row.slug,
+    title: row.title,
+    description: row.description,
+    kind: row.kind,
+    mode: row.mode,
+    venue: row.venue,
+    startsAt: row.startsAt.toISOString(),
+    endsAt: row.endsAt.toISOString(),
+    // Null survives, because null means something here.
+    registrationClosesAt: row.registrationClosesAt?.toISOString() ?? null,
+    capacity: row.capacity,
+    feeInPaise: row.feeInPaise,
+    status: row.status,
+    registeredCount: row.registeredCount,
+    waitlistCount: waitlist?.count ?? 0,
+    communityVerified: row.verification === "VERIFIED",
+  })
 }
 
 /**
