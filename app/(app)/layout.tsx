@@ -5,6 +5,11 @@ import { auth } from "@/auth"
 import { AppSidebar } from "@/features/shell/components/app-sidebar"
 import { AppTopBar } from "@/features/shell/components/app-top-bar"
 import { MobileNav } from "@/features/shell/components/mobile-nav"
+import {
+  accountGate,
+  gateDestination,
+} from "@/lib/domain/verification-gate"
+import { hasVerifiedEmail } from "@/lib/services/account"
 import { hasCompletedOnboarding } from "@/lib/services/interests"
 
 /**
@@ -17,11 +22,16 @@ import { hasCompletedOnboarding } from "@/lib/services/interests"
  * render without a user, and it is also where we get the user object we need
  * anyway - so the guard costs nothing extra.
  *
- * The onboarding gate lives here for the same reason: it covers every page in
- * the shell at once, so a new student cannot reach one by typing its URL. It
- * costs one indexed count per render, which is the price of the guarantee that
- * no authenticated surface ever renders for a student with no interests - every
- * one of them would be empty.
+ * The verification and onboarding gates live here for the same reason: they
+ * cover every page in the shell at once, so a student cannot reach one by typing
+ * its URL. Which gate wins is `accountGate`'s decision, not this file's, because
+ * onboarding needs the identical answer and a second copy of the ordering would
+ * eventually contradict the first.
+ *
+ * Two indexed reads per render, concurrently. That is the price of the guarantee
+ * that no authenticated surface renders for an unverified or un-onboarded
+ * account - and neither answer can be taken from the session, because a JWT
+ * minted before either happened keeps reporting the state it was minted with.
  */
 export default async function AppLayout({
   children,
@@ -32,7 +42,16 @@ export default async function AppLayout({
 
   if (!session?.user) redirect("/sign-in")
 
-  if (!(await hasCompletedOnboarding(session.user.id))) redirect("/onboarding")
+  const [emailVerified, onboarded] = await Promise.all([
+    hasVerifiedEmail(session.user.id),
+    hasCompletedOnboarding(session.user.id),
+  ])
+
+  const destination = gateDestination(
+    accountGate({ signedIn: true, emailVerified, onboarded }),
+  )
+
+  if (destination) redirect(destination)
 
   const { name, email, role } = session.user
 

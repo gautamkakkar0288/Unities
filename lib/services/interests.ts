@@ -16,6 +16,7 @@ import {
   setInterestsSchema,
   suggestInterestSchema,
 } from "@/lib/schemas/community"
+import { hasVerifiedEmail } from "@/lib/services/account"
 import { fail, ok, type ServiceResult } from "@/lib/services/result"
 
 /** The curated taxonomy, in picker order. Retired interests are never offered. */
@@ -75,11 +76,27 @@ export async function hasCompletedOnboarding(userId: string): Promise<boolean> {
  * most seventeen rows per user. Wrapped in a transaction so a failure halfway
  * cannot leave a student with no interests at all - which would silently empty
  * their recommendations.
+ *
+ * Requires a verified email. This is the lock behind the redirect in the app
+ * shell: a server action is a public HTTP endpoint, so a gate that lives only
+ * in a layout is a signpost, not a boundary. The same refusal covers editing
+ * interests from the profile, which follows from the rule rather than being a
+ * separate decision - an unverified account does nothing, so it does not get to
+ * curate one either.
  */
 export async function setUserInterests(args: {
   userId: string
   input: unknown
 }): Promise<ServiceResult<Interest[]>> {
+  // Authorization before validation, deliberately: an account that may not do
+  // this at all should not be told whether its payload was acceptable.
+  if (!(await hasVerifiedEmail(args.userId))) {
+    return fail(
+      "FORBIDDEN",
+      "Confirm your university email before setting up your account.",
+    )
+  }
+
   const parsed = setInterestsSchema.safeParse(args.input)
   if (!parsed.success) {
     return fail(
