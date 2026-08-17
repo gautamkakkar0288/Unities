@@ -19,12 +19,17 @@ This table is the honest state of the project. A phase is only complete when
 database, service, authorization, UI, validation, error handling, tests, and a
 real end-to-end flow all work.
 
+One caveat stated plainly: every claim below is backed by the test suite and by
+CI, **not** by a recorded run in a browser. The manual script that would close
+that gap is committed at `docs/ENGINEERING/MVP_VALIDATION.md` and has not been
+executed yet.
+
 | Phase                                     | Status      | What actually exists                                                                                                    |
 | ----------------------------------------- | ----------- | ----------------------------------------------------------------------------------------------------------------------- |
 | 0 — Foundation                            | ✅ Complete  | One branch on `main`, committed migrations, reproducible install, create chooser, proxy convention, README               |
 | 1 — Onboarding, communities, profile      | ✅ Complete  | Onboarding, directory, community detail, join/leave, proposals, moderator queue, profile — all on real data              |
 | 2 — University and organiser verification | ✅ Complete  | University email verification (console transport), organiser verification request/review/audit, role promotion           |
-| 3 — Events and registration               | ✅ Complete  | Event schema, discovery, detail, creation, registration, capacity, waitlist, auto-promotion, organiser management        |
+| 3 — Events and registration               | 🟡 Code complete | Event schema, discovery, detail, creation, registration, capacity, waitlist, auto-promotion, organiser management — merged and CI-green, awaiting a recorded browser run |
 | 4 — Engagement (home, posts, reminders)   | Not started | Home renders static placeholder content                                                                                 |
 | 5 — Activities, search, moderation        | Not started | Domain types only                                                                                                       |
 | 6 — Launch hardening                      | Not started | —                                                                                                                       |
@@ -62,6 +67,13 @@ What is **not** working, despite appearing to exist:
 - Event editing is not implemented (organiser can cancel, but not edit after publish).
 - Avatars are read, never uploaded; there is no file storage.
 - Browser end-to-end validation requires a running Postgres instance with migrations applied.
+- No browser run has been recorded yet. In particular the capacity-1 waitlist
+  promotion — one student confirmed, a second waitlisted, the first cancels, the
+  second becomes confirmed — is covered by the service suite but has never been
+  watched happen through the UI.
+- Verification gating is undecided: what an account with an unverified email is
+  actually prevented from doing has not been settled or enforced. See
+  `docs/ENGINEERING/MVP_VALIDATION.md`.
 
 
 ---
