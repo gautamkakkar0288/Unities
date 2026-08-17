@@ -1,12 +1,13 @@
 # MVP Manual Validation Script
 
-> **Status: not yet executed.** No journey below has been run by a human or by
-> browser automation. Every Phase 0–3 claim currently rests on unit tests,
-> component tests, and service tests against real PostgreSQL. That proves the
-> services and the pure logic; it does not prove that a student can use the
-> product.
+> **Status: automated tests pass; browser validation NOT YET RUN.**
+> Machine running validation (2026-08-17) has no local PostgreSQL instance.
+> Browser flows require `DATABASE_URL`, `AUTH_SECRET`, and a seeded database.
+> All automated checks (typecheck, lint, 268 unit+component tests, build) pass.
+> Browser validation must be completed by a developer with a working `.env.local`.
 >
-> Do not mark Phase 3 complete until section 5 passes.
+> Do not mark Phase 3 complete until section 5 passes in a browser.
+
 
 ## Why this file exists
 
@@ -198,3 +199,61 @@ For each section: pass, fail, or not run. **"Not run" is a legitimate and
 useful result — it is not the same as pass.** File a real issue for every
 failure rather than patching around it, and note which ones block the closed
 pilot.
+
+---
+
+### Outcome — 2026-08-17
+
+**Environment:** Windows 10, `main` at commit `83137a3`, no local PostgreSQL.
+
+**Blocker for browser validation:** No `DATABASE_URL` or `AUTH_SECRET` present
+in the environment. The application requires a seeded PostgreSQL instance to
+start. All browser sections below are therefore NOT RUN — not failed; not
+assumed to pass.
+
+**Automated checks (all passed before browser testing was attempted):**
+
+| Check | Result |
+|---|---|
+| `npm run typecheck` | PASS — 0 errors |
+| `npm run lint` | PASS — 0 errors, 3 warnings (all in test files) |
+| `npm test` | PASS — 268 passed, 142 skipped (DB integration tests need live Postgres) |
+| `npm run build` | PASS — clean Next.js production build |
+
+**Browser validation results:**
+
+| Section | Result | Notes |
+|---|---|---|
+| 1. Student sign-up and onboarding | NOT RUN | Needs DATABASE_URL + seeded DB |
+| 2. Community creation and organiser verification | NOT RUN | Needs DATABASE_URL + seeded DB |
+| 3. Event creation | NOT RUN | Needs DATABASE_URL + seeded DB |
+| 4. Registration | NOT RUN | Needs DATABASE_URL + seeded DB |
+| 5. **Capacity-1 waitlist promotion** | **NOT RUN** | **Critical test — must be run before Phase 3 is declared complete** |
+| 6. Negative testing | NOT RUN | Needs DATABASE_URL + seeded DB |
+
+**Email status:**
+
+- Console transport: working (prints verification link to server log)
+- SMTP transport: implemented (Nodemailer, `lib/email/smtp-transport.ts`)
+- Production SMTP delivery: NOT TESTED — no credentials available
+- To test: add `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASSWORD`, `SMTP_FROM` to `.env.local`
+
+**To run browser validation:**
+
+```bash
+# 1. Copy and fill in credentials
+cp .env.example .env.local
+# Add: DATABASE_URL, AUTH_SECRET, NEXT_PUBLIC_APP_URL=http://localhost:3000
+
+# 2. Apply migrations and seed
+npm run db:migrate
+npm run db:seed
+
+# 3. Start app
+npm run dev
+
+# 4. Follow sections 1–6 above using three browser profiles
+#    (Student A, Student B, Admin)
+#    Pay special attention to Section 5 (capacity-1 waitlist)
+```
+

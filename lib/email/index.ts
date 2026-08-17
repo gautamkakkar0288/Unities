@@ -3,6 +3,12 @@ import type { EmailMessage, EmailTransport } from "./types"
 
 export type { EmailMessage, EmailTransport } from "./types"
 export { consoleTransport } from "./console-transport"
+export {
+  createSmtpTransport,
+  smtpConfigFromEnv,
+  type SmtpConfig,
+} from "./smtp-transport"
+
 
 /**
  * The one place that decides how mail leaves Cirqles.
