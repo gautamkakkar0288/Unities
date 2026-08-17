@@ -6,6 +6,7 @@ import { auth } from "@/auth"
 import { EmptyState } from "@/components/ui/empty-state"
 import { InterestPicker } from "@/features/onboarding/components/interest-picker"
 import { MINIMUM_INTERESTS } from "@/lib/domain/interest"
+import { hasVerifiedEmail } from "@/lib/services/account"
 import {
   getUserInterests,
   hasCompletedOnboarding,
@@ -17,6 +18,12 @@ export const metadata: Metadata = { title: "Choose your interests" }
 export default async function OnboardingPage() {
   const session = await auth()
   if (!session?.user) redirect("/sign-in")
+
+  // This page sits outside the app shell, so the shell's gate never runs for
+  // it. Without this check a student could type the URL and reach a picker
+  // whose save setUserInterests would refuse - a form that cannot succeed is
+  // worse than an honest redirect.
+  if (!(await hasVerifiedEmail(session.user.id))) redirect("/verify-email")
 
   // Onboarding is a step, not a screen you can revisit to no purpose. A student
   // who has already done it and types the URL belongs on their feed; changing
