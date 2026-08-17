@@ -1,6 +1,6 @@
 // @vitest-environment node
 
-import { eq, inArray } from "drizzle-orm"
+import { and, eq, inArray } from "drizzle-orm"
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from "vitest"
 
 import { db } from "@/lib/db"
@@ -46,6 +46,8 @@ const STARTS = new Date("2026-05-10T10:00:00.000Z")
 const ENDS = new Date("2026-05-10T12:00:00.000Z")
 
 const ONE_SEAT = "ee-one-seat"
+/** Three seats, so a cut below the confirmed count is expressible. */
+const ROOMY = "ee-roomy"
 const CALLED_OFF = "ee-called-off"
 const ALREADY_RAN = "ee-already-ran"
 const IN_UNVERIFIED = "ee-in-unverified"
@@ -79,6 +81,19 @@ async function resetEvents() {
       endsAt: ENDS,
       capacity: 1,
       venue: "Lab 3",
+      communityId: VERIFIED,
+      interestId: INTEREST,
+    },
+    {
+      id: ROOMY,
+      slug: "ee-roomy",
+      title: "Three seats",
+      kind: "WORKSHOP",
+      status: "PUBLISHED",
+      startsAt: STARTS,
+      endsAt: ENDS,
+      capacity: 3,
+      venue: "Hall A",
       communityId: VERIFIED,
       interestId: INTEREST,
     },
@@ -155,7 +170,12 @@ async function stateOf(userId: string, eventId: string) {
   const [row] = await db
     .select({ state: eventRegistrations.state })
     .from(eventRegistrations)
-    .where(eq(eventRegistrations.userId, userId))
+    .where(
+      and(
+        eq(eventRegistrations.userId, userId),
+        eq(eventRegistrations.eventId, eventId),
+      ),
+    )
     .limit(1)
 
   return row?.state ?? null
@@ -347,18 +367,54 @@ describe.skipIf(!hasDatabase)("updateEvent", () => {
 
   describe("capacity, and the queue behind it", () => {
     it("refuses to cut capacity below the students already going", async () => {
-      await queueTwoBehindTheSeat()
+      // Two of three seats taken, cut to one. A room change makes this a
+      // request an organiser really does make, and honouring it would mean
+      // throwing out a student who is already going.
+      await registerForEvent({ userId: STUDENT_A, eventId: ROOMY, now: NOW })
+      await registerForEvent({
+        userId: STUDENT_B,
+        eventId: ROOMY,
+        now: new Date(NOW.getTime() + 60_000),
+      })
 
       const result = await updateEvent({
         actorId: OWNER,
-        input: edit({ capacity: 0 + 0 }),
+        input: edit({
+          eventId: ROOMY,
+          title: "Three seats",
+          venue: "Hall A",
+          capacity: 1,
+        }),
         now: NOW,
       })
 
-      // Zero seats is refused by the schema before the rule is reached; the
-      // point of the assertion is that the confirmed student keeps their place.
       expect(result.ok).toBe(false)
-      expect(await stateOf(STUDENT_A, ONE_SEAT)).toBe("REGISTERED")
+      if (result.ok) return
+      expect(result.code).toBe("INVALID")
+      expect(result.message).toContain("already going")
+
+      expect(await stateOf(STUDENT_A, ROOMY)).toBe("REGISTERED")
+      expect(await stateOf(STUDENT_B, ROOMY)).toBe("REGISTERED")
+      expect((await storedEvent(ROOMY))?.capacity).toBe(3)
+    })
+
+    it("allows a cut down to exactly the confirmed count", async () => {
+      // Closing the door without cancelling is a legitimate move.
+      await registerForEvent({ userId: STUDENT_A, eventId: ROOMY, now: NOW })
+
+      const result = await updateEvent({
+        actorId: OWNER,
+        input: edit({
+          eventId: ROOMY,
+          title: "Three seats",
+          venue: "Hall A",
+          capacity: 1,
+        }),
+        now: NOW,
+      })
+
+      expect(result.ok).toBe(true)
+      expect((await storedEvent(ROOMY))?.capacity).toBe(1)
     })
 
     it("promotes in queue order when seats are added", async () => {
