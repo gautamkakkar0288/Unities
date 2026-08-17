@@ -27,6 +27,12 @@ import { fail, ok, type ServiceResult } from "@/lib/services/result"
  * The shape follows the rest of the layer: authorisation is read from the
  * database at write time inside the transaction, never taken from the caller,
  * and the projection returned is the minimum the redirect needs.
+ *
+ * Note what is missing: nothing records that an edit happened. The `events`
+ * table has `created_at` and `cancelled_at` and no `updated_at`, so a student
+ * who registered when the venue was Block 3 cannot tell it has moved. That is a
+ * real gap, and it belongs in `audit_log` - which already exists and already
+ * takes an `EVENT` target - rather than in a column added on a guess.
  */
 
 export type EventEdit = {
@@ -149,7 +155,6 @@ export async function updateEvent(args: {
           : null,
         capacity: input.capacity,
         feeInPaise: input.feeInPaise,
-        updatedAt: now,
       })
       .where(eq(events.id, event.id))
 
@@ -211,7 +216,8 @@ async function promoteFromWaitlist(args: {
     )
     .orderBy(asc(eventRegistrations.createdAt))
 
-  const waiting = args.seats === null ? await query : await query.limit(args.seats)
+  const waiting =
+    args.seats === null ? await query : await query.limit(args.seats)
 
   if (waiting.length === 0) return []
 
