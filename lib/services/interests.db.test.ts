@@ -25,6 +25,13 @@ import {
  * interest is refused, that replacing a selection actually removes the old
  * rows, and that the unique index on `normalised_label` is what makes repeat
  * suggestions aggregate rather than pile up.
+ *
+ * Both students carry a confirmed email, because this file is about what the
+ * picker accepts from someone who has reached onboarding - and reaching
+ * onboarding now requires confirming an address. The refusal codes asserted
+ * below are only reachable by an account permitted to make the request; an
+ * unverified one is stopped earlier and for a different reason, which is what
+ * `verification-gate.db.test.ts` covers.
  */
 
 const hasDatabase = Boolean(process.env.DATABASE_URL)
@@ -79,8 +86,18 @@ describe.skipIf(!hasDatabase)("interest service, against Postgres", () => {
     ])
 
     await db.insert(users).values([
-      { id: STUDENT, name: "Student", email: "interests-student@vi.test" },
-      { id: SECOND, name: "Second", email: "interests-second@vi.test" },
+      {
+        id: STUDENT,
+        name: "Student",
+        email: "interests-student@vi.test",
+        emailVerified: new Date("2026-01-01T00:00:00.000Z"),
+      },
+      {
+        id: SECOND,
+        name: "Second",
+        email: "interests-second@vi.test",
+        emailVerified: new Date("2026-01-01T00:00:00.000Z"),
+      },
     ])
   })
 
