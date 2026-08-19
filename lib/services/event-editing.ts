@@ -2,11 +2,14 @@ import { and, asc, eq, inArray, sql } from "drizzle-orm"
 
 import { db } from "@/lib/db"
 import {
+  auditLog,
   communities,
   eventRegistrations,
   events,
   memberships,
+  type AuditTargetKind,
 } from "@/lib/db/schema"
+import { AUDIT_ACTIONS } from "@/lib/domain/audit"
 import { refuseEventTiming, timingRefusalMessage } from "@/lib/domain/event"
 import {
   editRefusalMessage,
@@ -29,11 +32,12 @@ import { fail, ok, type ServiceResult } from "@/lib/services/result"
  * database at write time inside the transaction, never taken from the caller,
  * and the projection returned is the minimum the redirect needs.
  *
- * Note what is missing: nothing records that an edit happened. The `events`
- * table has `created_at` and `cancelled_at` and no `updated_at`, so a student
- * who registered when the venue was Block 3 cannot tell it has moved. That is a
- * real gap, and it belongs in `audit_log` - which already exists and already
- * takes an `EVENT` target - rather than in a column added on a guess.
+ * Every successful edit writes an `audit_log` row in the same transaction, the
+ * convention Phase 2 established for privileged writes. It is the only record
+ * that an event moved: the `events` table has `created_at` and `cancelled_at`
+ * and no `updated_at`, so a student who registered when the venue was Block 3
+ * still cannot tell from their own screen that it has changed. Notifying them
+ * is Phase 4 work, and it depends on this trail existing.
  */
 
 export type EventEdit = {
@@ -207,6 +211,7 @@ export async function updateEvent(args: {
 
     const [community] = await tx
       .select({
+        name: communities.name,
         verification: communities.verification,
         archivedAt: communities.archivedAt,
         viewerState: memberships.state,
@@ -295,6 +300,29 @@ export async function updateEvent(args: {
         .where(eq(events.id, event.id))
     }
 
+    /**
+     * The record that this event is no longer what students registered for.
+     *
+     * In the same transaction as the change, per the convention Phase 2 set: an
+     * audit row that can fail on its own is worse than none, because the gaps
+     * are silent and nobody knows which edits are missing.
+     *
+     * The promotion is named in the summary when there was one. "Seats were
+     * added and four students came off the waitlist" is the part of an edit
+     * somebody may later have to account for, and it is invisible from the
+     * event row afterwards.
+     */
+    await tx.insert(auditLog).values({
+      actorId: args.actorId,
+      action: AUDIT_ACTIONS.eventEdited,
+      targetKind: "EVENT" satisfies AuditTargetKind,
+      targetId: event.id,
+      summary:
+        promoted.length > 0
+          ? `Edited ${input.title} (${community.name}) and admitted ${promoted.length} ${promoted.length === 1 ? "student" : "students"} from the waitlist`
+          : `Edited ${input.title} (${community.name})`,
+    })
+
     return ok({ id: event.id, slug: event.slug, promoted })
   })
 }
@@ -311,6 +339,10 @@ export async function updateEvent(args: {
  * `cancelRegistration` promotes on. Two different orderings would mean a
  * student's position in the queue depended on how the seat happened to be
  * freed.
+ *
+ * `createdAt` is never rewritten here. It is the queue key, so a promoted
+ * student keeps the timestamp that earned them the seat; touching it would
+ * reorder everybody still waiting behind them.
  */
 async function promoteFromWaitlist(args: {
   tx: Parameters<Parameters<typeof db.transaction>[0]>[0]

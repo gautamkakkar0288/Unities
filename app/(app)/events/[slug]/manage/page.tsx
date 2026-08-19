@@ -58,6 +58,16 @@ export default async function ManageEventPage({
     (entry) => entry.state === "WAITLISTED",
   )
 
+  /**
+   * Once it has started the row records what happened rather than what is
+   * planned, and `updateEvent` refuses on exactly this. Offering the link
+   * anyway would send an organiser to a page that can only say no - and the
+   * same boundary has to be read here as there, or the button and the wall
+   * disagree about when an event stops being a plan.
+   */
+  const hasStarted = Date.parse(event.startsAt) <= Date.now()
+  const isEditable = event.status !== "CANCELLED" && !hasStarted
+
   return (
     <>
       <PageHeader
@@ -67,9 +77,10 @@ export default async function ManageEventPage({
           <div className="flex flex-wrap gap-2">
             {/*
               Only while there is something left to correct. A cancelled event
-              is a record of what was called off, not a draft.
+              is a record of what was called off, not a draft, and one that has
+              already run is a record of what happened.
             */}
-            {event.status !== "CANCELLED" && (
+            {isEditable && (
               <Link
                 href={`/events/${event.slug}/edit`}
                 className={buttonVariants({ variant: "outline" })}
