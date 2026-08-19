@@ -5,7 +5,7 @@ import { resolve } from "node:path"
 /**
  * Create or reset the local demo database.
  *
- *   npm run db:setup   # create it if it is not there, then seed
+ *   npm run db:setup   # create if absent, migrate, seed
  *   npm run db:reset   # throw it away and rebuild from scratch
  *
  * This is a wrapper, not a second migration system. It applies the same
@@ -54,19 +54,25 @@ async function main() {
 
   await client.close()
 
-  console.info("\nSchema is ready. Seeding...\n")
+  console.info("\nSchema is ready.\n")
 
-  // The seed is a separate process on purpose: it must run identically against
-  // the demo database and against a real one, so it is not special-cased here.
-  execSync("npm run db:seed", {
-    stdio: "inherit",
-    env: { ...process.env, CIRQLES_DB: "demo" },
-  })
+  /**
+   * Both seeds, in order, as separate processes.
+   *
+   * `db:seed` is the day-one data a real deployment also needs - the campus,
+   * the taxonomy, the interest communities. `db:seed:demo` is the showcase
+   * population on top of it, and it depends on the first having run. Keeping
+   * them separate is what stops demo students ending up in a real database.
+   */
+  const env = { ...process.env, CIRQLES_DB: "demo" }
+
+  execSync("npm run db:seed", { stdio: "inherit", env })
+  execSync("npm run db:seed:demo", { stdio: "inherit", env })
 }
 
 main()
   .then(() => {
-    console.info("\nDone. Start the app with `npm run dev`.")
+    console.info("Start the app with `npm run dev`.")
     process.exit(0)
   })
   .catch((error) => {

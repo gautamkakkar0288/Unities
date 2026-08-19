@@ -16,9 +16,11 @@
     "db:push": "drizzle-kit push",
     "db:migrate": "drizzle-kit migrate",
     "db:seed": "tsx lib/db/seed.ts",
+    "db:seed:demo": "tsx lib/db/demo-seed.ts",
     "db:setup": "tsx lib/db/demo-setup.ts",
     "db:reset": "tsx lib/db/demo-setup.ts --reset",
-    "db:studio": "drizzle-kit studio"
+    "db:studio": "drizzle-kit studio",
+    "demo": "npm run db:reset && npm run dev"
   },
   "dependencies": {
     "@auth/drizzle-adapter": "^1.10.0",
