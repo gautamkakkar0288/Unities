@@ -16,11 +16,14 @@
     "db:push": "drizzle-kit push",
     "db:migrate": "drizzle-kit migrate",
     "db:seed": "tsx lib/db/seed.ts",
+    "db:setup": "tsx lib/db/demo-setup.ts",
+    "db:reset": "tsx lib/db/demo-setup.ts --reset",
     "db:studio": "drizzle-kit studio"
   },
   "dependencies": {
     "@auth/drizzle-adapter": "^1.10.0",
     "@base-ui/react": "^1.6.0",
+    "@electric-sql/pglite": "^0.3.11",
     "@hookform/resolvers": "^5.2.1",
     "@tanstack/react-query": "^5.81.5",
     "bcryptjs": "^3.0.2",

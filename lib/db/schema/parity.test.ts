@@ -7,10 +7,13 @@ import type {
   EventMode,
   JoinPolicy,
   MembershipState,
+  ModerationStatus,
   ModerationTargetKind,
+  NotificationKind,
   PlaceKind,
   ProposalStatus,
   RegistrationState,
+  ReportReason,
   VerificationRequest,
   VerificationState,
 } from "@/lib/domain/types"
@@ -25,7 +28,9 @@ import {
 import { registrationStates } from "./event-registrations"
 import { eventKinds, eventModes } from "./events"
 import { membershipStates } from "./memberships"
+import { notificationKinds } from "./notifications"
 import { placeKinds } from "./places"
+import { moderationStatuses, reportReasons } from "./reports"
 
 /**
  * The schema and the domain model must agree.
@@ -187,5 +192,54 @@ describe("schema and domain vocabulary agree", () => {
         WAITLISTED: true,
       }
     sameMembers(registrationStates, [...Object.keys(domain), "CANCELLED"])
+  })
+
+  it("notification kinds", () => {
+    /**
+     * `lib/domain/notifications.ts` labels and tones every kind, and
+     * `requiredNotificationKinds` marks MEMBERSHIP and MODERATION as ones a
+     * student cannot switch off. A kind that exists in the database but not in
+     * the domain would render with no label and no tone.
+     */
+    const domain: Record<NotificationKind, true> = {
+      EVENT_REMINDER: true,
+      COMMUNITY_POST: true,
+      MENTION: true,
+      MEMBERSHIP: true,
+      MODERATION: true,
+      ACTIVITY: true,
+    }
+    sameMembers(notificationKinds, Object.keys(domain))
+  })
+
+  it("report reasons", () => {
+    /**
+     * These are load-bearing beyond display: `reasonSeverity` ranks the queue
+     * by them, so a reason stored but not ranked would sort as `undefined` and
+     * land in an arbitrary position - most likely ahead of harassment.
+     */
+    const domain: Record<ReportReason, true> = {
+      SPAM: true,
+      HARASSMENT: true,
+      MISINFORMATION: true,
+      OFF_TOPIC: true,
+      OTHER: true,
+    }
+    sameMembers(reportReasons, Object.keys(domain))
+  })
+
+  it("moderation statuses", () => {
+    /**
+     * Unlike the verification statuses, this list keeps all four. `IN_REVIEW`
+     * is the difference between "nobody has looked at this" and "somebody is
+     * looking", which is what stops two moderators working the same report.
+     */
+    const domain: Record<ModerationStatus, true> = {
+      OPEN: true,
+      IN_REVIEW: true,
+      RESOLVED: true,
+      DISMISSED: true,
+    }
+    sameMembers(moderationStatuses, Object.keys(domain))
   })
 })
