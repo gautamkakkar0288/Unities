@@ -1,13 +1,13 @@
 import Link from "next/link"
 
 import { Badge } from "@/components/ui/badge"
-import { cn } from "@/lib/cn"
 import {
   searchHref,
   searchTabLabel,
   searchTabs,
   type SearchTab,
 } from "@/lib/domain/search"
+import { cn } from "@/lib/utils"
 
 /**
  * Result tabs, as links.
@@ -29,7 +29,7 @@ export function SearchTabs({
 }: {
   active: SearchTab
   query: string
-  counts?: Record<Exclude<SearchTab, "ALL">, number> & { ALL: number }
+  counts?: Record<SearchTab, number>
 }) {
   return (
     <nav
