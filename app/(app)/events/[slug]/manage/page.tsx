@@ -24,10 +24,10 @@ export const metadata: Metadata = { title: "Manage event" }
 /**
  * The organiser's view of one event.
  *
- * Who is coming, who is waiting, and the ability to call it off. The attendee
- * list comes from the service, which refuses anyone who is not running this
- * community - and returns names without email addresses, so this screen cannot
- * be turned into a mailing list by reading it.
+ * Who is coming, who is waiting, and the ability to correct it or call it off.
+ * The attendee list comes from the service, which refuses anyone who is not
+ * running this community - and returns names without email addresses, so this
+ * screen cannot be turned into a mailing list by reading it.
  */
 export default async function ManageEventPage({
   params,
@@ -58,18 +58,43 @@ export default async function ManageEventPage({
     (entry) => entry.state === "WAITLISTED",
   )
 
+  /**
+   * Once it has started the row records what happened rather than what is
+   * planned, and `updateEvent` refuses on exactly this. Offering the link
+   * anyway would send an organiser to a page that can only say no - and the
+   * same boundary has to be read here as there, or the button and the wall
+   * disagree about when an event stops being a plan.
+   */
+  const hasStarted = Date.parse(event.startsAt) <= Date.now()
+  const isEditable = event.status !== "CANCELLED" && !hasStarted
+
   return (
     <>
       <PageHeader
         title={event.title}
         description={`${formatDay(event.startsAt)}, ${formatTime(event.startsAt)}`}
         action={
-          <Link
-            href={`/events/${event.slug}`}
-            className={buttonVariants({ variant: "outline" })}
-          >
-            View as a student
-          </Link>
+          <div className="flex flex-wrap gap-2">
+            {/*
+              Only while there is something left to correct. A cancelled event
+              is a record of what was called off, not a draft, and one that has
+              already run is a record of what happened.
+            */}
+            {isEditable && (
+              <Link
+                href={`/events/${event.slug}/edit`}
+                className={buttonVariants({ variant: "outline" })}
+              >
+                Edit details
+              </Link>
+            )}
+            <Link
+              href={`/events/${event.slug}`}
+              className={buttonVariants({ variant: "outline" })}
+            >
+              View as a student
+            </Link>
+          </div>
         }
       />
 
