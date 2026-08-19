@@ -1,4 +1,4 @@
-import { and, asc, desc, eq, isNull, sql } from "drizzle-orm"
+import { and, asc, desc, eq, inArray, isNull, lte, sql } from "drizzle-orm"
 
 import { db } from "@/lib/db"
 import {
@@ -19,12 +19,16 @@ import {
 } from "@/lib/domain/event"
 import type { EventSummary, RegistrationState } from "@/lib/domain/types"
 import { createEventSchema } from "@/lib/schemas/event"
+import {
+  createNotification,
+  createNotifications,
+} from "@/lib/services/notifications"
 import { fail, ok, type ServiceResult } from "@/lib/services/result"
 
 /**
  * Events, and the registration loop.
  *
- * Two rules in here are worth reading before changing anything.
+ * Three rules in here are worth reading before changing anything.
  *
  * **Capacity is decided under a lock.** Every path that could hand out a seat
  * selects the event row `for update` first. Without it, two students clicking
@@ -37,6 +41,11 @@ import { fail, ok, type ServiceResult } from "@/lib/services/result"
  * transaction. Splitting that into a follow-up job means a window where the
  * seat exists and nobody holds it, and a failure mode where the seat is freed
  * and the promotion silently never runs.
+ *
+ * **Notifications are written in the same transaction as the state they
+ * describe.** A student who is told they are registered when the registration
+ * rolled back, or who takes a seat and is never told, has no way to find out
+ * which of the two happened. They commit together.
  */
 
 export type EventListing = EventSummary
@@ -367,16 +376,23 @@ export async function createEvent(args: {
  * Call off an event without deleting it.
  *
  * Registrations are kept deliberately. The people who signed up are exactly the
- * people who need to be told, and Phase 4's notifications will read this list.
+ * people who need to be told, so the same transaction that cancels the event
+ * reads that list and writes them each a notification. Waitlisted students are
+ * included: somebody waiting for a seat at an event that is not happening needs
+ * telling as much as somebody holding one.
  */
 export async function cancelEvent(args: {
   actorId: string
   eventId: string
-}): Promise<ServiceResult<{ id: string }>> {
+  now?: Date
+}): Promise<ServiceResult<{ id: string; notified: number }>> {
+  const now = args.now ?? new Date()
+
   return db.transaction(async (tx) => {
     const [event] = await tx
       .select({
         id: events.id,
+        title: events.title,
         status: events.status,
         communityId: events.communityId,
         viewerState: memberships.state,
@@ -404,10 +420,33 @@ export async function cancelEvent(args: {
 
     await tx
       .update(events)
-      .set({ status: "CANCELLED", cancelledAt: new Date() })
+      .set({ status: "CANCELLED", cancelledAt: now })
       .where(eq(events.id, args.eventId))
 
-    return ok({ id: args.eventId })
+    const affected = await tx
+      .select({ userId: eventRegistrations.userId })
+      .from(eventRegistrations)
+      .where(
+        and(
+          eq(eventRegistrations.eventId, args.eventId),
+          inArray(eventRegistrations.state, ["REGISTERED", "WAITLISTED"]),
+        ),
+      )
+
+    await createNotifications({
+      writer: tx,
+      notifications: affected.map(({ userId }) => ({
+        userId,
+        kind: "EVENT_REMINDER" as const,
+        title: `${event.title} has been cancelled`,
+        body: "The organisers have called this event off. You do not need to do anything.",
+        targetKind: "EVENT" as const,
+        targetId: args.eventId,
+        createdAt: now,
+      })),
+    })
+
+    return ok({ id: args.eventId, notified: affected.length })
   })
 }
 
@@ -419,7 +458,8 @@ export async function cancelEvent(args: {
  * be a lie to one of them.
  *
  * Idempotent in both states: a student who taps twice keeps the place they
- * already had rather than losing it.
+ * already had rather than losing it - and, importantly, is not sent a second
+ * confirmation, because the early return happens before the notification.
  */
 export async function registerForEvent(args: {
   userId: string
@@ -432,6 +472,7 @@ export async function registerForEvent(args: {
     const [event] = await tx
       .select({
         id: events.id,
+        title: events.title,
         status: events.status,
         startsAt: events.startsAt,
         registrationClosesAt: events.registrationClosesAt,
@@ -499,7 +540,55 @@ export async function registerForEvent(args: {
         .update(events)
         .set({ registeredCount: sql`${events.registeredCount} + 1` })
         .where(eq(events.id, args.eventId))
+
+      await createNotification({
+        writer: tx,
+        notification: {
+          userId: args.userId,
+          kind: "EVENT_REMINDER",
+          title: `You're registered for ${event.title}`,
+          body: "Your seat is confirmed. You can cancel from the event page if your plans change.",
+          targetKind: "EVENT",
+          targetId: args.eventId,
+          createdAt: now,
+        },
+      })
+
+      return ok(state)
     }
+
+    /**
+     * The student's place in the queue, counted under the same lock that just
+     * decided they were queued - so the number the notification quotes is the
+     * number that was true when it was written. Counting outside the
+     * transaction would let a concurrent registration change the answer between
+     * the decision and the message.
+     */
+    const [queue] = await tx
+      .select({ count: sql<number>`count(*)::int` })
+      .from(eventRegistrations)
+      .where(
+        and(
+          eq(eventRegistrations.eventId, args.eventId),
+          eq(eventRegistrations.state, "WAITLISTED"),
+          lte(eventRegistrations.createdAt, now),
+        ),
+      )
+
+    const position = queue?.count ?? 1
+
+    await createNotification({
+      writer: tx,
+      notification: {
+        userId: args.userId,
+        kind: "EVENT_REMINDER",
+        title: `You're #${position} on the waitlist for ${event.title}`,
+        body: "This event is full. If a seat frees up, the next person in the queue is moved in automatically.",
+        targetKind: "EVENT",
+        targetId: args.eventId,
+        createdAt: now,
+      },
+    })
 
     return ok(state)
   })
@@ -511,6 +600,10 @@ export async function registerForEvent(args: {
  * When a confirmed seat is released, the oldest waitlist entry takes it
  * immediately. `registeredCount` therefore stays put in that case - one student
  * left and one arrived - and only falls when there was nobody waiting.
+ *
+ * The promoted student is told in the same transaction that promotes them. This
+ * is the one notification a student cannot do without: nothing on the event page
+ * changed from their point of view until they are told to look at it again.
  */
 export async function cancelRegistration(args: {
   userId: string
@@ -521,7 +614,11 @@ export async function cancelRegistration(args: {
 
   return db.transaction(async (tx) => {
     const [event] = await tx
-      .select({ id: events.id, status: events.status })
+      .select({
+        id: events.id,
+        title: events.title,
+        status: events.status,
+      })
       .from(events)
       .where(eq(events.id, args.eventId))
       .for("update")
@@ -585,6 +682,19 @@ export async function cancelRegistration(args: {
       .update(eventRegistrations)
       .set({ state: "REGISTERED", promotedAt: now })
       .where(eq(eventRegistrations.id, next.id))
+
+    await createNotification({
+      writer: tx,
+      notification: {
+        userId: next.userId,
+        kind: "EVENT_REMINDER",
+        title: `You're off the waitlist for ${event.title}`,
+        body: "A seat opened up and it is yours. Your place is now confirmed.",
+        targetKind: "EVENT",
+        targetId: args.eventId,
+        createdAt: now,
+      },
+    })
 
     // The seat changed hands, so the count is unchanged on purpose.
     return ok({ promoted: next.userId })

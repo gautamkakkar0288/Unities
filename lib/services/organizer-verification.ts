@@ -22,6 +22,7 @@ import {
   requestVerificationSchema,
   reviewVerificationSchema,
 } from "@/lib/schemas/verification-request"
+import { createNotification } from "@/lib/services/notifications"
 import { fail, ok, type ServiceResult } from "@/lib/services/result"
 
 /**
@@ -271,10 +272,16 @@ export async function listVerificationRequests(args: {
 /**
  * Approve or reject, and apply the consequences.
  *
- * Approval does three things at once: the community becomes verified, the
- * person who asked becomes an organiser, and the decision is recorded. All
- * three in one transaction, because a verified club whose owner was not
- * promoted is a club that cannot create the events it was verified to run.
+ * Approval does four things at once: the community becomes verified, the person
+ * who asked becomes an organiser, they are told, and the decision is recorded.
+ * All four in one transaction, because a verified club whose owner was not
+ * promoted is a club that cannot create the events it was verified to run - and
+ * an organiser who was promoted without being told will not know to use it.
+ *
+ * The notification is filed as `MEMBERSHIP`, using the vocabulary that already
+ * exists rather than adding a kind. This is a change in the organiser's standing
+ * in their community; `MODERATION` is for reports and removals, and reusing it
+ * here would put a rejection in the same bucket as being sanctioned.
  */
 export async function reviewVerificationRequest(args: {
   reviewerId: string
@@ -366,6 +373,35 @@ export async function reviewVerificationRequest(args: {
             .where(eq(users.id, request.requestedById))
         }
       }
+    }
+
+    /**
+     * Tell the organiser.
+     *
+     * A rejection carries the reviewer's note when there is one, because "no"
+     * without a reason is an invitation to submit the same evidence again. The
+     * note is written by an admin, so it is quoted rather than paraphrased.
+     */
+    if (request.requestedById) {
+      await createNotification({
+        writer: tx,
+        notification: {
+          userId: request.requestedById,
+          kind: "MEMBERSHIP",
+          title:
+            decision === "APPROVED"
+              ? `${request.communityName} is now verified`
+              : `Verification for ${request.communityName} was not approved`,
+          body:
+            decision === "APPROVED"
+              ? "You can now publish events for this community."
+              : note
+                ? `Reviewer note: ${note}`
+                : "You can ask again with more evidence from the community page.",
+          targetKind: "COMMUNITY",
+          targetId: request.communityId,
+        },
+      })
     }
 
     await tx.insert(auditLog).values({
