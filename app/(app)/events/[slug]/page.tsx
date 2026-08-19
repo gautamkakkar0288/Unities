@@ -8,11 +8,13 @@ import { Alert } from "@/components/ui/alert"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent } from "@/components/ui/card"
 import { RegisterButton } from "@/features/events/components/register-button"
+import { SaveButton } from "@/features/saved/components/save-button"
 import { PageHeader } from "@/features/shell/components/page-header"
 import { eventKindLabel } from "@/lib/domain/event"
 import { describeRegistration, eventModeLabel } from "@/lib/domain/registration"
 import { formatDay, formatTime } from "@/lib/format"
 import { getEventBySlug } from "@/lib/services/events"
+import { isSaved } from "@/lib/services/saved"
 
 type Params = Promise<{ slug: string }>
 
@@ -35,6 +37,10 @@ export async function generateMetadata({
  * committing to a seat, and a one-tap register from a list produces exactly the
  * no-shows that make capacity meaningless.
  *
+ * Saving sits next to registering because they answer different questions -
+ * "I am going" and "remind me about this" - and a student who is not ready to
+ * commit needs somewhere to put the event other than their memory.
+ *
  * A cancelled event still renders. The people who need this page most are the
  * ones who already registered, and 404-ing them would leave them turning up.
  */
@@ -55,6 +61,12 @@ export default async function EventPage({ params }: { params: Params }) {
   // Drafts are not published, so to everyone but the future editing screen they
   // simply do not exist.
   if (!event || event.status === "DRAFT") notFound()
+
+  const saved = await isSaved({
+    viewerId: session.user.id,
+    targetKind: "EVENT",
+    targetId: event.id,
+  })
 
   const registration = describeRegistration(event, nowIso)
   const isCancelled = event.status === "CANCELLED"
@@ -183,13 +195,28 @@ export default async function EventPage({ params }: { params: Params }) {
               )}
             </dl>
 
-            {isCancelled ? (
-              <p className="text-body-sm text-muted-foreground">
-                Registration is closed because the event is not going ahead.
-              </p>
-            ) : (
-              <RegisterButton event={event} now={nowIso} />
-            )}
+            <div className="flex flex-wrap items-start gap-2">
+              {isCancelled ? (
+                <p className="text-body-sm text-muted-foreground">
+                  Registration is closed because the event is not going ahead.
+                </p>
+              ) : (
+                <RegisterButton event={event} now={nowIso} />
+              )}
+
+              {/*
+                Saving stays available on a cancelled event: the club may put on
+                something similar, and the bookmark is how a student finds their
+                way back to it.
+              */}
+              <SaveButton
+                targetKind="EVENT"
+                targetId={event.id}
+                label={event.title}
+                saved={saved}
+                revalidate={`/events/${event.slug}`}
+              />
+            </div>
           </CardContent>
         </Card>
       </div>
