@@ -8,6 +8,8 @@ type AppSidebarProps = {
   name: string
   email: string | null
   role: string
+  /** Unread notifications for this viewer, counted once by the layout. */
+  unreadCount?: number
 }
 
 /**
@@ -16,8 +18,16 @@ type AppSidebarProps = {
  * Fixed rather than part of the flex flow so the main column scrolls
  * independently - navigation should never scroll out of reach on a long feed.
  * Hidden below `lg`, where the bottom bar takes over.
+ *
+ * The count is attached by href rather than passed per item, so adding another
+ * badged destination later is a line here and not a change to the link.
  */
-export function AppSidebar({ name, email, role }: AppSidebarProps) {
+export function AppSidebar({
+  name,
+  email,
+  role,
+  unreadCount = 0,
+}: AppSidebarProps) {
   return (
     <aside className="fixed inset-y-0 left-0 z-40 hidden w-64 flex-col border-r border-border bg-card lg:flex">
       <div className="flex h-16 shrink-0 items-center px-6">
@@ -28,7 +38,10 @@ export function AppSidebar({ name, email, role }: AppSidebarProps) {
         <ul className="flex flex-col gap-1">
           {sidebarNav.map((item) => (
             <li key={item.href}>
-              <SidebarNavLink item={item} />
+              <SidebarNavLink
+                item={item}
+                badgeCount={item.href === "/notifications" ? unreadCount : 0}
+              />
             </li>
           ))}
         </ul>
