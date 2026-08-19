@@ -1,309 +1,314 @@
 # Cirqles
 
-The place where every student discovers the opportunities, communities, events,
-and activities happening around them.
+**Cirqles is where students discover everything happening around their
+university.** Events, communities, activities and opportunities on one campus,
+in one place, with the people who actually run them.
 
-Launching at **Chitkara University**, built so that a second campus is a row in
-a table rather than a rewrite.
+Built for Chitkara University first, with a data model that is multi-university
+from the start - a student belongs to a campus, and every query is scoped by it.
+
+> **Status of this branch.** This is `prototype/demo-database`, which adds a
+> local demo database, a seeded campus, and one-click demo sign-in. None of it
+> has been executed yet - it was written without network access, so
+> `npm install`, the seed and the test suite have not been run. See
+> [What works today](#what-works-today) for an honest per-screen breakdown, and
+> [Before the first run](#before-the-first-run) for the one command that is
+> still required.
 
 ---
 
-## Current status
+## What is Cirqles?
 
-Cirqles has a **working MVP: communities, verification, and events**. A student
-can sign up, verify their university email, onboard, join communities, have their
-club verified as an organiser, create and publish events, and register for them.
-All of this runs against PostgreSQL with real migrations.
+Most campus activity lives in WhatsApp groups, Instagram stories and posters
+that nobody sees twice. The result is that the students who would have come
+simply never find out.
 
-This table is the honest state of the project. A phase is only complete when
-database, service, authorization, UI, validation, error handling, tests, and a
-real end-to-end flow all work.
+Cirqles is the alternative: a verified, university-scoped feed of what is
+actually happening. Clubs publish; students discover, register, and turn up.
 
-One caveat stated plainly: every claim below is backed by the test suite and by
-CI, **not** by a recorded run in a browser. The manual script that would close
-that gap is committed at `docs/ENGINEERING/MVP_VALIDATION.md` and has not been
-executed yet.
+Three ideas the product is built on:
 
-| Phase                                     | Status      | What actually exists                                                                                                    |
-| ----------------------------------------- | ----------- | ----------------------------------------------------------------------------------------------------------------------- |
-| 0 — Foundation                            | ✅ Complete  | One branch on `main`, committed migrations, reproducible install, create chooser, proxy convention, README               |
-| 1 — Onboarding, communities, profile      | ✅ Complete  | Onboarding, directory, community detail, join/leave, proposals, moderator queue, profile — all on real data              |
-| 2 — University and organiser verification | ✅ Complete  | University email verification (console transport), organiser verification request/review/audit, role promotion           |
-| 3 — Events and registration               | 🟡 Code complete | Event schema, discovery, detail, creation, registration, capacity, waitlist, auto-promotion, organiser management — merged and CI-green, awaiting a recorded browser run |
-| 4 — Engagement (home, posts, reminders)   | Not started | Home renders static placeholder content                                                                                 |
-| 5 — Activities, search, moderation        | Not started | Domain types only                                                                                                       |
-| 6 — Launch hardening                      | Not started | —                                                                                                                       |
+- **University-verified.** Only `@chitkara.edu.in` addresses can register, so a
+  community is genuinely your campus rather than the open internet.
+- **Community-first.** Events belong to clubs, and clubs are verified by
+  administrators before they can publish. Trust is a property of the organiser,
+  not of the post.
+- **Actually usable.** Registration, capacity, waitlists and promotion work
+  properly, including the awkward cases - because an event platform that loses
+  someone's seat is worse than a poster.
 
-What is genuinely working today, end to end:
+---
 
-- Sign-up and sign-in with Auth.js credentials, hashed passwords, roles on the session
-- University email verification with a console transport (dev-only; SMTP not yet configured)
-- Route protection, plus a server-side session guard in the app shell
-- Onboarding: a new account is redirected into it and cannot skip it
-- The communities directory, with scope filtering and search
-- Community detail pages, including guidelines and who runs the community
-- Joining and leaving, including request-to-join and the last-owner rule
-- Proposing a community, with duplicate detection before submission
-- The moderator queue for approving or declining join requests
-- Profile: display name, interests, and the communities you belong to
-- **Organiser verification**: submit evidence → admin review → approve/reject → role promotion, with full audit log
-- **Events**: create, publish, discover, open event detail, register, capacity enforcement, waitlist, auto-promotion on cancellation
-- Organiser event management: cancel event, view registration list (names only, not emails)
-- A seed that populates Chitkara, the Tricity places, 17 interests, and their communities
-- An interactive prototype of all 16 screens, on fixture data, at `/prototype`
+## Features
 
-### Migration history
-
-| File | Covers |
+| Area | What it does |
 | --- | --- |
-| `drizzle/0000_certain_living_lightning.sql` | All Phase 0–1 tables (users, communities, memberships, interests, proposals, places) |
-| `drizzle/0001_unusual_midnight.sql` | Phase 2.3: `verification_requests`, `audit_log` |
-| `drizzle/0002_tired_speed_demon.sql` | Phase 3.1: `events`, `event_registrations` |
-
-What is **not** working, despite appearing to exist:
-
-- Home, Explore, Notifications, Saved, and Search are placeholder screens.
-- Production email (SMTP) is not configured; verification emails only print to the console.
-- Event editing is not implemented (organiser can cancel, but not edit after publish).
-- Avatars are read, never uploaded; there is no file storage.
-- Browser end-to-end validation requires a running Postgres instance with migrations applied.
-- No browser run has been recorded yet. In particular the capacity-1 waitlist
-  promotion — one student confirmed, a second waitlisted, the first cancels, the
-  second becomes confirmed — is covered by the service suite but has never been
-  watched happen through the UI.
-- Verification gating is undecided: what an account with an unverified email is
-  actually prevented from doing has not been settled or enforced. See
-  `docs/ENGINEERING/MVP_VALIDATION.md`.
-
+| **Accounts** | University-email sign-up, email verification, roles from student to platform admin. |
+| **Communities** | Official clubs, interest communities, city communities. Open, approval-based and invite-only joining. |
+| **Verification** | Clubs request verification; admins approve or reject with a note. An admin may not verify their own club. |
+| **Events** | Create, publish, edit and cancel. Kinds, modes, venues, fees, agendas, registration deadlines. |
+| **Registration** | Register, cancel, re-register. Capacity enforced under a row lock, so the last seat cannot be sold twice. |
+| **Waitlists** | Automatic queueing at capacity, ordered by when you joined. Freeing a seat promotes the longest-waiting student and keeps their original place in the queue. |
+| **Event editing** | Cancelled and started events are locked. Capacity cannot drop below confirmed registrations. Raising capacity promotes from the waitlist immediately. Slug and kind are immutable. |
+| **Moderation** | Reports with reasons and severity, a queue ordered by severity then age, and an audit trail for every privileged action. |
+| **Audit log** | Who did what, to what, and when. Readable only by reviewers. |
 
 ---
 
 ## Tech stack
 
-| Layer      | Choice                                                     |
-| ---------- | ---------------------------------------------------------- |
-| Framework  | Next.js 16 (App Router, Turbopack), React 19                |
-| Language   | TypeScript, strict                                          |
-| Database   | PostgreSQL via Drizzle ORM (`postgres` driver)              |
-| Auth       | Auth.js v5 (next-auth beta) with the Drizzle adapter        |
-| Validation | Zod                                                         |
-| Styling    | Tailwind CSS v4 with design tokens, Base UI primitives      |
-| Forms      | React Hook Form with the Zod resolver                       |
-| Testing    | Vitest, Testing Library, real Postgres for the db suites    |
-| CI         | GitHub Actions — a single verification matrix per pull request |
+- **Next.js 16** (App Router, server actions) and **React 19**
+- **PostgreSQL** via **Drizzle ORM** - and **PGlite** for the local demo
+  database, which is the same Postgres compiled to WebAssembly
+- **Auth.js v5** with a credentials provider and bcrypt
+- **Zod** for validation at every boundary
+- **Tailwind CSS 4** with a token-based design system
+- **Vitest** and Testing Library
 
----
-
-## Architecture
-
-One rule, applied everywhere:
+The layering is deliberate and enforced by review:
 
 ```
-UI  →  Server Action  →  Service  →  Database  →  UI refresh
+UI  →  Server Action  →  Service  →  Domain  →  Database
 ```
 
-```
-app/
-  (marketing)/     public site
-  (auth)/          sign-in, sign-up
-  (app)/           authenticated shell — home, explore, communities, create, profile
-  (prototype)/     fixture-data prototype, development only
-  design/          design-system gallery, development only
-  api/             Auth.js route handler
-components/ui/     design-system primitives
-features/          feature slices: components + server actions
-lib/
-  db/schema/       Drizzle tables (barrel re-exported by index.ts)
-  db/seed.ts       Chitkara, places, interests, communities
-  domain/          pure business rules, no I/O, heavily unit tested
-  schemas/         Zod input schemas shared by actions and services
-  services/        authorization + persistence, returns ServiceResult
-proxy.ts           route protection (Next 16 replacement for middleware.ts)
-auth.ts            full Auth.js config; auth.config.ts is the edge-safe half
-```
-
-The boundaries that matter:
-
-- **Business rules live in `lib/domain`**, never in a component. A rule in a
-  React component is a rule the server does not enforce.
-- **Authorization lives inside services**, not in the caller. A service is
-  responsible for refusing. The moderator queue is the clearest example: the
-  page asks for the list and renders the refusal, it does not decide who may
-  look.
-- **Services return `ServiceResult`** rather than throwing; the UI renders the
-  failure instead of showing a blank page. Server actions used by client
-  components return `ServiceFailure | void`, because a server-rendered screen
-  shows success by re-rendering.
-- **Components never query the database directly.**
-- **Services project, they do not return rows.** A server component serialises
-  whatever it is handed, so `select *` on `users` is how a password hash ends up
-  in a page payload.
+Components never query the database. Services own authorization and return
+projections rather than rows. Business rules live in `lib/domain` as pure
+functions, which is why they can be tested without a database at all.
 
 ---
 
 ## Local setup
 
-Requires Node 22+ and PostgreSQL 16+.
-
 ```bash
 git clone https://github.com/gautamkakkar0288/Unities.git
 cd Unities
 npm install
-cp .env.example .env.local
 ```
 
-Generate an auth secret and put it in `.env.local`:
+No `.env.local` is required for the demo. Without `DATABASE_URL`, Cirqles uses
+the local demo database automatically.
+
+### Before the first run
+
+The five newest tables - `saved_items`, `notifications`, `posts`, `reports` and
+`opportunities` - do not have a migration yet. Generate it once:
 
 ```bash
-npx auth secret
+npm run db:generate    # writes drizzle/00NN_*.sql
 ```
 
-Then create the database and start the app:
+This is not an oversight. Migrations in this repository are generated by
+`drizzle-kit` and never hand-written, and CI fails if a hand-written file
+disagrees with the schema. The generator could not run in the environment that
+wrote these tables, so the step is yours. Review the SQL before committing it,
+as with every other migration here.
+
+### Then
 
 ```bash
-createdb cirqles
-npm run db:migrate
-npm run db:seed
-npm run dev
+npm run db:setup       # create the demo database, migrate, seed
+npm run dev            # http://localhost:3000
 ```
-
-### A note on `.npmrc`
-
-`.npmrc` sets `legacy-peer-deps=true`. This is not hiding a real
-incompatibility: `next-auth@5.0.0-beta.29` declares a peer range of
-`next@^14 || ^15`, the project runs `next@16`, and npm v7+ treats that as a hard
-install failure. The beta works with Next 16 — CI builds, typechecks, and runs
-the suite against it — so the stale peer declaration is the thing that is wrong,
-not the dependency. Pinning Next back to 15 to satisfy a beta's metadata would
-be the more destructive fix.
-
-Remove the flag once next-auth ships a peer range that admits Next 16.
 
 ---
 
-## Environment variables
+## Demo database
 
-| Variable              | Required        | Purpose                                                                        |
-| --------------------- | --------------- | ------------------------------------------------------------------------------ |
-| `DATABASE_URL`        | yes             | PostgreSQL connection string                                                     |
-| `AUTH_SECRET`         | yes             | Auth.js JWT/session signing — `npx auth secret`                                  |
-| `NEXT_PUBLIC_APP_URL` | recommended     | Absolute URLs for links and OG tags                                              |
-| `TEST_DATABASE_URL`   | for db tests    | Separate database for integration tests; when unset those suites skip themselves |
-| `ENABLE_PROTOTYPE`    | no              | Exposes `/prototype` and `/design`. On in development, off in production          |
+The demo runs on **PGlite** - Postgres itself, compiled to WebAssembly, running
+in-process against `data/cirqles-demo/`. Nothing to install, no Docker, no
+service to start. Resetting is deleting a directory.
 
-Never point `TEST_DATABASE_URL` at a database you care about — the suites
-truncate tables.
+It is not a Postgres-like database. It is Postgres, so `jsonb`, `ON CONFLICT`
+and the `SELECT ... FOR UPDATE` lock that the waitlist depends on all behave
+exactly as they will in production, and the migrations in `drizzle/` apply
+unchanged.
+
+Switching to a real database is one environment variable:
+
+| Environment | Database |
+| --- | --- |
+| No `DATABASE_URL` | Local demo database |
+| `DATABASE_URL` set | PostgreSQL |
+| `CIRQLES_DB=demo` | Demo, even when `DATABASE_URL` is set |
+
+No application code changes, because nothing above `lib/db/driver.ts` knows
+which one answered. Full reasoning, including why SQLite was rejected, is in
+[`docs/ENGINEERING/DEMO_DATABASE.md`](docs/ENGINEERING/DEMO_DATABASE.md).
+
+### Commands
+
+| Command | Effect |
+| --- | --- |
+| `npm run db:setup` | Create the demo database if absent, migrate, seed. Safe to re-run. |
+| `npm run db:reset` | **Destructive.** Delete `data/cirqles-demo/`, then rebuild and reseed. |
+| `npm run db:seed` | Day-one data only: campus, interests, interest communities. |
+| `npm run db:seed:demo` | The showcase population on top of it. |
+| `npm run demo` | `db:reset` then `dev`. Destructive - it is the pre-demo command. |
 
 ---
 
-## Commands
+## Demo accounts
 
-```bash
-# development
-npm run dev              # start the dev server
-npm run build            # production build
-npm run start            # serve the production build
+All three use the password **`demo1234`**. There is a button for each on the
+sign-in page, and the normal email form works with them too.
 
-# quality gates — all four must pass before a pull request is ready
-npm run typecheck        # tsc --noEmit
-npm run lint             # eslint
-npm run test             # vitest run
-npm run build
+| Role | Email | What you can show |
+| --- | --- | --- |
+| Student | `gautam1153.becse24@chitkara.edu.in` | Joined communities, upcoming registrations, saved items, unread notifications, a waitlist place |
+| Organiser | `organizer.codingclub@chitkara.edu.in` | Owns three verified clubs; can create, edit, cancel and manage their events |
+| Admin | `admin.cirqles@chitkara.edu.in` | Verification queue, moderation reports, audit log |
 
-npm run test:watch       # vitest in watch mode
-npm run format           # prettier --write .
-npm run format:check     # prettier --check .
+The demo buttons are not a bypass. They submit the seeded account's real
+credentials to the same provider the form uses, so the same bcrypt check runs
+and the role comes from the database row - never from the browser. They do not
+render when `DATABASE_URL` is set, and the server action refuses even if called
+directly.
 
-# database
-npm run db:generate      # diff the schema and write a migration into drizzle/
-npm run db:migrate       # apply committed migrations — this is how databases change
-npm run db:seed          # Chitkara, Tricity, 17 interests, their communities
-npm run db:studio        # Drizzle Studio
-npm run db:push          # dev-only shortcut; never used against staging or production
-```
+**Every identity in the demo data is fictional.** The email pattern imitates
+Chitkara's real format, but the hundred students are generated from name lists
+and correspond to nobody.
 
-### Migrations
+---
 
-Migrations are committed SQL under `drizzle/`, generated by drizzle-kit and
-applied with `db:migrate`. `db:push` mutates a database to match the schema
-without leaving a record of how, which makes it useless for a deployment you
-need to reproduce or roll back. It stays available for throwaway local work
-only.
+## The seeded campus
 
-Changing the schema:
+Generated in dependency order, so the relationships make sense rather than being
+random rows:
 
-1. Edit the table in `lib/db/schema/` and export it from `lib/db/schema/index.ts`.
-2. `npm run db:generate` — review the SQL it produces before committing it.
-3. `npm run db:migrate` against a local database.
-4. `npm run db:seed`, then `npm run test`.
-5. Commit the schema change **and** the generated files in `drizzle/` together.
+- **100 students** across seven programmes and four graduating years, each with
+  interests, community memberships, registrations and saved items
+- **19 clubs** plus 17 interest communities and 2 city communities
+- **34 events** - upcoming, nearly full, full with a queue, free-entry, and two
+  already finished so history is not empty
+- **~700 registrations** including real waitlists, ordered by when each student
+  joined
+- **15 announcements**, **12 opportunities**, and notifications generated from
+  the registrations that actually exist, so every one of them opens something
+  real
 
-`drizzle.config.ts` points `schema` at the barrel **file**, not the directory.
-Given a directory, drizzle-kit silently matches nothing, builds an empty model,
-and reports success while writing no migration.
+Deterministic: a fixed-seed generator, so a reset five minutes before a
+presentation produces identical data and a rehearsed walkthrough stays true.
+Dates are relative to run time, so upcoming events are always upcoming.
+
+Counts are derived, never typed. `registered_count` is written from the count of
+confirmed rows and `member_count` from the count of memberships - a counter that
+disagrees with its rows is what makes a working waitlist look broken.
+
+---
+
+## What works today
+
+Being specific, because a demo that promises more than it does is worse than one
+that promises less.
+
+| Screen | State |
+| --- | --- |
+| Sign-up, sign-in, email verification, onboarding | Working, database-backed |
+| Demo sign-in buttons | Working (this branch) |
+| Communities list and community page | Working, with join/leave |
+| Events list and event page | Working |
+| Registration, cancellation, waitlist, promotion | Working |
+| Event creation, editing, cancellation, management | Working |
+| Admin verification queue and audit log | Working |
+| Profile | Working |
+| **Home feed** | **Placeholder.** Tables and seed data exist; the page and ranking service do not. |
+| **Explore** | **Placeholder.** |
+| **Search** | **Placeholder.** |
+| **Saved** | **Placeholder.** `saved_items` and seeded saves exist; no UI yet. |
+| **Notifications** | **Placeholder.** `notifications` and seeded rows exist; no UI yet. |
+| **Posts, opportunities, reports** | Schema and seed data only; no screens yet. |
+| **Organiser dashboard** | Event management works per-event; no aggregate dashboard yet. |
+
+So the honest summary of this branch: the data layer and the campus behind the
+showcase are built, and five screens still need building on top of them.
+
+---
+
+## Showcase scenarios
+
+Six walkthroughs that work end to end today. Roughly eight minutes.
+
+### 1. Verified sign-up (1 min)
+
+Open `/sign-up`, enter `someone@gmail.com`. It is refused, with a reason. Enter a
+`@chitkara.edu.in` address and it proceeds. This is the trust argument in twenty
+seconds.
+
+### 2. Discover and register (2 min)
+
+**Continue as Demo Student.** Open `/communities`, then Chitkara Coding Club -
+members, events, announcements. Open **Chitkara Hacks 2026** and register.
+Reload: the seat persisted, because it is a row and not component state.
+
+### 3. Join a community (30 sec)
+
+Join Chitkara AI Society. Reload. Still joined, and the member count moved.
+
+### 4. The waitlist (3 min) - the one worth showing
+
+**Startup Office Hours** has one seat. It is taken, and the demo student is
+queued behind it.
+
+1. As the student, open the event. You are on the waitlist.
+2. Sign in as the **organiser** and open that event's management screen.
+3. Cancel the confirmed registration, or raise capacity to 2.
+4. Back as the student: registered. Not by a background job - promotion happened
+   inside the same transaction that freed the seat, and the promoted student kept
+   the queue timestamp that earned them the place.
+
+### 5. Editing has rules (1 min)
+
+As the organiser, edit a published event. Try to set capacity below the number
+of confirmed registrations: refused, with the number. Note that the slug and the
+event kind cannot be changed at all - people have the link, and a workshop
+quietly becoming a tournament is not an edit. Raise capacity instead, and the
+waitlist promotes as you save.
+
+### 6. Admin (1 min)
+
+**Continue as Demo Admin.** The verification queue holds real pending clubs.
+Approve one, then open the audit log: the decision is recorded with actor,
+target and summary. An admin cannot verify a club they own.
 
 ---
 
 ## Testing
 
 ```bash
-npm run test                                    # pure suites; db suites skip
-TEST_DATABASE_URL=postgres://... npm run test   # everything, including db suites
+npm run typecheck
+npm run lint
+npm run test
+npm run build
 ```
 
-Domain and schema logic is unit tested with no I/O. Service behaviour that
-depends on transactions, unique constraints, or count arithmetic is tested
-against a real PostgreSQL instance — a mock cannot be wrong about a unique
-constraint, which is precisely the thing worth testing. The same reasoning
-applies to authorization: `lib/services/pending-requests.db.test.ts` asks the
-real database who moderates, because that answer is the only thing keeping a
-private queue private.
+Domain rules are tested as pure functions. Service tests run against a real
+Postgres and skip themselves when no database is configured - so a green run
+with no `DATABASE_URL` has *not* exercised the registration or waitlist logic.
+With the demo database available, `CIRQLES_DB=demo` lets those suites run
+locally for the first time.
 
-Component tests cover the states a screen can be in - loading, empty, submitted,
-and each way a service can refuse - since a form that cannot show a failure is a
-form that lies.
-
----
-
-## Development workflow
-
-Every feature, in order:
-
-1. Read the existing domain rules, schema, services, and decisions first.
-2. Schema → migration → seed, if the database needs to change.
-3. Business rules into `lib/domain` or `lib/services`.
-4. Tests for the service, before any UI depends on it.
-5. Server action wiring the UI to the service.
-6. UI with the existing design-system primitives.
-7. Every state handled: loading, empty, success, validation error, authorization
-   error, server error.
-8. `typecheck`, `lint`, `test`, `build` — then click through the flow yourself.
-
-A feature is not done because a component renders. It is done when a real user
-action reaches the database and comes back.
-
-**Read the file before you write it.** Several components take optional props
-that exist because a caller elsewhere needs them - the interest picker is used by
-both onboarding and the profile, and the community card is used by five
-prototype screens. Replacing one of these with a fresh version compiles locally
-and breaks a screen you never opened.
-
-## Branches and pull requests
-
-- Branch from `main` as `phase-N/short-description`.
-- One phase or one vertical slice per pull request. Do not stack seven branches
-  on each other — this repository already learned that lesson.
-- CI runs the whole verification matrix on every pull request and posts the
-  result as a comment, including the SQL any migration step generated.
-- Do not merge on red. Do not describe a feature as complete when only its UI
-  exists.
+The last recorded full run was 268 passed, 142 skipped - the skips being those
+database suites.
 
 ---
 
 ## Documentation
 
-- `PRD.md` — product requirements
-- `DESIGN_SYSTEM.md` — tokens, primitives, usage
-- `docs/` — UX, engineering, and the numbered decision log (D1…D37); the log is
-  the reason things are the way they are, and is worth reading before changing
-  a model
+| Document | Contents |
+| --- | --- |
+| [`PRD.md`](PRD.md) | Product requirements and direction |
+| [`DESIGN_SYSTEM.md`](DESIGN_SYSTEM.md) | Tokens, type scale, components |
+| [`docs/ENGINEERING/ARCHITECTURE.md`](docs/ENGINEERING/ARCHITECTURE.md) | Layering and boundaries |
+| [`docs/ENGINEERING/DATABASE.md`](docs/ENGINEERING/DATABASE.md) | Schema decisions, including designs considered and rejected |
+| [`docs/ENGINEERING/DEMO_DATABASE.md`](docs/ENGINEERING/DEMO_DATABASE.md) | The demo database, and why not SQLite |
+| [`docs/ENGINEERING/MVP_VALIDATION.md`](docs/ENGINEERING/MVP_VALIDATION.md) | Manual browser validation script and recorded outcomes |
+
+---
+
+## A note on validation
+
+`MVP_VALIDATION.md` records what has and has not been verified in a browser, and
+it is kept accurate rather than optimistic. As of the last entry, the automated
+checks passed and the manual browser flows had **not** been run, because no local
+PostgreSQL was available. The demo database removes that obstacle; the entry
+will be updated when the flows are actually clicked through, and not before.
