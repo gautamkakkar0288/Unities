@@ -5,6 +5,7 @@ import { afterAll, beforeAll, beforeEach, describe, expect, it } from "vitest"
 
 import { db } from "@/lib/db"
 import {
+  auditLog,
   communities,
   eventRegistrations,
   events,
@@ -12,6 +13,7 @@ import {
   memberships,
   users,
 } from "@/lib/db/schema"
+import { AUDIT_ACTIONS } from "@/lib/domain/audit"
 import { updateEvent } from "@/lib/services/event-editing"
 import { registerForEvent } from "@/lib/services/events"
 
@@ -21,8 +23,8 @@ import { registerForEvent } from "@/lib/services/events"
  * The rules themselves are covered purely in `lib/domain/event-edit.test.ts`.
  * What needs a database is what the rules cannot see: that a refused edit
  * leaves the row untouched, that raising capacity moves the waitlist inside the
- * same transaction, and that the address students already have keeps working
- * after a retitle.
+ * same transaction, that the address students already have keeps working after
+ * a retitle, and that the queue ordering survives a promotion.
  */
 
 const hasDatabase = Boolean(process.env.DATABASE_URL)
@@ -52,7 +54,21 @@ const CALLED_OFF = "ee-called-off"
 const ALREADY_RAN = "ee-already-ran"
 const IN_UNVERIFIED = "ee-in-unverified"
 
+const EVENT_IDS = [ONE_SEAT, ROOMY, CALLED_OFF, ALREADY_RAN, IN_UNVERIFIED]
+
+/**
+ * Audit rows are deleted by target, not by actor.
+ *
+ * `auditLog.actorId` is `set null` on purpose - deleting an account must not be
+ * a way to erase what it did - so removing the fixture users would leave these
+ * rows behind with a null actor, and the next run would count them.
+ */
+async function clearAuditRows() {
+  await db.delete(auditLog).where(inArray(auditLog.targetId, EVENT_IDS))
+}
+
 async function cleanup() {
+  await clearAuditRows()
   await db
     .delete(eventRegistrations)
     .where(inArray(eventRegistrations.userId, USER_IDS))
@@ -65,6 +81,7 @@ async function cleanup() {
 
 /** Rebuilt before every test, because every test here writes. */
 async function resetEvents() {
+  await clearAuditRows()
   await db
     .delete(eventRegistrations)
     .where(inArray(eventRegistrations.userId, USER_IDS))
@@ -179,6 +196,38 @@ async function stateOf(userId: string, eventId: string) {
     .limit(1)
 
   return row?.state ?? null
+}
+
+/** The whole queue entry, for the assertions that care about its ordering. */
+async function queueEntry(userId: string, eventId: string) {
+  const [row] = await db
+    .select({
+      state: eventRegistrations.state,
+      createdAt: eventRegistrations.createdAt,
+      promotedAt: eventRegistrations.promotedAt,
+    })
+    .from(eventRegistrations)
+    .where(
+      and(
+        eq(eventRegistrations.userId, userId),
+        eq(eventRegistrations.eventId, eventId),
+      ),
+    )
+    .limit(1)
+
+  return row ?? null
+}
+
+async function auditRowsFor(eventId: string) {
+  return db
+    .select({
+      action: auditLog.action,
+      actorId: auditLog.actorId,
+      targetKind: auditLog.targetKind,
+      summary: auditLog.summary,
+    })
+    .from(auditLog)
+    .where(eq(auditLog.targetId, eventId))
 }
 
 /**
@@ -363,6 +412,31 @@ describe.skipIf(!hasDatabase)("updateEvent", () => {
       if (result.ok) return
       expect(result.code).toBe("INVALID")
     })
+
+    it("preserves the registrations through an ordinary edit", async () => {
+      // The reason editing exists at all instead of cancel-and-recreate: a
+      // moved room must not cost an organiser the students who already said
+      // they are coming.
+      await queueTwoBehindTheSeat()
+      const before = await queueEntry(STUDENT_A, ONE_SEAT)
+
+      const result = await updateEvent({
+        actorId: OWNER,
+        input: edit({ title: "Renamed and moved", venue: "Lab 9" }),
+        now: NOW,
+      })
+
+      expect(result.ok).toBe(true)
+
+      const after = await queueEntry(STUDENT_A, ONE_SEAT)
+      expect(after?.state).toBe("REGISTERED")
+      expect(after?.createdAt.toISOString()).toBe(
+        before?.createdAt.toISOString(),
+      )
+      expect(await stateOf(STUDENT_B, ONE_SEAT)).toBe("WAITLISTED")
+      expect(await stateOf(STUDENT_C, ONE_SEAT)).toBe("WAITLISTED")
+      expect((await storedEvent(ONE_SEAT))?.registeredCount).toBe(1)
+    })
   })
 
   describe("capacity, and the queue behind it", () => {
@@ -437,6 +511,35 @@ describe.skipIf(!hasDatabase)("updateEvent", () => {
       expect((await storedEvent(ONE_SEAT))?.registeredCount).toBe(2)
     })
 
+    it("leaves the queue timestamp alone when it promotes", async () => {
+      // `createdAt` is the queue key, and it is the student's place in line.
+      // Stamping it with the promotion time would look right on their own
+      // screen and silently move them behind everybody still waiting, so the
+      // next freed seat would go to the wrong person.
+      await queueTwoBehindTheSeat()
+      const before = await queueEntry(STUDENT_B, ONE_SEAT)
+      expect(before?.state).toBe("WAITLISTED")
+      expect(before?.promotedAt).toBeNull()
+
+      await updateEvent({
+        actorId: OWNER,
+        input: edit({ capacity: 2 }),
+        now: NOW,
+      })
+
+      const after = await queueEntry(STUDENT_B, ONE_SEAT)
+      expect(after?.state).toBe("REGISTERED")
+      expect(after?.createdAt.toISOString()).toBe(
+        before?.createdAt.toISOString(),
+      )
+      // Set, so the promotion is distinguishable from an ordinary registration.
+      expect(after?.promotedAt?.toISOString()).toBe(NOW.toISOString())
+
+      // And untouched for the student who did not move.
+      const stayed = await queueEntry(STUDENT_C, ONE_SEAT)
+      expect(stayed?.promotedAt).toBeNull()
+    })
+
     it("lets everybody in when the limit is removed", async () => {
       await queueTwoBehindTheSeat()
 
@@ -455,7 +558,20 @@ describe.skipIf(!hasDatabase)("updateEvent", () => {
       expect((await storedEvent(ONE_SEAT))?.registeredCount).toBe(3)
     })
 
-    it("promotes nobody when capacity does not change", async () => {
+    it("promotes nobody when no seats were freed", async () => {
+      /**
+       * Named for what is actually guaranteed. `seatsAvailableAfter` compares
+       * the new capacity against the registered count and never against the old
+       * capacity, so "the capacity did not change" is not the condition being
+       * tested here - "there is no room" is. On a full event the two coincide,
+       * which is why this reads as though it checked the former.
+       *
+       * The distinction is not academic: an event with a free seat and somebody
+       * waiting would promote on a venue-only edit. Nothing can currently reach
+       * that state, because both `registerForEvent` and `cancelRegistration`
+       * keep the queue empty while seats remain - so this is a note for
+       * whoever adds a third way to free a seat, not a live bug.
+       */
       await queueTwoBehindTheSeat()
 
       const result = await updateEvent({
@@ -484,6 +600,97 @@ describe.skipIf(!hasDatabase)("updateEvent", () => {
       if (!result.ok) return
       expect(result.data.promoted).toEqual([])
       expect((await storedEvent(ONE_SEAT))?.registeredCount).toBe(1)
+    })
+  })
+
+  /**
+   * The trail.
+   *
+   * `events` has `created_at` and `cancelled_at` and no `updated_at`, so this
+   * row is the only record that a listing students committed to has changed.
+   * Until notifications exist it is also the only way to answer "was the venue
+   * always Lab 9?", which is a question an organiser will eventually be asked.
+   */
+  describe("the record of the edit", () => {
+    it("writes one audit row naming the actor and the event", async () => {
+      await updateEvent({
+        actorId: OWNER,
+        input: edit({ title: "Intro to Robotics", venue: "Lab 7" }),
+        now: NOW,
+      })
+
+      const rows = await auditRowsFor(ONE_SEAT)
+      expect(rows).toHaveLength(1)
+      expect(rows[0]?.action).toBe(AUDIT_ACTIONS.eventEdited)
+      expect(rows[0]?.actorId).toBe(OWNER)
+      expect(rows[0]?.targetKind).toBe("EVENT")
+      // Readable on its own, after the event row is gone.
+      expect(rows[0]?.summary).toContain("Intro to Robotics")
+      expect(rows[0]?.summary).toContain("Robotics")
+    })
+
+    it("says so when the edit let the waitlist in", async () => {
+      // The consequence that is invisible afterwards: the event row cannot show
+      // that two students came in because seats were added rather than because
+      // they registered.
+      await queueTwoBehindTheSeat()
+
+      await updateEvent({
+        actorId: OWNER,
+        input: edit({ capacity: null }),
+        now: NOW,
+      })
+
+      const rows = await auditRowsFor(ONE_SEAT)
+      expect(rows).toHaveLength(1)
+      expect(rows[0]?.summary).toContain("2 students")
+      expect(rows[0]?.summary).toContain("waitlist")
+    })
+
+    it("records nothing when the edit was refused", async () => {
+      // A log that records attempts as though they happened is worse than no
+      // log, because it cannot be trusted to answer what actually changed. The
+      // insert is inside the transaction, so a refusal has to leave no trace.
+      const forbidden = await updateEvent({
+        actorId: MEMBER,
+        input: edit({ title: "Hijacked" }),
+        now: NOW,
+      })
+      expect(forbidden.ok).toBe(false)
+      expect(await auditRowsFor(ONE_SEAT)).toHaveLength(0)
+
+      const cancelled = await updateEvent({
+        actorId: OWNER,
+        input: edit({ eventId: CALLED_OFF, title: "Back on again" }),
+        now: NOW,
+      })
+      expect(cancelled.ok).toBe(false)
+      expect(await auditRowsFor(CALLED_OFF)).toHaveLength(0)
+
+      const unverified = await updateEvent({
+        actorId: OWNER,
+        input: edit({ eventId: IN_UNVERIFIED, title: "Rewritten" }),
+        now: NOW,
+      })
+      expect(unverified.ok).toBe(false)
+      expect(await auditRowsFor(IN_UNVERIFIED)).toHaveLength(0)
+    })
+
+    it("records each edit separately", async () => {
+      // Two corrections are two facts. Collapsing them would lose the order the
+      // venue moved in, which is the only thing that makes the trail useful.
+      await updateEvent({
+        actorId: OWNER,
+        input: edit({ venue: "Lab 7" }),
+        now: NOW,
+      })
+      await updateEvent({
+        actorId: OWNER,
+        input: edit({ venue: "Lab 9" }),
+        now: new Date(NOW.getTime() + 60_000),
+      })
+
+      expect(await auditRowsFor(ONE_SEAT)).toHaveLength(2)
     })
   })
 })
