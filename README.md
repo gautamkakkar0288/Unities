@@ -7,13 +7,14 @@ in one place, with the people who actually run them.
 Built for Chitkara University first, with a data model that is multi-university
 from the start - a student belongs to a campus, and every query is scoped by it.
 
-> **Status of this branch.** This is `prototype/demo-database`, which adds a
-> local demo database, a seeded campus, and one-click demo sign-in. None of it
-> has been executed yet - it was written without network access, so
-> `npm install`, the seed and the test suite have not been run. See
-> [What works today](#what-works-today) for an honest per-screen breakdown, and
-> [Before the first run](#before-the-first-run) for the one command that is
-> still required.
+> **Status of this branch.** This is `phase-4/saved-and-notifications`, which
+> builds the Saved and Notifications screens on top of the demo database added in
+> `prototype/demo-database`. None of it has been executed - it was written
+> without network access, without PostgreSQL and without a browser, so
+> `npm install`, the migration generator, the seed and the test suite have not
+> been run. See [What works today](#what-works-today) for an honest per-screen
+> breakdown, and [Before the first run](#before-the-first-run) for the one
+> command that is still required.
 
 ---
 
@@ -50,6 +51,8 @@ Three ideas the product is built on:
 | **Registration** | Register, cancel, re-register. Capacity enforced under a row lock, so the last seat cannot be sold twice. |
 | **Waitlists** | Automatic queueing at capacity, ordered by when you joined. Freeing a seat promotes the longest-waiting student and keeps their original place in the queue. |
 | **Event editing** | Cancelled and started events are locked. Capacity cannot drop below confirmed registrations. Raising capacity promotes from the waitlist immediately. Slug and kind are immutable. |
+| **Saved items** | Bookmark events, communities and opportunities. One control everywhere, one row per save, enforced by a unique constraint. |
+| **Notifications** | Written by the flows that cause them - registration, waitlist, promotion, cancellation, verification - inside the same transaction. Unread count in the navigation, mark one or all read. |
 | **Moderation** | Reports with reasons and severity, a queue ordered by severity then age, and an audit trail for every privileged action. |
 | **Audit log** | Who did what, to what, and when. Readable only by reviewers. |
 
@@ -186,6 +189,11 @@ random rows:
   the registrations that actually exist, so every one of them opens something
   real
 
+The demo student starts with saved events and communities drawn from their own
+interests - coding, AI, startups, technology - rather than at random, and with a
+mixture of read and unread notifications so the badge is not zero on the first
+screen.
+
 Deterministic: a fixed-seed generator, so a reset five minutes before a
 presentation produces identical data and a rehearsed walkthrough stays true.
 Dates are relative to run time, so upcoming events are always upcoming.
@@ -193,6 +201,64 @@ Dates are relative to run time, so upcoming events are always upcoming.
 Counts are derived, never typed. `registered_count` is written from the count of
 confirmed rows and `member_count` from the count of memberships - a counter that
 disagrees with its rows is what makes a working waitlist look broken.
+
+---
+
+## Showcase behaviour: Saved and Notifications
+
+What these two screens actually do, in the order a demo would show it.
+
+### Saving
+
+The bookmark control appears on event cards, the event page, community cards and
+opportunity cards, and it is one component in all four places. Pressing it calls
+a server action, which checks the session, validates the target kind against the
+allowed list, confirms the thing exists, and writes one row.
+
+Saving twice leaves one bookmark. That is guaranteed by
+`saved_items_once_per_target` and `ON CONFLICT DO NOTHING`, not by the button
+being disabled - two open tabs and a retried request converge on the same state.
+
+The button updates immediately and reverts if the write fails. The database is
+the source of truth: reload and the state is whatever was committed.
+
+### Viewing Saved
+
+`/saved` lists real rows, newest save first, with All / Events / Communities /
+Opportunities filters in the URL - so a filtered view can be linked and
+reloaded. Saved events carry their real registration state, which is why the
+Saved page can show a working Register button rather than a decorative one.
+
+Each filter has its own empty state with a route into Explore. Anything that has
+since been deleted or archived is dropped rather than rendered as a dead card.
+
+### Notifications from real actions
+
+Every notification on this screen was written by a service, inside the
+transaction that changed the state it describes:
+
+| Action | Notification |
+| --- | --- |
+| Register for an event | "You're registered for ..." |
+| Register for a full event | "You're #N on the waitlist for ..." - the position counted under the same lock |
+| A seat frees up | "You're off the waitlist for ...", to the promoted student |
+| Organiser cancels an event | Everyone registered *and* everyone waiting is told |
+| Admin approves or rejects verification | The organiser is told, with the reviewer's note when there is one |
+
+Nothing lets a browser create a notification for anybody. There is no such
+action, by design - a notification is a claim that something happened.
+
+### Reading them
+
+`/notifications` shows unread first, then everything grouped Today / Yesterday /
+Earlier. Tapping one marks it read and follows it to the event or community it is
+about; the link is resolved from the target at read time, so it is never a URL
+that 404s. "Mark all read" clears the rest and disappears when there is nothing
+unread.
+
+The unread count next to Notifications in the sidebar, the top bar and the mobile
+bar comes from one query in the layout. It falls as notifications are read,
+vanishes at zero, survives a reload, and is scoped to the signed-in student.
 
 ---
 
@@ -204,29 +270,26 @@ that promises less.
 | Screen | State |
 | --- | --- |
 | Sign-up, sign-in, email verification, onboarding | Working, database-backed |
-| Demo sign-in buttons | Working (this branch) |
+| Demo sign-in buttons | Working |
 | Communities list and community page | Working, with join/leave |
-| Events list and event page | Working |
-| Registration, cancellation, waitlist, promotion | Working |
+| Events list and event page | Working, with save and registration |
+| Registration, cancellation, waitlist, promotion | Working, and each writes a notification |
 | Event creation, editing, cancellation, management | Working |
-| Admin verification queue and audit log | Working |
+| **Saved** | **Working (this branch).** Real rows, filters, counts, empty states. |
+| **Notifications** | **Working (this branch).** Unread section, day grouping, mark one/all read, navigation badge. |
+| Admin verification queue and audit log | Working; a decision now notifies the organiser |
 | Profile | Working |
 | **Home feed** | **Placeholder.** Tables and seed data exist; the page and ranking service do not. |
 | **Explore** | **Placeholder.** |
 | **Search** | **Placeholder.** |
-| **Saved** | **Placeholder.** `saved_items` and seeded saves exist; no UI yet. |
-| **Notifications** | **Placeholder.** `notifications` and seeded rows exist; no UI yet. |
-| **Posts, opportunities, reports** | Schema and seed data only; no screens yet. |
+| **Posts, opportunities, reports** | Schema and seed data only; opportunities appear on Saved, but have no screens of their own. |
 | **Organiser dashboard** | Event management works per-event; no aggregate dashboard yet. |
-
-So the honest summary of this branch: the data layer and the campus behind the
-showcase are built, and five screens still need building on top of them.
 
 ---
 
 ## Showcase scenarios
 
-Six walkthroughs that work end to end today. Roughly eight minutes.
+Eight walkthroughs that work end to end. Roughly ten minutes.
 
 ### 1. Verified sign-up (1 min)
 
@@ -264,11 +327,33 @@ event kind cannot be changed at all - people have the link, and a workshop
 quietly becoming a tournament is not an edit. Raise capacity instead, and the
 waitlist promotes as you save.
 
-### 6. Admin (1 min)
+### 6. Saving (1 min)
+
+As the student, bookmark an event from a card and another from its own page. Open
+`/saved`: both are there, newest first, alongside the seeded saves. Filter to
+Communities. Unsave one and it goes. Reload - every one of those states came back
+from the database.
+
+### 7. Notifications are real (2 min) - the other one worth showing
+
+1. As the student, note the count on the bell.
+2. Open `/notifications`: seeded confirmations and a waitlist notice, unread
+   first.
+3. Tap one. It goes to the event, and the count falls by one.
+4. Now register for any event you have not registered for, and come back. There
+   is a new notification, written by the registration itself.
+5. Register for **Startup Office Hours** - it is full - and you are told your
+   position in the queue.
+6. Have the organiser free that seat, then look again: "You're off the waitlist."
+
+The point of step 4 onwards is that none of it was seeded.
+
+### 8. Admin (1 min)
 
 **Continue as Demo Admin.** The verification queue holds real pending clubs.
 Approve one, then open the audit log: the decision is recorded with actor,
-target and summary. An admin cannot verify a club they own.
+target and summary. The organiser gets a notification about it. An admin cannot
+verify a club they own.
 
 ---
 
@@ -283,12 +368,14 @@ npm run build
 
 Domain rules are tested as pure functions. Service tests run against a real
 Postgres and skip themselves when no database is configured - so a green run
-with no `DATABASE_URL` has *not* exercised the registration or waitlist logic.
-With the demo database available, `CIRQLES_DB=demo` lets those suites run
-locally for the first time.
+with no `DATABASE_URL` has *not* exercised the registration, waitlist, saved or
+notification logic. With the demo database available, `CIRQLES_DB=demo` lets
+those suites run locally for the first time.
 
 The last recorded full run was 268 passed, 142 skipped - the skips being those
-database suites.
+database suites. The suites added on this branch
+(`lib/services/saved.db.test.ts`, `lib/services/notifications.db.test.ts`,
+`lib/domain/notification-feed.test.ts`) have **not** been run.
 
 ---
 
@@ -312,3 +399,7 @@ it is kept accurate rather than optimistic. As of the last entry, the automated
 checks passed and the manual browser flows had **not** been run, because no local
 PostgreSQL was available. The demo database removes that obstacle; the entry
 will be updated when the flows are actually clicked through, and not before.
+
+Nothing on this branch has been type-checked, linted, tested or opened in a
+browser. Treat every screen described above as implemented but not locally
+verified until you have run it.
