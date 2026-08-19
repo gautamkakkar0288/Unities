@@ -11,6 +11,7 @@ import {
 } from "@/lib/domain/verification-gate"
 import { hasVerifiedEmail } from "@/lib/services/account"
 import { hasCompletedOnboarding } from "@/lib/services/interests"
+import { countUnreadNotifications } from "@/lib/services/notifications"
 
 /**
  * Authenticated product shell.
@@ -28,10 +29,16 @@ import { hasCompletedOnboarding } from "@/lib/services/interests"
  * onboarding needs the identical answer and a second copy of the ordering would
  * eventually contradict the first.
  *
- * Two indexed reads per render, concurrently. That is the price of the guarantee
- * that no authenticated surface renders for an unverified or un-onboarded
- * account - and neither answer can be taken from the session, because a JWT
- * minted before either happened keeps reporting the state it was minted with.
+ * Three indexed reads per render, concurrently. That is the price of the
+ * guarantee that no authenticated surface renders for an unverified or
+ * un-onboarded account - and neither answer can be taken from the session,
+ * because a JWT minted before either happened keeps reporting the state it was
+ * minted with.
+ *
+ * The unread count is fetched here, once, and handed to all three navigation
+ * surfaces. Letting each of them count for itself would mean three queries per
+ * page and three chances for the sidebar and the bottom bar to show different
+ * numbers on the same screen.
  */
 export default async function AppLayout({
   children,
@@ -42,9 +49,10 @@ export default async function AppLayout({
 
   if (!session?.user) redirect("/sign-in")
 
-  const [emailVerified, onboarded] = await Promise.all([
+  const [emailVerified, onboarded, unreadCount] = await Promise.all([
     hasVerifiedEmail(session.user.id),
     hasCompletedOnboarding(session.user.id),
+    countUnreadNotifications(session.user.id),
   ])
 
   const destination = gateDestination(
@@ -68,11 +76,12 @@ export default async function AppLayout({
         name={name ?? email ?? "Your account"}
         email={email ?? null}
         role={role}
+        unreadCount={unreadCount}
       />
 
       {/* Offset matches the fixed sidebar width. */}
       <div className="flex min-h-full flex-1 flex-col lg:pl-64">
-        <AppTopBar />
+        <AppTopBar unreadCount={unreadCount} />
 
         <main id="content" className="flex-1">
           {/*
@@ -85,7 +94,7 @@ export default async function AppLayout({
         </main>
       </div>
 
-      <MobileNav />
+      <MobileNav unreadCount={unreadCount} />
     </div>
   )
 }

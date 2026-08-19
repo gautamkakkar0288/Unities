@@ -6,6 +6,8 @@ import { usePathname } from "next/navigation"
 import { isActiveRoute, mobileNav } from "@/lib/navigation/config"
 import { cn } from "@/lib/utils"
 
+import { UnreadBadge } from "./unread-badge"
+
 /**
  * Persistent mobile bottom navigation.
  *
@@ -13,8 +15,11 @@ import { cn } from "@/lib/utils"
  * is at least 44x44, and `env(safe-area-inset-bottom)` keeps the bar clear of
  * the iOS home indicator - without it the last few pixels of each tap target
  * are unreachable on modern iPhones.
+ *
+ * The badge is pinned to the icon rather than placed beside the label, so a
+ * two-digit count cannot widen one tab and shove the others out of alignment.
  */
-export function MobileNav() {
+export function MobileNav({ unreadCount = 0 }: { unreadCount?: number }) {
   const pathname = usePathname()
 
   return (
@@ -26,6 +31,8 @@ export function MobileNav() {
         {mobileNav.map((item) => {
           const active = isActiveRoute(pathname, item.href)
           const Icon = item.icon
+          const badgeCount =
+            item.href === "/notifications" ? unreadCount : 0
 
           return (
             <li key={item.href} className="flex-1">
@@ -33,16 +40,23 @@ export function MobileNav() {
                 href={item.href}
                 aria-current={active ? "page" : undefined}
                 className={cn(
-                  "flex min-h-14 flex-col items-center justify-center gap-1 px-1 py-2 text-[0.6875rem] transition-colors duration-100 focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none focus-visible:ring-inset",
+                  "relative flex min-h-14 flex-col items-center justify-center gap-1 px-1 py-2 text-[0.6875rem] transition-colors duration-100 focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none focus-visible:ring-inset",
                   active
                     ? "font-medium text-primary"
                     : "text-muted-foreground hover:text-foreground",
                 )}
               >
-                <Icon
-                  className={cn("size-5 shrink-0", active && "text-primary")}
-                  aria-hidden="true"
-                />
+                <span className="relative flex items-center justify-center">
+                  <Icon
+                    className={cn("size-5 shrink-0", active && "text-primary")}
+                    aria-hidden="true"
+                  />
+                  {badgeCount > 0 && (
+                    <span className="absolute -top-1.5 -right-2.5 flex items-center">
+                      <UnreadBadge count={badgeCount} />
+                    </span>
+                  )}
+                </span>
                 {item.shortLabel ?? item.label}
               </Link>
             </li>
