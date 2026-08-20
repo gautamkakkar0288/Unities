@@ -1,5 +1,5 @@
 import { execSync } from "node:child_process"
-import { existsSync, rmSync } from "node:fs"
+import { existsSync, mkdirSync, rmSync } from "node:fs"
 import { resolve } from "node:path"
 
 /**
@@ -45,6 +45,8 @@ async function main() {
     rmSync(dataDir, { recursive: true, force: true })
   }
 
+  mkdirSync(dataDir, { recursive: true })
+
   console.info(`Starting the demo database in ${DEMO_DATA_DIR}...`)
   const client = new PGlite(dataDir)
   const db = drizzle(client, { schema })
@@ -57,27 +59,17 @@ async function main() {
   console.info("\nSchema is ready.\n")
 
   /**
-   * All three seeds, in order, as separate processes.
+   * Both seeds, in order, as separate processes.
    *
    * `db:seed` is the day-one data a real deployment also needs - the campus,
    * the taxonomy, the interest communities. `db:seed:demo` is the showcase
    * population on top of it, and it depends on the first having run. Keeping
    * them separate is what stops demo students ending up in a real database.
-   *
-   * `db:seed:activity` is third because it is the only one that reads what the
-   * others wrote: it attaches announcements, comments, likes and a few example
-   * reports to communities, events and students that already exist. It has no
-   * fixtures of its own, so running it against an unseeded database would
-   * simply find nothing to attach to.
-   *
-   * Every stage is idempotent, so `db:setup` on an existing database tops it up
-   * rather than doubling it. Only `db:reset` deletes anything.
    */
   const env = { ...process.env, CIRQLES_DB: "demo" }
 
   execSync("npm run db:seed", { stdio: "inherit", env })
   execSync("npm run db:seed:demo", { stdio: "inherit", env })
-  execSync("npm run db:seed:activity", { stdio: "inherit", env })
 }
 
 main()

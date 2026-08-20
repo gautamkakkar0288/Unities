@@ -53,7 +53,16 @@ export function databaseMode(): DatabaseMode {
   return process.env.DATABASE_URL ? "postgres" : "demo"
 }
 
+const globalForPglite = globalThis as unknown as {
+  pgliteDrizzle: Database | undefined
+  pgDatabase: Database | undefined
+}
+
 function postgresDatabase(): Database {
+  if (globalForPglite.pgDatabase) {
+    return globalForPglite.pgDatabase
+  }
+
   const connectionString = process.env.DATABASE_URL
 
   if (!connectionString) {
@@ -66,8 +75,13 @@ function postgresDatabase(): Database {
   // `prepare: false` keeps this compatible with connection poolers (pgBouncer,
   // Neon/Supabase pooled endpoints) used in serverless deployments.
   const client = postgres(connectionString, { prepare: false })
+  const instance = drizzlePostgres(client, { schema })
 
-  return drizzlePostgres(client, { schema })
+  if (process.env.NODE_ENV !== "production") {
+    globalForPglite.pgDatabase = instance
+  }
+
+  return instance
 }
 
 /**
@@ -83,16 +97,37 @@ function postgresDatabase(): Database {
  * wrapper, which nothing above the data layer refers to.
  */
 function demoDatabase(): Database {
+  if (globalForPglite.pgliteDrizzle) {
+    return globalForPglite.pgliteDrizzle
+  }
+
   // eslint-disable-next-line @typescript-eslint/no-require-imports
   const { createRequire } = require("node:module") as typeof import("node:module")
-  const load = createRequire(__filename)
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  const path = require("node:path") as typeof import("node:path")
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  const fs = require("node:fs") as typeof import("node:fs")
+
+  // Use project root package.json for module resolution because Next.js bundler
+  // rewrites __filename to virtual paths like /ROOT/lib/db/driver.ts during build.
+  const load = createRequire(path.resolve(process.cwd(), "package.json"))
 
   const { PGlite } = load("@electric-sql/pglite")
   const { drizzle: drizzlePglite } = load("drizzle-orm/pglite")
 
-  const client = new PGlite(DEMO_DATA_DIR)
+  const dataDir = path.resolve(process.cwd(), DEMO_DATA_DIR)
+  if (!fs.existsSync(dataDir)) {
+    fs.mkdirSync(dataDir, { recursive: true })
+  }
 
-  return drizzlePglite(client, { schema }) as unknown as Database
+  const client = new PGlite(dataDir)
+  const instance = drizzlePglite(client, { schema }) as unknown as Database
+
+  if (process.env.NODE_ENV !== "production") {
+    globalForPglite.pgliteDrizzle = instance
+  }
+
+  return instance
 }
 
 export function createDatabase(): Database {

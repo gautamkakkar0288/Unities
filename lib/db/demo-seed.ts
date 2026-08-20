@@ -13,6 +13,7 @@ import {
   places,
   posts,
   savedItems,
+  userInterests,
   users,
 } from "./schema"
 
@@ -537,6 +538,24 @@ async function main() {
   }
 
   await db.insert(memberships).values(membershipRows).onConflictDoNothing()
+
+  const userInterestRows: Array<{ userId: string; interestId: string }> = []
+  for (const student of students) {
+    for (const slug of student.interestSlugs) {
+      const iId = interestId.get(slug)
+      if (iId) {
+        userInterestRows.push({ userId: student.id, interestId: iId })
+      }
+    }
+  }
+  for (const slug of ["coding", "technology", "startups"]) {
+    const iId = interestId.get(slug)
+    if (iId) {
+      userInterestRows.push({ userId: ORGANIZER.id, interestId: iId })
+      userInterestRows.push({ userId: ADMIN.id, interestId: iId })
+    }
+  }
+  await db.insert(userInterests).values(userInterestRows).onConflictDoNothing()
 
   /* ------------------------------------------------------------- events */
 

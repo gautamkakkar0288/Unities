@@ -1,8 +1,6 @@
 import { eq } from "drizzle-orm"
-import { drizzle } from "drizzle-orm/postgres-js"
-import postgres from "postgres"
 
-import * as schema from "./schema"
+import { createDatabase } from "./driver"
 import { communities, interests, places } from "./schema"
 
 /**
@@ -21,22 +19,9 @@ import { communities, interests, places } from "./schema"
  * 2. **Additive.** It never updates or deletes. Editing a community name here
  *    would silently overwrite whatever an admin renamed it to in production.
  *    Corrections belong in a migration, where they are reviewed.
- *
- * This opens its own connection rather than importing `lib/db`, because a
- * script has to terminate. The application singleton is deliberately never
- * closed; closing it here would be closing the app's pool.
  */
 
-const connectionString = process.env.DATABASE_URL
-
-if (!connectionString) {
-  throw new Error(
-    "DATABASE_URL is not set. Copy .env.example to .env.local and fill it in.",
-  )
-}
-
-const client = postgres(connectionString, { prepare: false, max: 1 })
-const db = drizzle(client, { schema })
+const db = createDatabase()
 
 /**
  * The curated taxonomy (D27). Order is the display order in the picker:
@@ -377,12 +362,10 @@ async function placeIdBySlug(slug: string) {
 }
 
 seed()
-  .then(async () => {
-    await client.end()
+  .then(() => {
     process.exit(0)
   })
-  .catch(async (error) => {
+  .catch((error) => {
     console.error(error)
-    await client.end()
     process.exit(1)
   })

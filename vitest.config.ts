@@ -22,5 +22,6 @@ export default defineConfig({
      * dependencies and run their test files.
      */
     exclude: ["**/node_modules/**", "**/.next/**", "**/dist/**"],
+    fileParallelism: false,
   },
 })

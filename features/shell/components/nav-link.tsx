@@ -1,9 +1,10 @@
 "use client"
 
+import type { ReactNode } from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 
-import { isActiveRoute, type NavItem } from "@/lib/navigation/config"
+import { isActiveRoute } from "@/lib/navigation/config"
 import { cn } from "@/lib/utils"
 
 import { UnreadBadge } from "./unread-badge"
@@ -18,19 +19,22 @@ import { UnreadBadge } from "./unread-badge"
  * count and one without still line up on their labels.
  */
 export function SidebarNavLink({
-  item,
+  href,
+  label,
+  icon,
   badgeCount = 0,
 }: {
-  item: NavItem
+  href: string
+  label: string
+  icon?: ReactNode
   badgeCount?: number
 }) {
   const pathname = usePathname()
-  const active = isActiveRoute(pathname, item.href)
-  const Icon = item.icon
+  const active = isActiveRoute(pathname, href)
 
   return (
     <Link
-      href={item.href}
+      href={href}
       aria-current={active ? "page" : undefined}
       className={cn(
         "flex items-center gap-3 rounded-lg px-3 py-2 text-body-sm transition-colors duration-150 focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none",
@@ -39,8 +43,8 @@ export function SidebarNavLink({
           : "text-muted-foreground hover:bg-muted hover:text-foreground",
       )}
     >
-      <Icon className="size-4 shrink-0" aria-hidden="true" />
-      {item.label}
+      {icon}
+      {label}
       {badgeCount > 0 && (
         <span className="ml-auto flex items-center">
           <UnreadBadge count={badgeCount} />
