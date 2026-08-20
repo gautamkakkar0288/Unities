@@ -3,6 +3,7 @@ import { and, asc, desc, eq, inArray, isNull, sql } from "drizzle-orm"
 import { db } from "@/lib/db"
 import {
   auditLog,
+  communities,
   memberships,
   postComments,
   posts,
@@ -132,6 +133,12 @@ export type QueuedReport = {
   createdAt: string
   targetKind: AuditTargetKind
   targetId: string
+  /**
+   * Who filed it. Null when the reporter's account is gone. Shown only inside
+   * the moderation queue, which is already scoped to people who moderate the
+   * community in question - it is not part of any student-facing projection.
+   */
+  reporterName: string | null
   /** The reported content itself, so a moderator can decide without hunting. */
   target: {
     title: string
@@ -198,8 +205,12 @@ export async function listModerationQueue(args: {
       createdAt: reports.createdAt,
       targetKind: reports.targetKind,
       targetId: reports.targetId,
+      reporterName: users.name,
     })
     .from(reports)
+    // The reporter, in the same query. A moderator judging a report with no
+    // idea who filed it cannot weigh a pile-on against a single account.
+    .leftJoin(users, eq(users.id, reports.reporterId))
     .where(
       and(
         eq(reports.status, status),
@@ -261,7 +272,9 @@ export async function listModerationQueue(args: {
       .groupBy(reports.targetKind, reports.targetId),
   ])
 
-  // Community slugs for the hydrated targets, one query.
+  // Community slugs for the hydrated targets, one query, through the real
+  // table. This used to be raw sql`communities`, which would have survived a
+  // column rename by silently failing at runtime instead of at typecheck.
   const communityIdsForTargets = [
     ...new Set([
       ...postRows.map((row) => row.communityId),
@@ -272,9 +285,9 @@ export async function listModerationQueue(args: {
   const slugRows =
     communityIdsForTargets.length > 0
       ? await db
-          .select({ id: sql<string>`id`, slug: sql<string>`slug` })
-          .from(sql`communities`)
-          .where(sql`id in ${communityIdsForTargets}`)
+          .select({ id: communities.id, slug: communities.slug })
+          .from(communities)
+          .where(inArray(communities.id, communityIdsForTargets))
       : []
 
   const slugs = new Map(slugRows.map((row) => [row.id, row.slug]))
@@ -308,6 +321,7 @@ export async function listModerationQueue(args: {
         createdAt: row.createdAt.toISOString(),
         targetKind: row.targetKind,
         targetId: row.targetId,
+        reporterName: row.reporterName,
         target: source
           ? {
               title: post ? post.title : "Comment",
