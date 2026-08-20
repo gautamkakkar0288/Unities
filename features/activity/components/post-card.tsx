@@ -37,6 +37,7 @@ export function PostCard({
   linkableEvents,
   canComment,
   alreadyReported,
+  reportedComments,
   now,
 }: {
   post: ActivityPost
@@ -45,6 +46,11 @@ export function PostCard({
   linkableEvents: Array<{ id: string; title: string }>
   canComment: boolean
   alreadyReported: boolean
+  /**
+   * Comment ids this viewer has already reported. Passed down rather than
+   * looked up per comment, and only ever this viewer's own reports.
+   */
+  reportedComments: Set<string>
   now: string
 }) {
   const [editing, setEditing] = useState(false)
@@ -192,6 +198,7 @@ export function PostCard({
           count={post.commentCount}
           comments={comments}
           canComment={canComment}
+          reportedComments={reportedComments}
           now={now}
         />
       </CardContent>

@@ -28,6 +28,7 @@ export function CommentSection({
   count,
   comments,
   canComment,
+  reportedComments,
   now,
 }: {
   postId: string
@@ -36,6 +37,11 @@ export function CommentSection({
   comments: ActivityComment[]
   /** Membership decides this; the service enforces it again. */
   canComment: boolean
+  /**
+   * Comment ids this viewer already reported, so Report is not offered for
+   * something the unique constraint will absorb. Loaded once for the page.
+   */
+  reportedComments: Set<string>
   /** ISO. Passed in so the server and client agree on "2 hours ago". */
   now: string
 }) {
@@ -142,7 +148,7 @@ export function CommentSection({
                         targetKind="COMMENT"
                         targetId={comment.id}
                         slug={slug}
-                        alreadyReported={false}
+                        alreadyReported={reportedComments.has(comment.id)}
                       />
                     )}
                   </div>
