@@ -24,6 +24,7 @@ import { UpdateCard } from "@/features/feed/components/update-card"
 import { OpportunityCard } from "@/features/saved/components/opportunity-card"
 import { SaveButton } from "@/features/saved/components/save-button"
 import { formatCount, formatRelativeTime } from "@/lib/format"
+import { activityStateFor } from "@/lib/services/community-activity"
 import { loadHomeFeed } from "@/lib/services/feed"
 
 export const metadata: Metadata = { title: "Home" }
@@ -37,6 +38,12 @@ export const metadata: Metadata = { title: "Home" }
  * keeps this file reviewable: it is obvious at a glance that no section fetches
  * anything, and obvious in the domain tests why the events appear in the order
  * they do.
+ *
+ * The one addition is `activityStateFor`, which attaches real reaction and
+ * comment counts to the announcements the feed already selected. It is a single
+ * batched call for the whole section rather than a query per card, and it lives
+ * here rather than inside `loadHomeFeed` so the feed service keeps its existing
+ * shape - this phase was explicitly not a feed rewrite.
  *
  * Section order answers "what is happening around me" in descending urgency:
  * what the student already committed to, then what is on today, then what they
@@ -55,6 +62,12 @@ export default async function HomePage() {
   const feed = await loadHomeFeed({
     viewerId: session.user.id,
     viewerName: session.user.name ?? null,
+  })
+
+  // One call for every announcement on the page. Empty in, empty out.
+  const updateActivity = await activityStateFor({
+    postIds: feed.updates.map((post) => post.id),
+    viewerId: session.user.id ?? null,
   })
 
   const savedEvents = new Set(feed.savedEventIds)
@@ -409,7 +422,11 @@ export default async function HomePage() {
           <ul className="grid gap-4 sm:grid-cols-2">
             {feed.updates.map((post) => (
               <li key={post.id}>
-                <UpdateCard post={post} now={feed.now} />
+                <UpdateCard
+                  post={post}
+                  now={feed.now}
+                  activity={updateActivity.get(post.id) ?? null}
+                />
               </li>
             ))}
           </ul>
