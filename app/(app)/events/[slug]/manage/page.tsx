@@ -16,6 +16,7 @@ import {
 import { EmptyState } from "@/components/ui/empty-state"
 import { CancelEventButton } from "@/features/events/components/cancel-event-button"
 import { PageHeader } from "@/features/shell/components/page-header"
+import { refuseEventEdit } from "@/lib/domain/event-edit"
 import { formatDay, formatTime } from "@/lib/format"
 import { getEventBySlug, listRegistrations } from "@/lib/services/events"
 
@@ -65,8 +66,14 @@ export default async function ManageEventPage({
    * same boundary has to be read here as there, or the button and the wall
    * disagree about when an event stops being a plan.
    */
-  const hasStarted = Date.parse(event.startsAt) <= Date.now()
-  const isEditable = event.status !== "CANCELLED" && !hasStarted
+  const isEditable =
+    refuseEventEdit({
+      status: event.status,
+      startsAt: event.startsAt,
+      registeredCount: event.registeredCount,
+      nextCapacity: event.capacity,
+      now: new Date().toISOString(),
+    }) === null
 
   return (
     <>

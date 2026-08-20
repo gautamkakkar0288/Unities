@@ -17,6 +17,7 @@
     "db:migrate": "drizzle-kit migrate",
     "db:seed": "tsx lib/db/seed.ts",
     "db:seed:demo": "tsx lib/db/demo-seed.ts",
+    "db:seed:activity": "tsx lib/db/demo-activity-seed.ts",
     "db:setup": "tsx lib/db/demo-setup.ts",
     "db:reset": "tsx lib/db/demo-setup.ts --reset",
     "db:studio": "drizzle-kit studio",

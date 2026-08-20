@@ -191,7 +191,7 @@ export default async function SearchPage({
       {request.isEmpty ? (
         <div className="space-y-6">
           <EmptyState
-            icon={<SearchIcon className="size-6" aria-hidden="true" />}
+            icon={SearchIcon}
             title="Search campus"
             description="Look for an event, a club, an internship, or something a club announced."
             action={
@@ -226,7 +226,7 @@ export default async function SearchPage({
       {/* Typed, but too short to be worth a query. */}
       {request.isTooShort ? (
         <EmptyState
-          icon={<SearchIcon className="size-6" aria-hidden="true" />}
+          icon={SearchIcon}
           title="Keep typing"
           description={`Searches need at least ${MIN_QUERY_LENGTH} characters. One letter matches most of campus, which is not much help.`}
         />
@@ -235,7 +235,7 @@ export default async function SearchPage({
       {/* Searched, found nothing. */}
       {results && results.counts.total === 0 ? (
         <EmptyState
-          icon={<Compass className="size-6" aria-hidden="true" />}
+          icon={Compass}
           title={`No results found for \u201c${request.rawQuery}\u201d`}
           description="Nothing on campus matches that yet. Browsing usually turns something up."
           action={

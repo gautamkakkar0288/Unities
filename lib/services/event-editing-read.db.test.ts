@@ -24,7 +24,7 @@ import { registerForEvent } from "@/lib/services/events"
  * start time and this one must not.
  */
 
-const hasDatabase = Boolean(process.env.DATABASE_URL)
+const hasDatabase = true
 
 const INTEREST = "eer-interest"
 const VERIFIED = "eer-community-verified"

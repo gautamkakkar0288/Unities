@@ -1,5 +1,5 @@
 import { execSync } from "node:child_process"
-import { existsSync, rmSync } from "node:fs"
+import { existsSync, mkdirSync, rmSync } from "node:fs"
 import { resolve } from "node:path"
 
 /**
@@ -45,6 +45,8 @@ async function main() {
     rmSync(dataDir, { recursive: true, force: true })
   }
 
+  mkdirSync(dataDir, { recursive: true })
+
   console.info(`Starting the demo database in ${DEMO_DATA_DIR}...`)
   const client = new PGlite(dataDir)
   const db = drizzle(client, { schema })
@@ -68,7 +70,9 @@ async function main() {
 
   execSync("npm run db:seed", { stdio: "inherit", env })
   execSync("npm run db:seed:demo", { stdio: "inherit", env })
+  execSync("npm run db:seed:activity", { stdio: "inherit", env })
 }
+
 
 main()
   .then(() => {

@@ -36,14 +36,19 @@ export function AppSidebar({
 
       <nav aria-label="Main" className="flex-1 overflow-y-auto px-3 py-2">
         <ul className="flex flex-col gap-1">
-          {sidebarNav.map((item) => (
-            <li key={item.href}>
-              <SidebarNavLink
-                item={item}
-                badgeCount={item.href === "/notifications" ? unreadCount : 0}
-              />
-            </li>
-          ))}
+          {sidebarNav.map((item) => {
+            const Icon = item.icon
+            return (
+              <li key={item.href}>
+                <SidebarNavLink
+                  href={item.href}
+                  label={item.label}
+                  icon={<Icon className="size-4 shrink-0" aria-hidden="true" />}
+                  badgeCount={item.href === "/notifications" ? unreadCount : 0}
+                />
+              </li>
+            )
+          })}
         </ul>
       </nav>
 

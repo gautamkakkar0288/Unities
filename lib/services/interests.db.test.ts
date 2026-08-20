@@ -34,7 +34,7 @@ import {
  * `verification-gate.db.test.ts` covers.
  */
 
-const hasDatabase = Boolean(process.env.DATABASE_URL)
+const hasDatabase = true
 
 const STUDENT = "vi-user-student"
 const SECOND = "vi-user-second"

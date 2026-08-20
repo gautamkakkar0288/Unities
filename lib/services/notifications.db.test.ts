@@ -28,7 +28,7 @@ import {
   markNotificationRead,
 } from "@/lib/services/notifications"
 
-const hasDatabase = Boolean(process.env.DATABASE_URL)
+const hasDatabase = true
 
 const INTEREST = "nt-interest"
 const COMMUNITY = "nt-community"

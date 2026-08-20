@@ -22,7 +22,7 @@ import {
   searchScopeFor,
 } from "@/lib/services/search"
 
-const hasDatabase = Boolean(process.env.DATABASE_URL)
+const hasDatabase = true
 
 /**
  * Search, against a real database.

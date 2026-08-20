@@ -17,7 +17,7 @@ import { listPendingRequests } from "@/lib/services/community-members"
  * list of rejected applicants and everybody.
  */
 
-const hasDatabase = Boolean(process.env.DATABASE_URL)
+const hasDatabase = true
 
 const INTEREST = "pr-interest"
 const COMMUNITY = "pr-community"
@@ -51,7 +51,7 @@ async function cleanup() {
 }
 
 /** Narrows the result and fails loudly, rather than asserting on `undefined`. */
-function expectOk<T>(result: Awaited<ReturnType<typeof listPendingRequests>>) {
+function expectOk(result: Awaited<ReturnType<typeof listPendingRequests>>) {
   if (!result.ok) {
     throw new Error(`expected success, got ${result.code}: ${result.message}`)
   }

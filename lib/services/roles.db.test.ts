@@ -15,7 +15,7 @@ import { assignRole } from "@/lib/services/roles"
  * allowed change and its audit row land together.
  */
 
-const hasDatabase = Boolean(process.env.DATABASE_URL)
+const hasDatabase = true
 
 const PLATFORM = "ra-user-platform"
 const CAMPUS = "ra-user-campus"

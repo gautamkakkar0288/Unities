@@ -7,7 +7,7 @@ import { db } from "@/lib/db"
 import { communities, interests, memberships, users } from "@/lib/db/schema"
 import { listCommunityLeads } from "@/lib/services/community-members"
 
-const hasDatabase = Boolean(process.env.DATABASE_URL)
+const hasDatabase = true
 
 const INTEREST = "cl-interest"
 const COMMUNITY = "cl-community"
