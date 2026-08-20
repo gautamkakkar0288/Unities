@@ -20,7 +20,7 @@ import {
   unsaveItem,
 } from "@/lib/services/saved"
 
-const hasDatabase = Boolean(process.env.DATABASE_URL)
+const hasDatabase = true
 
 const INTEREST = "sv-interest"
 const COMMUNITY = "sv-community"

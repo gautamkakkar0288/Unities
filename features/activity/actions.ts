@@ -76,7 +76,7 @@ export async function publishPostAction(input: {
     },
   })
 
-  if (!result.ok) return { message: result.error.message }
+  if (!result.ok) return { message: result.message }
 
   revalidateActivity(input.slug)
   return undefined
@@ -102,7 +102,7 @@ export async function editPostAction(input: {
     },
   })
 
-  if (!result.ok) return { message: result.error.message }
+  if (!result.ok) return { message: result.message }
 
   revalidateActivity(input.slug)
   return undefined
@@ -122,7 +122,7 @@ export async function removePostAction(input: {
     reason: input.reason,
   })
 
-  if (!result.ok) return { message: result.error.message }
+  if (!result.ok) return { message: result.message }
 
   revalidateActivity(input.slug)
   return undefined
@@ -142,7 +142,7 @@ export async function setReactionAction(input: {
     reacted: input.reacted,
   })
 
-  if (!result.ok) return { message: result.error.message }
+  if (!result.ok) return { message: result.message }
 
   // Only the pages that show the count. A like is not a feed event.
   revalidatePath(`/communities/${input.slug}`)
@@ -164,7 +164,7 @@ export async function addCommentAction(input: {
     input: { body: input.body },
   })
 
-  if (!result.ok) return { message: result.error.message }
+  if (!result.ok) return { message: result.message }
 
   revalidatePath(`/communities/${input.slug}`)
   revalidatePath("/home")
@@ -183,7 +183,7 @@ export async function removeCommentAction(input: {
     commentId: input.commentId,
   })
 
-  if (!result.ok) return { message: result.error.message }
+  if (!result.ok) return { message: result.message }
 
   revalidatePath(`/communities/${input.slug}`)
   revalidatePath("/home")
@@ -219,7 +219,7 @@ export async function reportContentAction(input: {
     detail: input.detail,
   })
 
-  if (!result.ok) return { message: result.error.message }
+  if (!result.ok) return { message: result.message }
 
   revalidatePath(`/communities/${input.slug}`)
   return undefined

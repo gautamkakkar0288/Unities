@@ -7,7 +7,7 @@ import { db } from "@/lib/db"
 import { communities, events, interests, posts, users } from "@/lib/db/schema"
 import { listRecentPosts } from "@/lib/services/posts"
 
-const hasDatabase = Boolean(process.env.DATABASE_URL)
+const hasDatabase = true
 
 const INTEREST_ID = "posts-test-interest"
 const COMMUNITY_IDS = ["posts-test-community", "posts-test-archived"]

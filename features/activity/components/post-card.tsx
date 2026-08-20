@@ -83,7 +83,7 @@ export function PostCard({
           </span>
           <span aria-hidden="true">·</span>
           <time dateTime={post.createdAt}>
-            {formatRelativeTime(post.createdAt, new Date(now))}
+            {formatRelativeTime(post.createdAt, now)}
           </time>
           {post.viewerIsAuthor && <Badge variant="outline">Your update</Badge>}
         </div>

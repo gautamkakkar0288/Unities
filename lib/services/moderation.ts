@@ -16,6 +16,7 @@ import {
 } from "@/lib/db/schema"
 import { canDecideReport, canReport } from "@/lib/domain/activity"
 import { canModerate } from "@/lib/domain/membership"
+import { isAdminRole } from "@/lib/domain/role"
 import { fail, ok, type ServiceResult } from "@/lib/services/result"
 
 /**
@@ -176,7 +177,7 @@ export async function listModerationQueue(args: {
 
   if (!viewer) return fail("NOT_FOUND", "That account no longer exists.")
 
-  const isAdmin = viewer.role === "ADMIN"
+  const isAdmin = isAdminRole(viewer.role)
 
   const moderated = await db
     .select({ communityId: memberships.communityId })
@@ -417,7 +418,7 @@ export async function decideReport(args: {
     .limit(1)
 
   const allowed =
-    viewer?.role === "ADMIN" ||
+    (viewer ? isAdminRole(viewer.role) : false) ||
     (membership ? canModerate(membership.state) : false)
 
   if (!allowed) {

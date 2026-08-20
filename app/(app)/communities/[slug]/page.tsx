@@ -300,7 +300,7 @@ export default async function CommunityPage({
                   <li key={event.id}>
                     <EventCard
                       event={event}
-                      now={new Date(now)}
+                      now={now}
                       href={`/events/${event.slug}`}
                     />
                   </li>

@@ -22,7 +22,7 @@ import { setUserInterests } from "@/lib/services/interests"
  * out of. The gate has to be right about a database it did not write.
  */
 
-const hasDatabase = Boolean(process.env.DATABASE_URL)
+const hasDatabase = true
 
 const VERIFIED = "vgate-user-verified"
 const UNVERIFIED = "vgate-user-unverified"

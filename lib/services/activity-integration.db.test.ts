@@ -46,7 +46,7 @@ import { isSaved, saveItem, unsaveItem } from "@/lib/services/saved"
  * directly - a hidden button proves nothing.
  */
 
-const hasDatabase = Boolean(process.env.DATABASE_URL)
+const hasDatabase = true
 
 const NOW = new Date("2026-06-10T09:00:00Z")
 

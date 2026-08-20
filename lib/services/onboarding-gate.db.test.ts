@@ -21,7 +21,7 @@ import { hasCompletedOnboarding } from "@/lib/services/interests"
  * point: the gate has to be right about a database it did not write.
  */
 
-const hasDatabase = Boolean(process.env.DATABASE_URL)
+const hasDatabase = true
 
 const STUDENT = "vg-user-student"
 

@@ -28,7 +28,7 @@ import {
  * index that prevents two open requests only exists in Postgres at all.
  */
 
-const hasDatabase = Boolean(process.env.DATABASE_URL)
+const hasDatabase = true
 
 /** Fictional slugs and domains, so a real seed can never collide. */
 const PLACE_ID = "ov-place-university"

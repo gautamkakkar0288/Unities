@@ -27,7 +27,7 @@ import { registerForEvent } from "@/lib/services/events"
  * a retitle, and that the queue ordering survives a promotion.
  */
 
-const hasDatabase = Boolean(process.env.DATABASE_URL)
+const hasDatabase = true
 
 const INTEREST = "ee-interest"
 const VERIFIED = "ee-community-verified"

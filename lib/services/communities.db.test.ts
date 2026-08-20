@@ -33,7 +33,7 @@ import {
  * with no database. CI sets it, so the matrix is not optional there.
  */
 
-const hasDatabase = Boolean(process.env.DATABASE_URL)
+const hasDatabase = true
 
 const CITY = "vt-place-city"
 const CAMPUS = "vt-place-campus"

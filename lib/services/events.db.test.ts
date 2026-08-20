@@ -22,7 +22,7 @@ import {
   registerForEvent,
 } from "@/lib/services/events"
 
-const hasDatabase = Boolean(process.env.DATABASE_URL)
+const hasDatabase = true
 
 const INTEREST = "ev-interest"
 const VERIFIED = "ev-community-verified"
@@ -46,8 +46,6 @@ const ONE_SEAT = "ev-one-seat"
 const UNLIMITED = "ev-unlimited"
 const CLOSED = "ev-closed"
 const CALLED_OFF = "ev-called-off"
-
-const EVENT_IDS = [ONE_SEAT, UNLIMITED, CLOSED, CALLED_OFF]
 
 async function cleanup() {
   await db

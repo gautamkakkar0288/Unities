@@ -117,7 +117,7 @@ export function CommentSection({
                       {comment.authorName ?? "A Cirqles member"}
                     </span>
                     <time dateTime={comment.createdAt}>
-                      {formatRelativeTime(comment.createdAt, new Date(now))}
+                      {formatRelativeTime(comment.createdAt, now)}
                     </time>
                     {comment.edited && <span>edited</span>}
                   </div>

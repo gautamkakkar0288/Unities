@@ -51,7 +51,6 @@ export function describeMembershipAction(
             accessibleLabel: `${name} is invite only. Members are added by a moderator.`,
           }
       }
-    // eslint-disable-next-line no-fallthrough
     case "INVITED":
       return {
         label: "Accept invite",

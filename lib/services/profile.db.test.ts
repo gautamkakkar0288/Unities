@@ -14,7 +14,7 @@ import {
 } from "@/lib/db/schema"
 import { getProfile, updateDisplayName } from "@/lib/services/profile"
 
-const hasDatabase = Boolean(process.env.DATABASE_URL)
+const hasDatabase = true
 
 const PLACE = "pf-campus"
 const ACTIVE_INTEREST = "pf-interest-active"

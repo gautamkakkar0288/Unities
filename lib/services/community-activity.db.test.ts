@@ -45,7 +45,7 @@ import {
  * was hidden, and a hidden button is not authorization.
  */
 
-const hasDatabase = Boolean(process.env.DATABASE_URL)
+const hasDatabase = true
 
 const PLACE = "activity-test-place"
 const INTEREST = "activity-test-interest"
@@ -210,7 +210,7 @@ describe.skipIf(!hasDatabase)("community activity", () => {
       now: NOW,
     })
 
-    if (!result.ok) throw new Error(result.error.message)
+    if (!result.ok) throw new Error(result.message)
     return result.data
   }
 
@@ -258,7 +258,7 @@ describe.skipIf(!hasDatabase)("community activity", () => {
       })
 
       expect(result.ok).toBe(false)
-      if (!result.ok) expect(result.error.code).toBe("INVALID")
+      if (!result.ok) expect(result.code).toBe("INVALID")
     })
 
     it("links an event that belongs to this community", async () => {
@@ -280,7 +280,7 @@ describe.skipIf(!hasDatabase)("community activity", () => {
       })
 
       expect(result.ok).toBe(false)
-      if (!result.ok) expect(result.error.code).toBe("INVALID")
+      if (!result.ok) expect(result.code).toBe("INVALID")
     })
 
     it("refuses an event id that does not exist", async () => {
@@ -341,7 +341,7 @@ describe.skipIf(!hasDatabase)("community activity", () => {
       })
 
       expect(result.ok).toBe(false)
-      if (!result.ok) expect(result.error.code).toBe("NOT_FOUND")
+      if (!result.ok) expect(result.code).toBe("NOT_FOUND")
     })
 
     it("refuses to edit a removed post", async () => {
@@ -355,7 +355,7 @@ describe.skipIf(!hasDatabase)("community activity", () => {
       })
 
       expect(result.ok).toBe(false)
-      if (!result.ok) expect(result.error.code).toBe("NOT_FOUND")
+      if (!result.ok) expect(result.code).toBe("NOT_FOUND")
     })
   })
 
@@ -568,7 +568,7 @@ describe.skipIf(!hasDatabase)("community activity", () => {
       })
 
       expect(result.ok).toBe(false)
-      if (!result.ok) expect(result.error.code).toBe("INVALID")
+      if (!result.ok) expect(result.code).toBe("INVALID")
     })
 
     it("lets the author delete their own comment, and hides it from the count", async () => {
@@ -581,7 +581,7 @@ describe.skipIf(!hasDatabase)("community activity", () => {
         now: NOW,
       })
 
-      if (!created.ok) throw new Error(created.error.message)
+      if (!created.ok) throw new Error(created.message)
 
       const removed = await removeComment({
         actorId: OTHER_MEMBER,
@@ -756,7 +756,7 @@ describe.skipIf(!hasDatabase)("community activity", () => {
       })
 
       expect(again.ok).toBe(false)
-      if (!again.ok) expect(again.error.code).toBe("CONFLICT")
+      if (!again.ok) expect(again.code).toBe("CONFLICT")
     })
 
     it("keeps removed content visible to the moderation queue", async () => {
@@ -798,7 +798,7 @@ describe.skipIf(!hasDatabase)("community activity", () => {
       })
 
       expect(result.ok).toBe(false)
-      if (!result.ok) expect(result.error.code).toBe("FORBIDDEN")
+      if (!result.ok) expect(result.code).toBe("FORBIDDEN")
     })
 
     it("refuses a pending member publishing", async () => {
@@ -835,7 +835,7 @@ describe.skipIf(!hasDatabase)("community activity", () => {
       })
 
       expect(result.ok).toBe(false)
-      if (!result.ok) expect(result.error.code).toBe("FORBIDDEN")
+      if (!result.ok) expect(result.code).toBe("FORBIDDEN")
     })
 
     it("refuses even a moderator editing someone else's words", async () => {
@@ -857,7 +857,7 @@ describe.skipIf(!hasDatabase)("community activity", () => {
       const result = await removePost({ actorId: OTHER_MEMBER, postId: id })
 
       expect(result.ok).toBe(false)
-      if (!result.ok) expect(result.error.code).toBe("FORBIDDEN")
+      if (!result.ok) expect(result.code).toBe("FORBIDDEN")
     })
 
     it("refuses one user deleting another user's comment", async () => {
@@ -870,7 +870,7 @@ describe.skipIf(!hasDatabase)("community activity", () => {
         now: NOW,
       })
 
-      if (!created.ok) throw new Error(created.error.message)
+      if (!created.ok) throw new Error(created.message)
 
       const result = await removeComment({
         actorId: AUTHOR,
@@ -915,7 +915,7 @@ describe.skipIf(!hasDatabase)("community activity", () => {
       })
 
       expect(result.ok).toBe(false)
-      if (!result.ok) expect(result.error.code).toBe("FORBIDDEN")
+      if (!result.ok) expect(result.code).toBe("FORBIDDEN")
     })
 
     it("refuses a non-member commenting", async () => {
@@ -953,14 +953,14 @@ describe.skipIf(!hasDatabase)("community activity", () => {
       })
 
       expect(result.ok).toBe(false)
-      if (!result.ok) expect(result.error.code).toBe("FORBIDDEN")
+      if (!result.ok) expect(result.code).toBe("FORBIDDEN")
     })
 
     it("refuses a normal student the report queue", async () => {
       const result = await listModerationQueue({ moderatorId: OUTSIDER })
 
       expect(result.ok).toBe(false)
-      if (!result.ok) expect(result.error.code).toBe("FORBIDDEN")
+      if (!result.ok) expect(result.code).toBe("FORBIDDEN")
     })
 
     it("does not leak posts from another community into this one's activity", async () => {
@@ -1018,7 +1018,7 @@ describe.skipIf(!hasDatabase)("community activity", () => {
         now: NOW,
       })
 
-      if (!first.ok) throw new Error(first.error.message)
+      if (!first.ok) throw new Error(first.message)
       await removeComment({
         actorId: OTHER_MEMBER,
         commentId: first.data.id,

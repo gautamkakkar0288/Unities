@@ -20,10 +20,10 @@ export const notificationGroupLabel: Record<NotificationGroup, string> = {
   EARLIER: "Earlier",
 }
 
-/** Local-calendar day boundaries, not "24 hours ago". */
+/** Calendar day boundaries in UTC, not elapsed 24 hours. */
 function dayIndex(date: Date): number {
   return Math.floor(
-    new Date(date.getFullYear(), date.getMonth(), date.getDate()).getTime() /
+    Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate()) /
       86_400_000,
   )
 }

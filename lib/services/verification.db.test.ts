@@ -25,7 +25,7 @@ import {
  * module level, which incidentally proves the seam works.
  */
 
-const hasDatabase = Boolean(process.env.DATABASE_URL)
+const hasDatabase = true
 
 /** Fictional domains, so a real seed can never collide with these rows. */
 const UNI_ID = "vf-place-university"

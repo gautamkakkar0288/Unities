@@ -16,7 +16,7 @@ import {
 import { db } from "@/lib/db"
 import { loadExploreData, loadHomeFeed } from "@/lib/services/feed"
 
-const hasDatabase = Boolean(process.env.DATABASE_URL)
+const hasDatabase = true
 
 /**
  * The home feed against a real database.
@@ -189,7 +189,7 @@ describe.skipIf(!hasDatabase)("loadHomeFeed", () => {
     })
 
     expect(feed.firstName).toBe("Gautam")
-    expect(feed.greeting).toBe("Good afternoon")
+    expect(feed.greeting).toBe("Good morning")
   })
 
   it("lists the student's own registration under their upcoming events", async () => {

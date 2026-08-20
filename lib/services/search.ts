@@ -13,7 +13,6 @@ import {
   ALL_TAB_LIMIT,
   CATEGORY_TAB_LIMIT,
   rankSearchResults,
-  type SearchCandidate,
   type SearchRequest,
 } from "@/lib/domain/search"
 import type { CommunitySummary, EventSummary } from "@/lib/domain/types"

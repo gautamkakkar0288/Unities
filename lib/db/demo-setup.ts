@@ -70,7 +70,9 @@ async function main() {
 
   execSync("npm run db:seed", { stdio: "inherit", env })
   execSync("npm run db:seed:demo", { stdio: "inherit", env })
+  execSync("npm run db:seed:activity", { stdio: "inherit", env })
 }
+
 
 main()
   .then(() => {
