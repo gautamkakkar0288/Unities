@@ -58,8 +58,9 @@ const AUTHOR = "activity-test-author"
 const OTHER_MEMBER = "activity-test-member"
 const OUTSIDER = "activity-test-outsider"
 const MODERATOR = "activity-test-moderator"
+const PLATFORM_ADMIN_USER = "activity-test-platform-admin"
 
-const USER_IDS = [AUTHOR, OTHER_MEMBER, OUTSIDER, MODERATOR]
+const USER_IDS = [AUTHOR, OTHER_MEMBER, OUTSIDER, MODERATOR, PLATFORM_ADMIN_USER]
 
 /** A fixed clock, so ordering assertions do not depend on execution speed. */
 const NOW = new Date("2026-05-20T10:00:00Z")
@@ -90,6 +91,10 @@ describe.skipIf(!hasDatabase)("community activity", () => {
           name: id,
           email: `${id}@example.test`,
           passwordHash: "not-a-real-hash",
+          role:
+            id === PLATFORM_ADMIN_USER
+              ? ("PLATFORM_ADMIN" as const)
+              : ("STUDENT" as const),
           universityId: PLACE,
         })),
       )
@@ -779,6 +784,69 @@ describe.skipIf(!hasDatabase)("community activity", () => {
         // Removed, but still reviewable - auditability survives removal.
         expect(entry?.target?.removed).toBe(true)
       }
+    })
+
+    it("allows PLATFORM_ADMIN to access the queue, dismiss, and resolve/remove reports", async () => {
+      const { id } = await publish({ title: "Admin moderated post" })
+
+      await reportContent({
+        reporterId: OTHER_MEMBER,
+        targetKind: "POST",
+        targetId: id,
+        reason: "HARASSMENT",
+        now: NOW,
+      })
+
+      // 1. PLATFORM_ADMIN can access the queue (even without community membership)
+      const queue = await listModerationQueue({
+        moderatorId: PLATFORM_ADMIN_USER,
+      })
+      expect(queue.ok).toBe(true)
+      if (queue.ok) {
+        const entry = queue.data.find((row) => row.targetId === id)
+        expect(entry).toBeDefined()
+        expect(entry?.reason).toBe("HARASSMENT")
+      }
+
+      const [report] = await db
+        .select({ id: reports.id })
+        .from(reports)
+        .where(eq(reports.targetId, id))
+
+      // 2. PLATFORM_ADMIN can decide/dismiss a report
+      const dismissResult = await decideReport({
+        moderatorId: PLATFORM_ADMIN_USER,
+        reportId: report!.id,
+        decision: "DISMISSED",
+        note: "Reviewed by platform admin",
+        now: NOW,
+      })
+      expect(dismissResult.ok).toBe(true)
+
+      // Reset report to OPEN to test resolve/remove
+      await db
+        .update(reports)
+        .set({ status: "OPEN", reviewedById: null, reviewedAt: null })
+        .where(eq(reports.id, report!.id))
+
+      // 3. PLATFORM_ADMIN can resolve/remove a report
+      const resolveResult = await decideReport({
+        moderatorId: PLATFORM_ADMIN_USER,
+        reportId: report!.id,
+        decision: "RESOLVED",
+        removeContent: true,
+        note: "Content removed by platform admin",
+        now: NOW,
+      })
+      expect(resolveResult.ok).toBe(true)
+
+      const [postRow] = await db
+        .select({ removedAt: posts.removedAt, removedById: posts.removedById })
+        .from(posts)
+        .where(eq(posts.id, id))
+
+      expect(postRow?.removedAt).not.toBeNull()
+      expect(postRow?.removedById).toBe(PLATFORM_ADMIN_USER)
     })
   })
 
