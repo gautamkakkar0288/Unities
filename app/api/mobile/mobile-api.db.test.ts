@@ -1,7 +1,16 @@
 // @vitest-environment node
 
 import { eq, inArray } from "drizzle-orm"
-import { afterAll, beforeAll, beforeEach, describe, expect, it, vi, type Mock } from "vitest"
+import {
+  afterAll,
+  beforeAll,
+  beforeEach,
+  describe,
+  expect,
+  it,
+  vi,
+  type Mock,
+} from "vitest"
 
 import { auth } from "@/auth"
 import { db } from "@/lib/db"
@@ -92,7 +101,6 @@ const EVENT_IDS = [
 
 const OWN_NOTIFICATION = "ma-note-own"
 const OTHER_NOTIFICATION = "ma-note-other"
-const NOTIFICATION_IDS = [OWN_NOTIFICATION, OTHER_NOTIFICATION]
 
 const NEW_ACCOUNT_EMAIL = `ma-fresh@${EMAIL_DOMAIN}`
 const TAKEN_EMAIL = `ma-student@${EMAIL_DOMAIN}`
@@ -347,9 +355,15 @@ describe.skipIf(!hasDatabase)("mobile api", () => {
         me(),
         feed(request("/api/mobile/feed")),
         eventList(request("/api/mobile/events")),
-        eventDetail(request("/api/mobile/events/x"), slugContext("ma-event-open")),
+        eventDetail(
+          request("/api/mobile/events/x"),
+          slugContext("ma-event-open"),
+        ),
         communityList(request("/api/mobile/communities")),
-        communityDetail(request("/api/mobile/communities/x"), slugContext("ma-open")),
+        communityDetail(
+          request("/api/mobile/communities/x"),
+          slugContext("ma-open"),
+        ),
         notificationList(request("/api/mobile/notifications")),
         registerForEventRoute(
           request("/api/mobile/events/x/registration", {}),
@@ -396,7 +410,9 @@ describe.skipIf(!hasDatabase)("mobile api", () => {
     it("reports the capability gap rather than an empty page", async () => {
       // There is no feed service in this backend. An empty array here would be
       // indistinguishable from a student with nothing to read.
-      const { status, body } = await read(await feed(request("/api/mobile/feed")))
+      const { status, body } = await read(
+        await feed(request("/api/mobile/feed")),
+      )
 
       expect(status).toBe(501)
       expect(body.error?.code).toBe("MISSING_BACKEND_CAPABILITY")
@@ -415,7 +431,10 @@ describe.skipIf(!hasDatabase)("mobile api", () => {
   describe("validation", () => {
     it("refuses a malformed slug before touching the database", async () => {
       const { status, body } = await read(
-        await eventDetail(request("/api/mobile/events/x"), slugContext("not a slug")),
+        await eventDetail(
+          request("/api/mobile/events/x"),
+          slugContext("not a slug"),
+        ),
       )
 
       expect(status).toBe(422)
@@ -499,7 +518,9 @@ describe.skipIf(!hasDatabase)("mobile api", () => {
       )
 
       expect(first.status).toBe(200)
-      expect((first.body.data as Record<string, unknown>).state).toBe("REGISTERED")
+      expect((first.body.data as Record<string, unknown>).state).toBe(
+        "REGISTERED",
+      )
       // Idempotent: a retry on a flaky connection is not a conflict.
       expect(second.status).toBe(200)
       expect((second.body.data as Record<string, unknown>).state).toBe(
