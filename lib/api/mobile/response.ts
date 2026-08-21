@@ -40,7 +40,7 @@ export type MobilePageMeta = {
 
 export function mobileList<T>(
   items: T[],
-  meta: MobilePageMeta,
+  meta: MobilePageMeta & MobileMeta,
 ): NextResponse {
   return NextResponse.json({ data: items, meta })
 }
@@ -52,6 +52,24 @@ export function mobileError(
   return NextResponse.json(
     { error: { code, message } },
     { status: mobileErrorStatus[code] },
+  )
+}
+
+/**
+ * A validation failure that can point at the fields responsible.
+ *
+ * The summary alone is enough to show a student something useful, so
+ * `fieldErrors` is additive: a client that ignores it still works, and one that
+ * reads it can put the message under the right text field instead of at the top
+ * of the form.
+ */
+export function mobileValidationError(
+  message: string,
+  fieldErrors: Record<string, string>,
+): NextResponse {
+  return NextResponse.json(
+    { error: { code: "VALIDATION_ERROR", message, fieldErrors } },
+    { status: mobileErrorStatus.VALIDATION_ERROR },
   )
 }
 
