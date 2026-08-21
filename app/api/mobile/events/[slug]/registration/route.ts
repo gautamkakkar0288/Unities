@@ -1,4 +1,8 @@
 import { requireMobileSession } from "@/lib/api/mobile/auth"
+import {
+  readOptionalJson,
+  rejectClientSuppliedUser,
+} from "@/lib/api/mobile/body"
 import { withMobileRoute } from "@/lib/api/mobile/handler"
 import { parseSlug } from "@/lib/api/mobile/query"
 import {
@@ -19,17 +23,15 @@ type Context = { params: Promise<{ slug: string }> }
  * confirmation notification inside the same transaction. None of that is
  * restated here, and none of it may be.
  *
- * The registered account is `session.userId`. There is no code path that reads
- * a user identifier from the body or the URL, which is what makes it impossible
- * to sign up somebody else. A body that names a `userId` is refused loudly
- * rather than ignored quietly, so a client written against the wrong assumption
- * finds out immediately instead of shipping.
+ * The registered account is `session.userId`. No code path reads a user
+ * identifier from the body or the URL, which is what makes registering somebody
+ * else impossible rather than merely unsupported.
  *
- * Statuses follow the service's own vocabulary: a closed or cancelled event is
- * a 409 because the request was well-formed and the world said no, a missing or
- * draft event is a 404, and an already-registered student gets 200 with their
- * existing state rather than an error - retrying on a flaky connection must not
- * look like a failure.
+ * Statuses follow the service's own vocabulary: a closed or cancelled event is a
+ * 409 because the request was well-formed and the world said no, a missing or
+ * draft event is a 404, and a student who is already registered gets 200 with
+ * their existing state - a retry on a flaky connection must not look like a
+ * failure.
  */
 export const POST = withMobileRoute(
   "POST /api/mobile/events/[slug]/registration",
@@ -41,14 +43,19 @@ export const POST = withMobileRoute(
     const slug = parseSlug(rawSlug)
     if (!slug.ok) return mobileError("VALIDATION_ERROR", slug.message)
 
-    const rejection = await rejectImpersonation(request)
-    if (rejection) return rejection
+    // A registration request needs no body, but one that arrives naming a user
+    // is refused rather than ignored.
+    const body = await readOptionalJson(request)
+    if (!body.ok) return body.response
+
+    const impersonation = rejectClientSuppliedUser(body.value)
+    if (impersonation) return impersonation
 
     const { userId } = authenticated.session
 
-    // The service works in identifiers; the mobile client works in slugs. This
-    // lookup is also the visibility check: a draft event resolves to null here
-    // exactly as it does on the detail screen.
+    // The service works in identifiers, the client in slugs. This lookup is
+    // also the visibility check: a draft event resolves to null here exactly as
+    // it does on the detail screen.
     const event = await getEventBySlug({ slug: slug.value, viewerId: userId })
 
     if (!event) {
@@ -68,35 +75,3 @@ export const POST = withMobileRoute(
     })
   },
 )
-
-/**
- * A registration request has no body. If one arrives carrying a `userId`, the
- * caller believes it can choose who gets the seat, and the honest answer is to
- * say no rather than to silently register the wrong assumption's author.
- */
-async function rejectImpersonation(request: Request) {
-  const raw = await request.text()
-
-  if (raw.trim().length === 0) return null
-
-  let parsed: unknown
-
-  try {
-    parsed = JSON.parse(raw)
-  } catch {
-    return mobileError("BAD_REQUEST", "That request body is not valid JSON.")
-  }
-
-  if (
-    parsed !== null &&
-    typeof parsed === "object" &&
-    ("userId" in parsed || "user_id" in parsed)
-  ) {
-    return mobileError(
-      "BAD_REQUEST",
-      "Registration always applies to the signed-in account.",
-    )
-  }
-
-  return null
-}
