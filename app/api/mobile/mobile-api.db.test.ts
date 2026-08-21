@@ -38,6 +38,7 @@ import { GET as feed } from "./feed/route"
 import { GET as me } from "./me/route"
 import { POST as markRead } from "./notifications/[id]/read/route"
 import { GET as notificationList } from "./notifications/route"
+import { TEST_ORIGIN } from "./test-origin"
 
 /**
  * The mobile API, exercised through the route handlers themselves.
@@ -111,7 +112,7 @@ const later = new Date(Date.now() + 50 * hour)
 const yesterday = new Date(Date.now() - 24 * hour)
 
 function request(path: string, body?: unknown) {
-  return new Request(`http://localhost${path}`, {
+  return new Request(`${TEST_ORIGIN}${path}`, {
     method: body === undefined ? "GET" : "POST",
     body: body === undefined ? undefined : JSON.stringify(body),
   })

@@ -1,5 +1,7 @@
 import { describe, expect, it } from "vitest"
 
+import { TEST_ORIGIN } from "@/app/api/mobile/test-origin"
+
 import {
   MOBILE_DEFAULT_LIMIT,
   MOBILE_MAX_LIMIT,
@@ -9,7 +11,7 @@ import {
 } from "./query"
 
 function query(search: string) {
-  return parseListQuery(new URL(`http://localhost/api/mobile/x${search}`))
+  return parseListQuery(new URL(`${TEST_ORIGIN}/api/mobile/x${search}`))
 }
 
 describe("parseListQuery", () => {
