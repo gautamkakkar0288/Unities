@@ -72,8 +72,7 @@ export async function createSmtpTransport(
  * Never throws: callers inspect the result.
  */
 export function smtpConfigFromEnv():
-  | { config: SmtpConfig; missing: null }
-  | { config: null; missing: string[] } {
+  { config: SmtpConfig; missing: null } | { config: null; missing: string[] } {
   const required: Record<string, string | undefined> = {
     SMTP_HOST: process.env.SMTP_HOST,
     SMTP_USER: process.env.SMTP_USER,

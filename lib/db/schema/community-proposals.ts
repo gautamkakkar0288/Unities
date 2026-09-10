@@ -50,7 +50,9 @@ export const communityProposals = pgTable(
     proposedById: text("proposed_by_id").references(() => users.id, {
       onDelete: "set null",
     }),
-    status: text("status", { enum: reviewStatuses }).notNull().default("PENDING"),
+    status: text("status", { enum: reviewStatuses })
+      .notNull()
+      .default("PENDING"),
     /** Denormalised count of supporters; the join table is the source of truth. */
     supporterCount: integer("supporter_count").notNull().default(1),
     reviewedById: text("reviewed_by_id").references(() => users.id, {

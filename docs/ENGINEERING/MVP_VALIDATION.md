@@ -8,7 +8,6 @@
 >
 > Do not mark Phase 3 complete until section 5 passes in a browser.
 
-
 ## Why this file exists
 
 The test suite exercises `lib/services/*` directly. The pages that call those
@@ -41,22 +40,22 @@ coexist: **Student A**, **Student B**, **Admin**.
 
 ## 1. Student sign-up and onboarding — Student A
 
-| Step | Expected |
-| --- | --- |
-| Open `/` | Landing page renders |
-| Sign up with a non-`@chitkara.edu.in` address | **Refused.** Only `@chitkara.edu.in` may sign up |
-| Sign up with `a@chitkara.edu.in` | Account created, verification email printed to terminal |
-| Try to reach `/home` before verifying | Behaviour must match the gating decision recorded in section 7 |
-| Open the verification link | `users.email_verified` becomes non-null |
-| Sign in | Session established |
-| Onboarding: pick interests | Rows appear in `user_interests` |
-| `/home` | Renders real data, no placeholder content |
-| `/communities` | Seeded communities listed with real member counts |
-| Open a community | Detail page renders |
-| Join an `OPEN` community | Button flips to joined; `memberships` row `MEMBER`; `communities.member_count` incremented by exactly 1 |
-| Reload | Joined state persists |
-| Leave | Row and counter both revert |
-| `/profile` | Shows the real account and its interests |
+| Step                                          | Expected                                                                                                |
+| --------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
+| Open `/`                                      | Landing page renders                                                                                    |
+| Sign up with a non-`@chitkara.edu.in` address | **Refused.** Only `@chitkara.edu.in` may sign up                                                        |
+| Sign up with `a@chitkara.edu.in`              | Account created, verification email printed to terminal                                                 |
+| Try to reach `/home` before verifying         | Behaviour must match the gating decision recorded in section 7                                          |
+| Open the verification link                    | `users.email_verified` becomes non-null                                                                 |
+| Sign in                                       | Session established                                                                                     |
+| Onboarding: pick interests                    | Rows appear in `user_interests`                                                                         |
+| `/home`                                       | Renders real data, no placeholder content                                                               |
+| `/communities`                                | Seeded communities listed with real member counts                                                       |
+| Open a community                              | Detail page renders                                                                                     |
+| Join an `OPEN` community                      | Button flips to joined; `memberships` row `MEMBER`; `communities.member_count` incremented by exactly 1 |
+| Reload                                        | Joined state persists                                                                                   |
+| Leave                                         | Row and counter both revert                                                                             |
+| `/profile`                                    | Shows the real account and its interests                                                                |
 
 Check: `select member_count from communities where slug = '…'` matches the
 number of `MEMBER`/`MODERATOR`/`OWNER` rows. A drifting counter here is the
@@ -68,25 +67,25 @@ bug most likely to be invisible in the UI.
 
 Requires PR #18.
 
-| Step | Expected |
-| --- | --- |
-| Sign up `b@chitkara.edu.in`, verify, onboard | as above |
-| Propose a community | `community_proposals` row, `PENDING` |
-| As Admin, approve it | `communities` row created, `created_community_id` set, proposer is `OWNER` in `memberships` |
-| As B, submit a verification request with evidence | `verification_requests` row, `PENDING` |
-| Submit a second request for the same community | **Refused** — partial unique index |
-| As Admin, open the queue | Request visible, oldest first |
-| Approve | `communities.verification` → `VERIFIED`; owner's `users.role` → `ORGANIZER`; `audit_log` row written |
-| Approve the same request again | **Refused** — already decided |
+| Step                                              | Expected                                                                                             |
+| ------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| Sign up `b@chitkara.edu.in`, verify, onboard      | as above                                                                                             |
+| Propose a community                               | `community_proposals` row, `PENDING`                                                                 |
+| As Admin, approve it                              | `communities` row created, `created_community_id` set, proposer is `OWNER` in `memberships`          |
+| As B, submit a verification request with evidence | `verification_requests` row, `PENDING`                                                               |
+| Submit a second request for the same community    | **Refused** — partial unique index                                                                   |
+| As Admin, open the queue                          | Request visible, oldest first                                                                        |
+| Approve                                           | `communities.verification` → `VERIFIED`; owner's `users.role` → `ORGANIZER`; `audit_log` row written |
+| Approve the same request again                    | **Refused** — already decided                                                                        |
 
 Rejection path, on a second community:
 
-| Step | Expected |
-| --- | --- |
-| Request, then reject with a note | `status` `REJECTED`, `reviewer_note` stored |
-| Check the community | `verification` still `UNVERIFIED` |
-| Check the owner | `role` **still `STUDENT`** — rejection must not promote |
-| Request again after rejection | **Allowed** |
+| Step                             | Expected                                                |
+| -------------------------------- | ------------------------------------------------------- |
+| Request, then reject with a note | `status` `REJECTED`, `reviewer_note` stored             |
+| Check the community              | `verification` still `UNVERIFIED`                       |
+| Check the owner                  | `role` **still `STUDENT`** — rejection must not promote |
+| Request again after rejection    | **Allowed**                                             |
 
 Check: `select action, target_kind, summary from audit_log order by created_at`.
 Every approve and reject must be there. A missing row means the write was not in
@@ -98,31 +97,31 @@ the same transaction.
 
 Requires PR #19.
 
-| Step | Expected |
-| --- | --- |
-| `/create` | Event card offers "Choose a community" |
-| Pick the verified community, open its new-event form | Form renders |
-| Submit with `ends_at` before `starts_at` | **Refused**, readable message |
-| Submit with a start time in the past | **Refused** |
-| Submit with registration closing after the start | **Refused** |
-| Submit a valid event, capacity 10 | Created and published |
-| `/events` | Appears in discovery, correct time bucket |
-| Open its detail page | Title, description, date, time, venue, capacity, host community, mode all correct |
-| Try to create an event on the **unverified** community | **Refused** — only owners of verified communities may publish |
+| Step                                                   | Expected                                                                          |
+| ------------------------------------------------------ | --------------------------------------------------------------------------------- |
+| `/create`                                              | Event card offers "Choose a community"                                            |
+| Pick the verified community, open its new-event form   | Form renders                                                                      |
+| Submit with `ends_at` before `starts_at`               | **Refused**, readable message                                                     |
+| Submit with a start time in the past                   | **Refused**                                                                       |
+| Submit with registration closing after the start       | **Refused**                                                                       |
+| Submit a valid event, capacity 10                      | Created and published                                                             |
+| `/events`                                              | Appears in discovery, correct time bucket                                         |
+| Open its detail page                                   | Title, description, date, time, venue, capacity, host community, mode all correct |
+| Try to create an event on the **unverified** community | **Refused** — only owners of verified communities may publish                     |
 
 ---
 
 ## 4. Registration — Student A
 
-| Step | Expected |
-| --- | --- |
-| Find the event in `/events` | Visible |
-| Register | Confirmation state, not a toast that lies |
-| **Reload** | Still registered — this is the step that catches missing revalidation |
-| Check `event_registrations` | One row, `REGISTERED` |
-| Check `events.registered_count` | Exactly 1 |
-| Cancel | State reverts, counter back to 0, row `CANCELLED` (not deleted) |
-| Register again | Same row reused, `REGISTERED` again |
+| Step                            | Expected                                                              |
+| ------------------------------- | --------------------------------------------------------------------- |
+| Find the event in `/events`     | Visible                                                               |
+| Register                        | Confirmation state, not a toast that lies                             |
+| **Reload**                      | Still registered — this is the step that catches missing revalidation |
+| Check `event_registrations`     | One row, `REGISTERED`                                                 |
+| Check `events.registered_count` | Exactly 1                                                             |
+| Cancel                          | State reverts, counter back to 0, row `CANCELLED` (not deleted)       |
+| Register again                  | Same row reused, `REGISTERED` again                                   |
 
 ---
 
@@ -130,13 +129,13 @@ Requires PR #19.
 
 Create an event with **capacity 1**.
 
-| Step | Actor | Expected |
-| --- | --- | --- |
-| Register | Student A | `REGISTERED`, `registered_count` = 1 |
-| Open the event | Student B | Button reads **"Join the waitlist"** and is **enabled** — full is not closed |
-| Join the waitlist | Student B | `WAITLISTED`. `registered_count` **stays 1** — waitlisters do not consume seats |
-| Cancel | Student A | A's row `CANCELLED` |
-| **Reload as Student B** | Student B | **B is now `REGISTERED`**, `promoted_at` set, `registered_count` = 1 |
+| Step                    | Actor     | Expected                                                                        |
+| ----------------------- | --------- | ------------------------------------------------------------------------------- |
+| Register                | Student A | `REGISTERED`, `registered_count` = 1                                            |
+| Open the event          | Student B | Button reads **"Join the waitlist"** and is **enabled** — full is not closed    |
+| Join the waitlist       | Student B | `WAITLISTED`. `registered_count` **stays 1** — waitlisters do not consume seats |
+| Cancel                  | Student A | A's row `CANCELLED`                                                             |
+| **Reload as Student B** | Student B | **B is now `REGISTERED`**, `promoted_at` set, `registered_count` = 1            |
 
 If `registered_count` reaches 2 at any point, the event is oversold and Phase 3
 is not complete. If B is not promoted, the transaction is wrong.
@@ -181,15 +180,15 @@ proven.
 Record the final answer here once implemented, then keep this table and the code
 in step.
 
-| Capability | Unverified | Verified student | Organiser | Admin |
-| --- | --- | --- | --- | --- |
-| Sign in, manage account, resend verification | ✅ | ✅ | ✅ | ✅ |
-| Complete onboarding | tbd | ✅ | ✅ | ✅ |
-| Join a community | ❌ | ✅ | ✅ | ✅ |
-| Propose a community | ❌ | ✅ | ✅ | ✅ |
-| Register for an event | ❌ | ✅ | ✅ | ✅ |
-| Create an event | ❌ | ❌ | verified community only | ❌ |
-| Review verification requests | ❌ | ❌ | ❌ | ✅ |
+| Capability                                   | Unverified | Verified student | Organiser               | Admin |
+| -------------------------------------------- | ---------- | ---------------- | ----------------------- | ----- |
+| Sign in, manage account, resend verification | ✅         | ✅               | ✅                      | ✅    |
+| Complete onboarding                          | tbd        | ✅               | ✅                      | ✅    |
+| Join a community                             | ❌         | ✅               | ✅                      | ✅    |
+| Propose a community                          | ❌         | ✅               | ✅                      | ✅    |
+| Register for an event                        | ❌         | ✅               | ✅                      | ✅    |
+| Create an event                              | ❌         | ❌               | verified community only | ❌    |
+| Review verification requests                 | ❌         | ❌               | ❌                      | ✅    |
 
 ---
 
@@ -213,23 +212,23 @@ assumed to pass.
 
 **Automated checks (all passed before browser testing was attempted):**
 
-| Check | Result |
-|---|---|
-| `npm run typecheck` | PASS — 0 errors |
-| `npm run lint` | PASS — 0 errors, 3 warnings (all in test files) |
-| `npm test` | PASS — 268 passed, 142 skipped (DB integration tests need live Postgres) |
-| `npm run build` | PASS — clean Next.js production build |
+| Check               | Result                                                                   |
+| ------------------- | ------------------------------------------------------------------------ |
+| `npm run typecheck` | PASS — 0 errors                                                          |
+| `npm run lint`      | PASS — 0 errors, 3 warnings (all in test files)                          |
+| `npm test`          | PASS — 268 passed, 142 skipped (DB integration tests need live Postgres) |
+| `npm run build`     | PASS — clean Next.js production build                                    |
 
 **Browser validation results:**
 
-| Section | Result | Notes |
-|---|---|---|
-| 1. Student sign-up and onboarding | NOT RUN | Needs DATABASE_URL + seeded DB |
-| 2. Community creation and organiser verification | NOT RUN | Needs DATABASE_URL + seeded DB |
-| 3. Event creation | NOT RUN | Needs DATABASE_URL + seeded DB |
-| 4. Registration | NOT RUN | Needs DATABASE_URL + seeded DB |
-| 5. **Capacity-1 waitlist promotion** | **NOT RUN** | **Critical test — must be run before Phase 3 is declared complete** |
-| 6. Negative testing | NOT RUN | Needs DATABASE_URL + seeded DB |
+| Section                                          | Result      | Notes                                                               |
+| ------------------------------------------------ | ----------- | ------------------------------------------------------------------- |
+| 1. Student sign-up and onboarding                | NOT RUN     | Needs DATABASE_URL + seeded DB                                      |
+| 2. Community creation and organiser verification | NOT RUN     | Needs DATABASE_URL + seeded DB                                      |
+| 3. Event creation                                | NOT RUN     | Needs DATABASE_URL + seeded DB                                      |
+| 4. Registration                                  | NOT RUN     | Needs DATABASE_URL + seeded DB                                      |
+| 5. **Capacity-1 waitlist promotion**             | **NOT RUN** | **Critical test — must be run before Phase 3 is declared complete** |
+| 6. Negative testing                              | NOT RUN     | Needs DATABASE_URL + seeded DB                                      |
 
 **Email status:**
 
@@ -256,4 +255,3 @@ npm run dev
 #    (Student A, Student B, Admin)
 #    Pay special attention to Section 5 (capacity-1 waitlist)
 ```
-

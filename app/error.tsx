@@ -20,7 +20,7 @@ export default function Error({
       <h1 className="text-2xl font-semibold tracking-tight">
         Something went wrong
       </h1>
-      <p className="max-w-md text-muted-foreground">
+      <p className="text-muted-foreground max-w-md">
         An unexpected error occurred. Please try again — if the problem
         persists, it has been logged for review.
       </p>

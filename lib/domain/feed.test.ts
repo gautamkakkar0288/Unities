@@ -28,7 +28,9 @@ function hoursFromNow(hours: number): string {
   return new Date(Date.parse(NOW) + hours * 3_600_000).toISOString()
 }
 
-function event(overrides: Partial<EventSummary> & { id: string }): EventSummary {
+function event(
+  overrides: Partial<EventSummary> & { id: string },
+): EventSummary {
   return {
     slug: `event-${overrides.id}`,
     title: `Event ${overrides.id}`,
@@ -135,8 +137,16 @@ describe("relevanceScore", () => {
   })
 
   it("prefers the sooner of two otherwise identical events", () => {
-    const soon = event({ id: "a", startsAt: hoursFromNow(12), endsAt: hoursFromNow(14) })
-    const later = event({ id: "b", startsAt: hoursFromNow(400), endsAt: hoursFromNow(402) })
+    const soon = event({
+      id: "a",
+      startsAt: hoursFromNow(12),
+      endsAt: hoursFromNow(14),
+    })
+    const later = event({
+      id: "b",
+      startsAt: hoursFromNow(400),
+      endsAt: hoursFromNow(402),
+    })
 
     expect(relevanceScore(soon, signals, NOW)).toBeGreaterThan(
       relevanceScore(later, signals, NOW),
@@ -246,9 +256,9 @@ describe("viewerUpcoming", () => {
   })
 
   it("ignores a closed registration window the student never used", () => {
-    expect(viewerUpcoming([event({ id: "a", viewerRegistration: "CLOSED" })], NOW)).toEqual(
-      [],
-    )
+    expect(
+      viewerUpcoming([event({ id: "a", viewerRegistration: "CLOSED" })], NOW),
+    ).toEqual([])
   })
 })
 
@@ -282,9 +292,9 @@ describe("rankCommunitySuggestions", () => {
       interest: { id: "interest-2", slug: "dance", label: "Dance" },
     })
 
-    expect(
-      rankCommunitySuggestions([bigger, matching], signals)[0]?.id,
-    ).toBe("match")
+    expect(rankCommunitySuggestions([bigger, matching], signals)[0]?.id).toBe(
+      "match",
+    )
   })
 
   it("uses size to separate two equally relevant communities", () => {

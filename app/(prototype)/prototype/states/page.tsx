@@ -9,12 +9,7 @@ import {
 import Link from "next/link"
 
 import { Button } from "@/components/ui/button"
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { EmptyState } from "@/components/ui/empty-state"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Spinner } from "@/components/ui/spinner"
@@ -112,7 +107,10 @@ export default function PrototypeStatesPage() {
               </Button>
             }
             secondaryAction={
-              <Button variant="outline" render={<Link href="/prototype/onboarding" />}>
+              <Button
+                variant="outline"
+                render={<Link href="/prototype/onboarding" />}
+              >
                 Choose interests
               </Button>
             }
@@ -128,7 +126,10 @@ export default function PrototypeStatesPage() {
             title="Nothing scheduled this week"
             description="Campus is quiet during exams. Follow a community and you will hear first when something is announced."
             action={
-              <Button variant="outline" render={<Link href="/prototype/communities" />}>
+              <Button
+                variant="outline"
+                render={<Link href="/prototype/communities" />}
+              >
                 Browse communities
               </Button>
             }
@@ -144,7 +145,10 @@ export default function PrototypeStatesPage() {
             title="No results for “robtics”"
             description="Check the spelling, or browse by interest instead."
             action={
-              <Button variant="outline" render={<Link href="/prototype/explore" />}>
+              <Button
+                variant="outline"
+                render={<Link href="/prototype/explore" />}
+              >
                 Browse by interest
               </Button>
             }
@@ -155,11 +159,11 @@ export default function PrototypeStatesPage() {
           title="Error: something failed"
           rationale="Names what failed, keeps the user's work, and offers a retry. No error codes without an explanation."
         >
-          <div className="flex flex-col items-start gap-3 rounded-xl border border-destructive-border bg-destructive-subtle/40 px-4 py-4">
+          <div className="border-destructive-border bg-destructive-subtle/40 flex flex-col items-start gap-3 rounded-xl border px-4 py-4">
             <div className="flex items-start gap-3">
               <TriangleAlert
                 aria-hidden="true"
-                className="mt-0.5 size-5 shrink-0 text-destructive"
+                className="text-destructive mt-0.5 size-5 shrink-0"
               />
               <div className="flex flex-col gap-1">
                 <p className="text-body-sm font-medium">
@@ -207,7 +211,10 @@ export default function PrototypeStatesPage() {
             title="Moderators only"
             description="The Operations Center is limited to community moderators and university admins. If you run a society, ask a moderator to add you."
             action={
-              <Button variant="outline" render={<Link href="/prototype/home" />}>
+              <Button
+                variant="outline"
+                render={<Link href="/prototype/home" />}
+              >
                 Back to home
               </Button>
             }

@@ -186,11 +186,13 @@ describe("schema and domain vocabulary agree", () => {
      * colliding with the unique constraint, but no viewer is ever in it, so
      * the domain union has no reason to carry it.
      */
-    const domain: Record<Exclude<RegistrationState, "NONE" | "CLOSED">, true> =
-      {
-        REGISTERED: true,
-        WAITLISTED: true,
-      }
+    const domain: Record<
+      Exclude<RegistrationState, "NONE" | "CLOSED">,
+      true
+    > = {
+      REGISTERED: true,
+      WAITLISTED: true,
+    }
     sameMembers(registrationStates, [...Object.keys(domain), "CANCELLED"])
   })
 

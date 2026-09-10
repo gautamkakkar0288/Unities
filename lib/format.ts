@@ -94,7 +94,8 @@ export function formatRelativeTime(iso: string, now: string): string {
 export function formatCount(value: number): string {
   if (value < 1000) return String(value)
   const thousands = value / 1000
-  const rounded = thousands < 10 ? Math.round(thousands * 10) / 10 : Math.round(thousands)
+  const rounded =
+    thousands < 10 ? Math.round(thousands * 10) / 10 : Math.round(thousands)
   return `${rounded}k`
 }
 

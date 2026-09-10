@@ -68,9 +68,7 @@ export function slugifyTitle(title: string): string {
 }
 
 export type EventTimingRefusal =
-  | "ENDS_BEFORE_IT_STARTS"
-  | "STARTS_IN_THE_PAST"
-  | "CLOSES_AFTER_IT_STARTS"
+  "ENDS_BEFORE_IT_STARTS" | "STARTS_IN_THE_PAST" | "CLOSES_AFTER_IT_STARTS"
 
 /**
  * Whether these times describe an event that can exist.

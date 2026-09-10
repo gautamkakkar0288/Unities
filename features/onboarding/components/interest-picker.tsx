@@ -90,11 +90,7 @@ export function InterestPicker({
 
   return (
     <div className="flex flex-col gap-6">
-      <div
-        role="group"
-        aria-label="Interests"
-        className="flex flex-wrap gap-2"
-      >
+      <div role="group" aria-label="Interests" className="flex flex-wrap gap-2">
         {interests.map((interest) => {
           const isSelected = selectedIds.includes(interest.id)
 
@@ -106,7 +102,7 @@ export function InterestPicker({
               onClick={() => toggle(interest.id)}
               disabled={isPending}
               className={cn(
-                "inline-flex items-center gap-1.5 rounded-full border px-3.5 py-2 text-body-sm transition-colors duration-150 focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none disabled:pointer-events-none disabled:opacity-60",
+                "text-body-sm focus-visible:ring-ring/50 inline-flex items-center gap-1.5 rounded-full border px-3.5 py-2 transition-colors duration-150 focus-visible:ring-3 focus-visible:outline-none disabled:pointer-events-none disabled:opacity-60",
                 isSelected
                   ? "border-primary bg-primary text-primary-foreground"
                   : "border-border bg-card hover:bg-muted",
@@ -122,7 +118,7 @@ export function InterestPicker({
       {error && <Alert variant="error">{error}</Alert>}
       {saved && savedMessage && <Alert variant="success">{savedMessage}</Alert>}
 
-      <div className="flex flex-col gap-3 border-t border-border pt-4 sm:flex-row sm:items-center sm:justify-between">
+      <div className="border-border flex flex-col gap-3 border-t pt-4 sm:flex-row sm:items-center sm:justify-between">
         <p aria-live="polite" className="text-body-sm text-muted-foreground">
           {remaining > 0
             ? `Pick ${remaining} more to continue.`

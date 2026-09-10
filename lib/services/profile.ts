@@ -113,7 +113,10 @@ export async function getProfile(userId: string): Promise<Profile | null> {
     avatarUrl: account.avatarUrl,
     role: account.role,
     university:
-      account.placeId && account.placeSlug && account.placeName && account.placeKind
+      account.placeId &&
+      account.placeSlug &&
+      account.placeName &&
+      account.placeKind
         ? {
             id: account.placeId,
             slug: account.placeSlug,

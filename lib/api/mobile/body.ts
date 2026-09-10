@@ -11,8 +11,7 @@ import { mobileError } from "./response"
  */
 
 export type BodyResult<T> =
-  | { ok: true; value: T }
-  | { ok: false; response: NextResponse }
+  { ok: true; value: T } | { ok: false; response: NextResponse }
 
 const INVALID_JSON = "That request body is not valid JSON."
 

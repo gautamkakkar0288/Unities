@@ -177,11 +177,12 @@ export function canModerate(state: MembershipState): boolean {
   return state === "MODERATOR" || state === "OWNER"
 }
 
-export const verificationTone: Record<CommunitySummary["verification"], Tone> = {
-  VERIFIED: "info",
-  PENDING: "warning",
-  UNVERIFIED: "neutral",
-}
+export const verificationTone: Record<CommunitySummary["verification"], Tone> =
+  {
+    VERIFIED: "info",
+    PENDING: "warning",
+    UNVERIFIED: "neutral",
+  }
 
 export const verificationLabel: Record<
   CommunitySummary["verification"],

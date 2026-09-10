@@ -37,7 +37,8 @@ export function EventFilterChips({
     const params = new URLSearchParams({ type: "events" })
 
     if (query) params.set("q", query)
-    if (merged.when !== "UPCOMING") params.set("when", merged.when.toLowerCase())
+    if (merged.when !== "UPCOMING")
+      params.set("when", merged.when.toLowerCase())
     if (merged.free) params.set("free", "1")
     if (merged.online) params.set("online", "1")
     if (merged.kind) params.set("kind", merged.kind.toLowerCase())
@@ -65,7 +66,7 @@ export function EventFilterChips({
           </Link>
         ))}
 
-        <span aria-hidden="true" className="h-4 w-px bg-border" />
+        <span aria-hidden="true" className="bg-border h-4 w-px" />
 
         <Link
           href={buildHref({ free: !filters.free })}
@@ -104,7 +105,7 @@ export function EventFilterChips({
               online: false,
               kind: null,
             })}
-            className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-caption text-muted-foreground underline-offset-4 hover:text-foreground hover:underline focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none"
+            className="text-caption text-muted-foreground hover:text-foreground focus-visible:ring-ring/50 inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 underline-offset-4 hover:underline focus-visible:ring-3 focus-visible:outline-none"
           >
             <X aria-hidden="true" className="size-3.5" />
             Clear filters

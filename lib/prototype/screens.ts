@@ -45,8 +45,7 @@ export const prototypeScreenGroups: PrototypeScreenGroup[] = [
       {
         href: "/prototype/explore",
         title: "Explore",
-        description:
-          "Trips, sports, tech, and the curated interest taxonomy.",
+        description: "Trips, sports, tech, and the curated interest taxonomy.",
         phase: "Phase 6",
       },
       {
@@ -71,8 +70,7 @@ export const prototypeScreenGroups: PrototypeScreenGroup[] = [
       {
         href: "/prototype/communities",
         title: "Community directory",
-        description:
-          "The seeded campus, then city, then interest communities.",
+        description: "The seeded campus, then city, then interest communities.",
         phase: "Phase 6",
       },
       {

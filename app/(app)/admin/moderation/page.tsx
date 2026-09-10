@@ -80,7 +80,7 @@ export default async function ModerationQueuePage() {
           a comment in a community you moderate.
         </p>
       ) : (
-        <ul className="flex flex-col divide-y divide-border">
+        <ul className="divide-border flex flex-col divide-y">
           {queue.data.map((report) => (
             <li key={report.id} className="flex flex-col gap-3 py-5">
               <div className="flex flex-wrap items-center gap-2">
@@ -112,7 +112,7 @@ export default async function ModerationQueuePage() {
               )}
 
               {report.target ? (
-                <div className="flex flex-col gap-1 border-l-2 border-border pl-3">
+                <div className="border-border flex flex-col gap-1 border-l-2 pl-3">
                   {report.targetKind === "POST" && (
                     <p className="text-body font-medium wrap-anywhere">
                       {report.target.title}

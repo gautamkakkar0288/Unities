@@ -73,11 +73,7 @@ export function assignableRoles(actor: UserRole): UserRole[] {
  * do, and the reasons here are the ones people actually run into.
  */
 export type RoleAssignmentRefusal =
-  | "NOT_PERMITTED"
-  | "SELF"
-  | "ABOVE_ACTOR"
-  | "TARGET_ABOVE_ACTOR"
-  | "UNCHANGED"
+  "NOT_PERMITTED" | "SELF" | "ABOVE_ACTOR" | "TARGET_ABOVE_ACTOR" | "UNCHANGED"
 
 export function refuseRoleAssignment(args: {
   actorId: string

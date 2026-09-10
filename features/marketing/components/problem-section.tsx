@@ -14,7 +14,7 @@ export function ProblemSection() {
         {problems.map((problem) => (
           <div
             key={problem.title}
-            className="flex flex-col gap-2 border-l-2 border-border pl-4"
+            className="border-border flex flex-col gap-2 border-l-2 pl-4"
           >
             <dt className="text-h4">{problem.title}</dt>
             <dd className="text-body-sm text-muted-foreground">

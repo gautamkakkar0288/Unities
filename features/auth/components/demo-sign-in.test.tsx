@@ -82,9 +82,7 @@ describe("DemoSignIn", () => {
     render(<DemoSignIn accounts={ACCOUNTS} password="demo1234" />)
     screen.getByRole("button", { name: "Continue as Demo Student" }).click()
 
-    expect(
-      await screen.findByText(/demo accounts are missing/i),
-    ).toBeTruthy()
+    expect(await screen.findByText(/demo accounts are missing/i)).toBeTruthy()
     // The label returns, so the button can be tried again.
     expect(
       screen.getByRole("button", { name: "Continue as Demo Student" }),

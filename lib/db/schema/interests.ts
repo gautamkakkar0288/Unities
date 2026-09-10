@@ -89,7 +89,9 @@ export const interestSuggestions = pgTable(
      * truth, so it can be recomputed if it ever drifts.
      */
     demandCount: integer("demand_count").notNull().default(1),
-    status: text("status", { enum: reviewStatuses }).notNull().default("PENDING"),
+    status: text("status", { enum: reviewStatuses })
+      .notNull()
+      .default("PENDING"),
     /** Set when a reviewer says "we already call this something else". */
     mapsToInterestId: text("maps_to_interest_id").references(
       () => interests.id,
@@ -108,8 +110,13 @@ export const interestSuggestions = pgTable(
     decidedAt: timestamp("decided_at", { mode: "date" }),
   },
   (table) => [
-    uniqueIndex("interest_suggestions_normalised_idx").on(table.normalisedLabel),
-    index("interest_suggestions_status_idx").on(table.status, table.demandCount),
+    uniqueIndex("interest_suggestions_normalised_idx").on(
+      table.normalisedLabel,
+    ),
+    index("interest_suggestions_status_idx").on(
+      table.status,
+      table.demandCount,
+    ),
   ],
 )
 

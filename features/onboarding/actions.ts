@@ -26,7 +26,10 @@ export async function saveOnboardingInterests(
   const session = await auth()
 
   if (!session?.user) {
-    return fail("FORBIDDEN", "Your session has expired. Sign in again to continue.")
+    return fail(
+      "FORBIDDEN",
+      "Your session has expired. Sign in again to continue.",
+    )
   }
 
   const result = await setUserInterests({

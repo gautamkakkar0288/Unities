@@ -27,24 +27,20 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 }
 
-export default function PrototypeLayout({
-  children,
-}: {
-  children: ReactNode
-}) {
+export default function PrototypeLayout({ children }: { children: ReactNode }) {
   if (!prototypeRoutesEnabled()) notFound()
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="bg-background min-h-screen">
       <a
         href="#content"
-        className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-50 focus:rounded-md focus:bg-card focus:px-3 focus:py-2 focus:text-body-sm focus:shadow-panel"
+        className="focus:bg-card focus:text-body-sm focus:shadow-panel sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-50 focus:rounded-md focus:px-3 focus:py-2"
       >
         Skip to content
       </a>
 
-      <div className="sticky top-0 z-40 border-b border-warning-border bg-warning-subtle text-warning-foreground">
-        <div className="mx-auto flex h-12 w-full max-w-wide items-center gap-2 px-4 text-caption sm:px-6">
+      <div className="border-warning-border bg-warning-subtle text-warning-foreground sticky top-0 z-40 border-b">
+        <div className="max-w-wide text-caption mx-auto flex h-12 w-full items-center gap-2 px-4 sm:px-6">
           <span className="font-medium">Prototype</span>
           <span className="hidden sm:inline">
             Every name, number, and post on these screens is fabricated fixture
@@ -61,8 +57,8 @@ export default function PrototypeLayout({
         </div>
       </div>
 
-      <div className="mx-auto flex w-full max-w-wide">
-        <aside className="hidden w-72 shrink-0 border-r border-border lg:block">
+      <div className="max-w-wide mx-auto flex w-full">
+        <aside className="border-border hidden w-72 shrink-0 border-r lg:block">
           <div className="sticky top-12 max-h-[calc(100vh-3rem)] overflow-y-auto px-4 py-6">
             <div className="mb-6 flex items-center justify-between gap-2">
               <Logo />
@@ -76,10 +72,10 @@ export default function PrototypeLayout({
           id="content"
           className="min-w-0 flex-1 px-4 py-8 sm:px-6 lg:px-10"
         >
-          <details className="group mb-8 rounded-lg border border-border bg-card p-3 lg:hidden">
-            <summary className="flex cursor-pointer list-none items-center justify-between gap-2 text-body-sm font-medium">
+          <details className="group border-border bg-card mb-8 rounded-lg border p-3 lg:hidden">
+            <summary className="text-body-sm flex cursor-pointer list-none items-center justify-between gap-2 font-medium">
               Jump to screen
-              <ChevronDown className="size-4 transition-transform duration-200 ease-standard group-open:rotate-180" />
+              <ChevronDown className="ease-standard size-4 transition-transform duration-200 group-open:rotate-180" />
             </summary>
             <div className="pt-4">
               <PrototypeScreenNav />

@@ -1,4 +1,10 @@
-import { index, pgTable, text, timestamp, uniqueIndex } from "drizzle-orm/pg-core"
+import {
+  index,
+  pgTable,
+  text,
+  timestamp,
+  uniqueIndex,
+} from "drizzle-orm/pg-core"
 
 import { communities } from "./communities"
 import { users } from "./users"
@@ -39,7 +45,9 @@ export const memberships = pgTable(
     userId: text("user_id")
       .notNull()
       .references(() => users.id, { onDelete: "cascade" }),
-    state: text("state", { enum: membershipStates }).notNull().default("MEMBER"),
+    state: text("state", { enum: membershipStates })
+      .notNull()
+      .default("MEMBER"),
     /** When they asked. Set for `PENDING`, kept afterwards for the audit. */
     requestedAt: timestamp("requested_at", { mode: "date" }),
     /** When they actually got in. Null while pending or invited. */

@@ -495,13 +495,13 @@ export async function registerForEvent(args: {
     const open = isRegistrationOpen(
       {
         startsAt: event.startsAt.toISOString(),
-        registrationClosesAt:
-          event.registrationClosesAt?.toISOString() ?? null,
+        registrationClosesAt: event.registrationClosesAt?.toISOString() ?? null,
       },
       now.toISOString(),
     )
 
-    if (!open) return fail("CONFLICT", "Registration for this event has closed.")
+    if (!open)
+      return fail("CONFLICT", "Registration for this event has closed.")
 
     const [existing] = await tx
       .select({ id: eventRegistrations.id, state: eventRegistrations.state })
@@ -738,7 +738,10 @@ export async function listRegistrations(args: {
   if (!event) return fail("NOT_FOUND", "That event no longer exists.")
 
   if (event.viewerState !== "OWNER" && event.viewerState !== "MODERATOR") {
-    return fail("FORBIDDEN", "Only the people running this event can see who is coming.")
+    return fail(
+      "FORBIDDEN",
+      "Only the people running this event can see who is coming.",
+    )
   }
 
   const rows = await db

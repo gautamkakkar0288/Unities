@@ -5,7 +5,7 @@ export default function Loading() {
       role="status"
       aria-label="Loading"
     >
-      <div className="size-8 animate-pulse rounded-full bg-muted" />
+      <div className="bg-muted size-8 animate-pulse rounded-full" />
     </div>
   )
 }

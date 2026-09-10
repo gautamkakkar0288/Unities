@@ -17,19 +17,19 @@ export function FaqSection() {
       id="faq"
       eyebrow="FAQ"
       title="Questions students actually ask."
-      className="border-t border-border"
+      className="border-border border-t"
     >
-      <div className="max-w-readable divide-y divide-border">
+      <div className="max-w-readable divide-border divide-y">
         {faqs.map((faq) => (
           <details key={faq.question} className="group py-4">
-            <summary className="flex cursor-pointer items-center justify-between gap-4 rounded-md text-h4 focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none marker:content-none">
+            <summary className="text-h4 focus-visible:ring-ring/50 flex cursor-pointer items-center justify-between gap-4 rounded-md marker:content-none focus-visible:ring-3 focus-visible:outline-none">
               {faq.question}
               <ChevronDown
                 aria-hidden="true"
-                className="size-4 shrink-0 text-muted-foreground transition-transform duration-200 ease-standard group-open:rotate-180"
+                className="text-muted-foreground ease-standard size-4 shrink-0 transition-transform duration-200 group-open:rotate-180"
               />
             </summary>
-            <p className="mt-3 text-body text-muted-foreground">{faq.answer}</p>
+            <p className="text-body text-muted-foreground mt-3">{faq.answer}</p>
           </details>
         ))}
       </div>

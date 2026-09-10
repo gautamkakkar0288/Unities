@@ -30,7 +30,11 @@ const hasDatabase = true
 const INTEREST_IDS = ["feed-test-interest", "feed-test-other-interest"]
 const COMMUNITY_IDS = ["feed-test-joined", "feed-test-open"]
 const USER_IDS = ["feed-test-viewer", "feed-test-stranger"]
-const EVENT_IDS = ["feed-test-registered", "feed-test-relevant", "feed-test-past"]
+const EVENT_IDS = [
+  "feed-test-registered",
+  "feed-test-relevant",
+  "feed-test-past",
+]
 
 const NOW = new Date("2026-03-01T06:00:00.000Z")
 
@@ -79,9 +83,10 @@ describe.skipIf(!hasDatabase)("loadHomeFeed", () => {
       },
     ])
 
-    await db
-      .insert(userInterests)
-      .values({ userId: USER_IDS[0] as string, interestId: INTEREST_IDS[0] as string })
+    await db.insert(userInterests).values({
+      userId: USER_IDS[0] as string,
+      interestId: INTEREST_IDS[0] as string,
+    })
 
     await db.insert(communities).values([
       {

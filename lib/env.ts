@@ -24,4 +24,3 @@ export const env = envSchema.parse({
   SMTP_PASSWORD: process.env.SMTP_PASSWORD,
   SMTP_FROM: process.env.SMTP_FROM,
 })
-

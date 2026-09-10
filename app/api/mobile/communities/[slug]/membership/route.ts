@@ -48,7 +48,10 @@ export const POST = withMobileRoute(
 
     const { userId } = authenticated.session
 
-    const community = await getCommunityBySlug({ slug: slug.value, viewerId: userId })
+    const community = await getCommunityBySlug({
+      slug: slug.value,
+      viewerId: userId,
+    })
 
     if (!community) {
       return mobileError("NOT_FOUND", "That community no longer exists.")

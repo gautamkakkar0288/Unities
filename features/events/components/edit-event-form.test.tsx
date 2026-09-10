@@ -73,9 +73,10 @@ function save() {
 
 describe("EditEventForm", () => {
   beforeEach(() => {
-    updateEventAction
-      .mockReset()
-      .mockResolvedValue({ ok: true, data: { slug: "robotics-night", promoted: 0 } })
+    updateEventAction.mockReset().mockResolvedValue({
+      ok: true,
+      data: { slug: "robotics-night", promoted: 0 },
+    })
     push.mockReset()
     refresh.mockReset()
   })
@@ -96,18 +97,14 @@ describe("EditEventForm", () => {
     renderForm()
 
     expect(screen.getByText("Workshop")).toBeInTheDocument()
-    expect(
-      screen.getByText(/type cannot be changed/i),
-    ).toBeInTheDocument()
+    expect(screen.getByText(/type cannot be changed/i)).toBeInTheDocument()
     expect(screen.queryByLabelText(/^Type/)).toBeNull()
   })
 
   it("warns that adding seats will let the queue straight in", () => {
     renderForm({ waitlistCount: 3 })
 
-    expect(
-      screen.getByText(/3 students are waiting/),
-    ).toBeInTheDocument()
+    expect(screen.getByText(/3 students are waiting/)).toBeInTheDocument()
   })
 
   it("says nothing about a queue that is empty", () => {
@@ -215,8 +212,6 @@ describe("EditEventForm", () => {
     // True on every save until notifications exist, so it is not conditional.
     renderForm()
 
-    expect(
-      screen.getByText(/not notified of changes yet/),
-    ).toBeInTheDocument()
+    expect(screen.getByText(/not notified of changes yet/)).toBeInTheDocument()
   })
 })

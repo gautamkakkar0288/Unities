@@ -81,12 +81,8 @@
           "name": "accounts_user_id_users_id_fk",
           "tableFrom": "accounts",
           "tableTo": "users",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -94,10 +90,7 @@
       "compositePrimaryKeys": {
         "accounts_provider_provider_account_id_pk": {
           "name": "accounts_provider_provider_account_id_pk",
-          "columns": [
-            "provider",
-            "provider_account_id"
-          ]
+          "columns": ["provider", "provider_account_id"]
         }
       },
       "uniqueConstraints": {},
@@ -272,12 +265,8 @@
           "name": "communities_place_id_places_id_fk",
           "tableFrom": "communities",
           "tableTo": "places",
-          "columnsFrom": [
-            "place_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["place_id"],
+          "columnsTo": ["id"],
           "onDelete": "set null",
           "onUpdate": "no action"
         },
@@ -285,12 +274,8 @@
           "name": "communities_interest_id_interests_id_fk",
           "tableFrom": "communities",
           "tableTo": "interests",
-          "columnsFrom": [
-            "interest_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["interest_id"],
+          "columnsTo": ["id"],
           "onDelete": "restrict",
           "onUpdate": "no action"
         },
@@ -298,12 +283,8 @@
           "name": "communities_created_by_id_users_id_fk",
           "tableFrom": "communities",
           "tableTo": "users",
-          "columnsFrom": [
-            "created_by_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["created_by_id"],
+          "columnsTo": ["id"],
           "onDelete": "set null",
           "onUpdate": "no action"
         }
@@ -313,9 +294,7 @@
         "communities_slug_unique": {
           "name": "communities_slug_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "slug"
-          ]
+          "columns": ["slug"]
         }
       },
       "policies": {},
@@ -352,12 +331,8 @@
           "name": "community_proposal_supporters_proposal_id_community_proposals_id_fk",
           "tableFrom": "community_proposal_supporters",
           "tableTo": "community_proposals",
-          "columnsFrom": [
-            "proposal_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["proposal_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -365,12 +340,8 @@
           "name": "community_proposal_supporters_user_id_users_id_fk",
           "tableFrom": "community_proposal_supporters",
           "tableTo": "users",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -378,10 +349,7 @@
       "compositePrimaryKeys": {
         "community_proposal_supporters_proposal_id_user_id_pk": {
           "name": "community_proposal_supporters_proposal_id_user_id_pk",
-          "columns": [
-            "proposal_id",
-            "user_id"
-          ]
+          "columns": ["proposal_id", "user_id"]
         }
       },
       "uniqueConstraints": {},
@@ -545,12 +513,8 @@
           "name": "community_proposals_interest_id_interests_id_fk",
           "tableFrom": "community_proposals",
           "tableTo": "interests",
-          "columnsFrom": [
-            "interest_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["interest_id"],
+          "columnsTo": ["id"],
           "onDelete": "restrict",
           "onUpdate": "no action"
         },
@@ -558,12 +522,8 @@
           "name": "community_proposals_place_id_places_id_fk",
           "tableFrom": "community_proposals",
           "tableTo": "places",
-          "columnsFrom": [
-            "place_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["place_id"],
+          "columnsTo": ["id"],
           "onDelete": "set null",
           "onUpdate": "no action"
         },
@@ -571,12 +531,8 @@
           "name": "community_proposals_proposed_by_id_users_id_fk",
           "tableFrom": "community_proposals",
           "tableTo": "users",
-          "columnsFrom": [
-            "proposed_by_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["proposed_by_id"],
+          "columnsTo": ["id"],
           "onDelete": "set null",
           "onUpdate": "no action"
         },
@@ -584,12 +540,8 @@
           "name": "community_proposals_reviewed_by_id_users_id_fk",
           "tableFrom": "community_proposals",
           "tableTo": "users",
-          "columnsFrom": [
-            "reviewed_by_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["reviewed_by_id"],
+          "columnsTo": ["id"],
           "onDelete": "set null",
           "onUpdate": "no action"
         },
@@ -597,12 +549,8 @@
           "name": "community_proposals_merged_into_community_id_communities_id_fk",
           "tableFrom": "community_proposals",
           "tableTo": "communities",
-          "columnsFrom": [
-            "merged_into_community_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["merged_into_community_id"],
+          "columnsTo": ["id"],
           "onDelete": "set null",
           "onUpdate": "no action"
         },
@@ -610,12 +558,8 @@
           "name": "community_proposals_created_community_id_communities_id_fk",
           "tableFrom": "community_proposals",
           "tableTo": "communities",
-          "columnsFrom": [
-            "created_community_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["created_community_id"],
+          "columnsTo": ["id"],
           "onDelete": "set null",
           "onUpdate": "no action"
         }
@@ -656,12 +600,8 @@
           "name": "interest_suggestion_supporters_suggestion_id_interest_suggestions_id_fk",
           "tableFrom": "interest_suggestion_supporters",
           "tableTo": "interest_suggestions",
-          "columnsFrom": [
-            "suggestion_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["suggestion_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -669,12 +609,8 @@
           "name": "interest_suggestion_supporters_user_id_users_id_fk",
           "tableFrom": "interest_suggestion_supporters",
           "tableTo": "users",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -682,10 +618,7 @@
       "compositePrimaryKeys": {
         "interest_suggestion_supporters_suggestion_id_user_id_pk": {
           "name": "interest_suggestion_supporters_suggestion_id_user_id_pk",
-          "columns": [
-            "suggestion_id",
-            "user_id"
-          ]
+          "columns": ["suggestion_id", "user_id"]
         }
       },
       "uniqueConstraints": {},
@@ -816,12 +749,8 @@
           "name": "interest_suggestions_suggested_by_id_users_id_fk",
           "tableFrom": "interest_suggestions",
           "tableTo": "users",
-          "columnsFrom": [
-            "suggested_by_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["suggested_by_id"],
+          "columnsTo": ["id"],
           "onDelete": "set null",
           "onUpdate": "no action"
         },
@@ -829,12 +758,8 @@
           "name": "interest_suggestions_maps_to_interest_id_interests_id_fk",
           "tableFrom": "interest_suggestions",
           "tableTo": "interests",
-          "columnsFrom": [
-            "maps_to_interest_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["maps_to_interest_id"],
+          "columnsTo": ["id"],
           "onDelete": "set null",
           "onUpdate": "no action"
         },
@@ -842,12 +767,8 @@
           "name": "interest_suggestions_promoted_interest_id_interests_id_fk",
           "tableFrom": "interest_suggestions",
           "tableTo": "interests",
-          "columnsFrom": [
-            "promoted_interest_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["promoted_interest_id"],
+          "columnsTo": ["id"],
           "onDelete": "set null",
           "onUpdate": "no action"
         },
@@ -855,12 +776,8 @@
           "name": "interest_suggestions_reviewed_by_id_users_id_fk",
           "tableFrom": "interest_suggestions",
           "tableTo": "users",
-          "columnsFrom": [
-            "reviewed_by_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["reviewed_by_id"],
+          "columnsTo": ["id"],
           "onDelete": "set null",
           "onUpdate": "no action"
         }
@@ -922,9 +839,7 @@
         "interests_slug_unique": {
           "name": "interests_slug_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "slug"
-          ]
+          "columns": ["slug"]
         }
       },
       "policies": {},
@@ -977,12 +892,8 @@
           "name": "user_interests_user_id_users_id_fk",
           "tableFrom": "user_interests",
           "tableTo": "users",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -990,12 +901,8 @@
           "name": "user_interests_interest_id_interests_id_fk",
           "tableFrom": "user_interests",
           "tableTo": "interests",
-          "columnsFrom": [
-            "interest_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["interest_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -1003,10 +910,7 @@
       "compositePrimaryKeys": {
         "user_interests_user_id_interest_id_pk": {
           "name": "user_interests_user_id_interest_id_pk",
-          "columns": [
-            "user_id",
-            "interest_id"
-          ]
+          "columns": ["user_id", "interest_id"]
         }
       },
       "uniqueConstraints": {},
@@ -1151,12 +1055,8 @@
           "name": "memberships_community_id_communities_id_fk",
           "tableFrom": "memberships",
           "tableTo": "communities",
-          "columnsFrom": [
-            "community_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["community_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -1164,12 +1064,8 @@
           "name": "memberships_user_id_users_id_fk",
           "tableFrom": "memberships",
           "tableTo": "users",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -1177,12 +1073,8 @@
           "name": "memberships_invited_by_id_users_id_fk",
           "tableFrom": "memberships",
           "tableTo": "users",
-          "columnsFrom": [
-            "invited_by_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["invited_by_id"],
+          "columnsTo": ["id"],
           "onDelete": "set null",
           "onUpdate": "no action"
         },
@@ -1190,12 +1082,8 @@
           "name": "memberships_decided_by_id_users_id_fk",
           "tableFrom": "memberships",
           "tableTo": "users",
-          "columnsFrom": [
-            "decided_by_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["decided_by_id"],
+          "columnsTo": ["id"],
           "onDelete": "set null",
           "onUpdate": "no action"
         }
@@ -1298,12 +1186,8 @@
           "name": "places_parent_place_id_places_id_fk",
           "tableFrom": "places",
           "tableTo": "places",
-          "columnsFrom": [
-            "parent_place_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["parent_place_id"],
+          "columnsTo": ["id"],
           "onDelete": "set null",
           "onUpdate": "no action"
         }
@@ -1313,9 +1197,7 @@
         "places_slug_unique": {
           "name": "places_slug_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "slug"
-          ]
+          "columns": ["slug"]
         }
       },
       "policies": {},
@@ -1351,12 +1233,8 @@
           "name": "sessions_user_id_users_id_fk",
           "tableFrom": "sessions",
           "tableTo": "users",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -1434,12 +1312,8 @@
           "name": "users_university_id_places_id_fk",
           "tableFrom": "users",
           "tableTo": "places",
-          "columnsFrom": [
-            "university_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["university_id"],
+          "columnsTo": ["id"],
           "onDelete": "set null",
           "onUpdate": "no action"
         }
@@ -1449,9 +1323,7 @@
         "users_email_unique": {
           "name": "users_email_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "email"
-          ]
+          "columns": ["email"]
         }
       },
       "policies": {},
@@ -1486,10 +1358,7 @@
       "compositePrimaryKeys": {
         "verification_tokens_identifier_token_pk": {
           "name": "verification_tokens_identifier_token_pk",
-          "columns": [
-            "identifier",
-            "token"
-          ]
+          "columns": ["identifier", "token"]
         }
       },
       "uniqueConstraints": {},

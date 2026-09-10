@@ -107,14 +107,14 @@ export function NotificationItem({
               <span className="sr-only">Unread</span>
               <span
                 aria-hidden="true"
-                className="size-2 shrink-0 rounded-full bg-primary"
+                className="bg-primary size-2 shrink-0 rounded-full"
               />
             </>
           )}
         </span>
 
         {notification.body && (
-          <span className="text-body-sm break-words text-muted-foreground">
+          <span className="text-body-sm text-muted-foreground break-words">
             {notification.body}
           </span>
         )}

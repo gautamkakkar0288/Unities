@@ -159,9 +159,7 @@ describe("ProposeCommunityForm", () => {
     submitForm()
 
     await vi.waitFor(() => {
-      expect(
-        screen.getByText(/not linked to a campus yet/),
-      ).toBeInTheDocument()
+      expect(screen.getByText(/not linked to a campus yet/)).toBeInTheDocument()
     })
   })
 

@@ -14,9 +14,7 @@ import type { Timestamp } from "@/lib/domain/types"
  */
 
 export type EventEditRefusal =
-  | "ALREADY_CANCELLED"
-  | "ALREADY_STARTED"
-  | "CAPACITY_BELOW_CONFIRMED"
+  "ALREADY_CANCELLED" | "ALREADY_STARTED" | "CAPACITY_BELOW_CONFIRMED"
 
 /**
  * Whether this edit may proceed at all.

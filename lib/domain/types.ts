@@ -103,12 +103,7 @@ export type JoinPolicy = "OPEN" | "APPROVAL" | "INVITE"
  * from "Join".
  */
 export type MembershipState =
-  | "NONE"
-  | "INVITED"
-  | "PENDING"
-  | "MEMBER"
-  | "MODERATOR"
-  | "OWNER"
+  "NONE" | "INVITED" | "PENDING" | "MEMBER" | "MODERATOR" | "OWNER"
 
 export type CommunitySummary = {
   id: Id
@@ -234,11 +229,7 @@ export type EventKind =
  * because a capacity-limited event has to tell the difference between "you can
  * still join the queue" and "registration is over".
  */
-export type RegistrationState =
-  | "NONE"
-  | "REGISTERED"
-  | "WAITLISTED"
-  | "CLOSED"
+export type RegistrationState = "NONE" | "REGISTERED" | "WAITLISTED" | "CLOSED"
 
 export type EventSummary = {
   id: Id
@@ -302,12 +293,7 @@ export type EventDetail = EventSummary & {
 
 /** How far away something is, in the words a student would use. */
 export type EventTimeBucket =
-  | "PAST"
-  | "TODAY"
-  | "TOMORROW"
-  | "THIS_WEEKEND"
-  | "THIS_WEEK"
-  | "LATER"
+  "PAST" | "TODAY" | "TOMORROW" | "THIS_WEEKEND" | "THIS_WEEK" | "LATER"
 
 /**
  * A student looking for people, which is not the same as an event.
@@ -386,11 +372,7 @@ export type AppNotification = {
  * the conversation itself so permission checks never have to guess.
  */
 export type ConversationScope =
-  | "OFFICIAL"
-  | "COMMUNITY"
-  | "EVENT"
-  | "ACTIVITY"
-  | "DIRECT"
+  "OFFICIAL" | "COMMUNITY" | "EVENT" | "ACTIVITY" | "DIRECT"
 
 export type Conversation = {
   id: Id
@@ -428,11 +410,7 @@ export type ProfileDetail = {
 }
 
 export type SearchResultKind =
-  | "COMMUNITY"
-  | "EVENT"
-  | "PERSON"
-  | "POST"
-  | "ACTIVITY"
+  "COMMUNITY" | "EVENT" | "PERSON" | "POST" | "ACTIVITY"
 
 export type SearchResult = {
   id: Id
@@ -444,21 +422,12 @@ export type SearchResult = {
 }
 
 export type ReportReason =
-  | "SPAM"
-  | "HARASSMENT"
-  | "MISINFORMATION"
-  | "OFF_TOPIC"
-  | "OTHER"
+  "SPAM" | "HARASSMENT" | "MISINFORMATION" | "OFF_TOPIC" | "OTHER"
 
 export type ModerationStatus = "OPEN" | "IN_REVIEW" | "RESOLVED" | "DISMISSED"
 
 export type ModerationTargetKind =
-  | "POST"
-  | "COMMENT"
-  | "EVENT"
-  | "COMMUNITY"
-  | "ACTIVITY"
-  | "USER"
+  "POST" | "COMMENT" | "EVENT" | "COMMUNITY" | "ACTIVITY" | "USER"
 
 export type ModerationItem = {
   id: Id

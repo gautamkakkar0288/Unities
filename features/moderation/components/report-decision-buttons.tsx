@@ -36,7 +36,10 @@ export function ReportDecisionButtons({
 
   const noteId = `moderation-note-${reportId}`
 
-  const decide = (decision: "RESOLVED" | "DISMISSED", removeContent: boolean) => {
+  const decide = (
+    decision: "RESOLVED" | "DISMISSED",
+    removeContent: boolean,
+  ) => {
     setError(null)
     startTransition(async () => {
       const result = await decideReportAction({
@@ -64,7 +67,7 @@ export function ReportDecisionButtons({
           maxLength={500}
           placeholder="Why you decided this"
           disabled={pending}
-          className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-body-sm focus-visible:ring-3 focus-visible:ring-ring/50"
+          className="border-input bg-background text-body-sm focus-visible:ring-ring/50 mt-1 w-full rounded-md border px-3 py-2 focus-visible:ring-3"
         />
       </div>
 

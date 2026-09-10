@@ -5,7 +5,11 @@ import { useState, useTransition } from "react"
 
 import { Button } from "@/components/ui/button"
 import { setReactionAction } from "@/features/activity/actions"
-import { describeReaction, reactedLabel, reactionLabel } from "@/lib/domain/activity"
+import {
+  describeReaction,
+  reactedLabel,
+  reactionLabel,
+} from "@/lib/domain/activity"
 import { formatCount } from "@/lib/format"
 
 /**

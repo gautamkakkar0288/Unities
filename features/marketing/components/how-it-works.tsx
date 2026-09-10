@@ -13,7 +13,7 @@ export function HowItWorks() {
         {steps.map((step, index) => (
           <li key={step.title} className="flex flex-col gap-3">
             <span
-              className="flex size-9 items-center justify-center rounded-full border border-primary-border bg-primary-subtle text-body-sm font-semibold text-primary"
+              className="border-primary-border bg-primary-subtle text-body-sm text-primary flex size-9 items-center justify-center rounded-full border font-semibold"
               data-numeric
               aria-hidden="true"
             >

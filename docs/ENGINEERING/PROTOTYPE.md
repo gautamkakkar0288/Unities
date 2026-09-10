@@ -25,15 +25,15 @@ a session. `/design` (the design-system gallery) works the same way.
 
 ## What is real and what is not
 
-| Real today | Not real yet |
-| --- | --- |
-| Every token, type size, spacing value, and both themes | All data — see `lib/prototype/fixtures.ts` |
-| Layout and responsive behaviour at every breakpoint | Any mutation: joining, posting, registering, sending |
-| Card, badge, avatar, button, empty-state primitives | Filtering, sorting, pagination, infinite scroll |
-| Copy and microcopy, including error and empty wording | Realtime updates and notification delivery |
-| Keyboard focus order, landmarks, and labelling | Tabs, dialogs, sheets, dropdowns (D24) |
-| Membership, registration, and moderation rules | Search ranking and AI recommendations |
-| Trending ranking, time bucketing, duplicate detection | Persistence of anything at all |
+| Real today                                             | Not real yet                                         |
+| ------------------------------------------------------ | ---------------------------------------------------- |
+| Every token, type size, spacing value, and both themes | All data — see `lib/prototype/fixtures.ts`           |
+| Layout and responsive behaviour at every breakpoint    | Any mutation: joining, posting, registering, sending |
+| Card, badge, avatar, button, empty-state primitives    | Filtering, sorting, pagination, infinite scroll      |
+| Copy and microcopy, including error and empty wording  | Realtime updates and notification delivery           |
+| Keyboard focus order, landmarks, and labelling         | Tabs, dialogs, sheets, dropdowns (D24)               |
+| Membership, registration, and moderation rules         | Search ranking and AI recommendations                |
+| Trending ranking, time bucketing, duplicate detection  | Persistence of anything at all                       |
 
 Every screen carries a `ScreenHeader` naming the phase that makes it real, and a
 collapsible "Not wired up on this screen" list. Believe that list over the
@@ -41,26 +41,26 @@ layout.
 
 ## The eighteen screens
 
-| Route | Screen | Becomes real in |
-| --- | --- | --- |
-| `/prototype/onboarding` | First run: verified email, seeded campus, curated interests | Phase 6 |
-| `/prototype/home` | Trending → soon → recommended → people → communities → feed | Phase 7 |
-| `/prototype/explore` | Trips, sports, tech, and the interest taxonomy | Phase 6 |
-| `/prototype/activities` | Find people: partners, teammates, study groups | Unscheduled |
-| `/prototype/search` | Grouped results across all kinds | Phase 10 |
-| `/prototype/communities` | Campus, then city, then interests | Phase 6 |
-| `/prototype/community` | One community: about, guidelines, posts, events | Phase 6 |
-| `/prototype/community/propose` | Student proposal flow with live duplicate detection | Phase 6 |
-| `/prototype/post` | Post detail and comment thread | Phase 7 |
-| `/prototype/events` | Event listing, open and past | Phase 8 |
-| `/prototype/event` | Event detail with sticky registration panel | Phase 8 |
-| `/prototype/event/register` | Confirmed, waitlisted, and closed outcomes | Phase 8 |
-| `/prototype/profile` | Identity, activity, communities, badges | Phase 9 |
-| `/prototype/settings` | Profile, privacy, notification preferences | Phase 9 |
-| `/prototype/notifications` | Categorised, grouped by read state | Phase 12 |
-| `/prototype/messages` | Scoped conversations and one thread | Phase 11 |
-| `/prototype/operations` | Reports, proposals, interest suggestions, verification, audit | Phase 13 |
-| `/prototype/states` | Loading, empty, error, offline, forbidden | Every phase |
+| Route                          | Screen                                                        | Becomes real in |
+| ------------------------------ | ------------------------------------------------------------- | --------------- |
+| `/prototype/onboarding`        | First run: verified email, seeded campus, curated interests   | Phase 6         |
+| `/prototype/home`              | Trending → soon → recommended → people → communities → feed   | Phase 7         |
+| `/prototype/explore`           | Trips, sports, tech, and the interest taxonomy                | Phase 6         |
+| `/prototype/activities`        | Find people: partners, teammates, study groups                | Unscheduled     |
+| `/prototype/search`            | Grouped results across all kinds                              | Phase 10        |
+| `/prototype/communities`       | Campus, then city, then interests                             | Phase 6         |
+| `/prototype/community`         | One community: about, guidelines, posts, events               | Phase 6         |
+| `/prototype/community/propose` | Student proposal flow with live duplicate detection           | Phase 6         |
+| `/prototype/post`              | Post detail and comment thread                                | Phase 7         |
+| `/prototype/events`            | Event listing, open and past                                  | Phase 8         |
+| `/prototype/event`             | Event detail with sticky registration panel                   | Phase 8         |
+| `/prototype/event/register`    | Confirmed, waitlisted, and closed outcomes                    | Phase 8         |
+| `/prototype/profile`           | Identity, activity, communities, badges                       | Phase 9         |
+| `/prototype/settings`          | Profile, privacy, notification preferences                    | Phase 9         |
+| `/prototype/notifications`     | Categorised, grouped by read state                            | Phase 12        |
+| `/prototype/messages`          | Scoped conversations and one thread                           | Phase 11        |
+| `/prototype/operations`        | Reports, proposals, interest suggestions, verification, audit | Phase 13        |
+| `/prototype/states`            | Loading, empty, error, offline, forbidden                     | Every phase     |
 
 ## Structure
 

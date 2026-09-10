@@ -71,7 +71,7 @@ export default function PrototypeOperationsScreen() {
 
       <Card className="border-warning-border bg-warning-subtle">
         <CardContent className="flex items-start gap-3 py-4">
-          <ShieldAlert aria-hidden="true" className="size-5 text-warning" />
+          <ShieldAlert aria-hidden="true" className="text-warning size-5" />
           <p className="text-body-sm">
             Restricted to university admins and platform admins. In the real app
             this route is unreachable for everyone else, and every action below
@@ -131,12 +131,12 @@ export default function PrototypeOperationsScreen() {
                     Dismiss
                   </Button>
                   {item.assignee ? (
-                    <span className="ml-auto flex items-center gap-2 text-caption text-muted-foreground">
+                    <span className="text-caption text-muted-foreground ml-auto flex items-center gap-2">
                       <Avatar name={item.assignee.name} size="xs" />
                       {item.assignee.name}
                     </span>
                   ) : (
-                    <span className="ml-auto text-caption text-muted-foreground">
+                    <span className="text-caption text-muted-foreground ml-auto">
                       Unassigned
                     </span>
                   )}
@@ -152,8 +152,8 @@ export default function PrototypeOperationsScreen() {
           <h2 className="text-h3">Community proposals</h2>
           <p className="max-w-readable text-body-sm text-muted-foreground">
             Students propose, you decide. The duplicate check runs before you
-            see it, so the question is usually "approve or merge", not "does this
-            already exist".
+            see it, so the question is usually "approve or merge", not "does
+            this already exist".
           </p>
         </div>
 
@@ -182,12 +182,12 @@ export default function PrototypeOperationsScreen() {
                 </p>
 
                 {proposal.similarTo.length > 0 && (
-                  <div className="flex flex-col gap-2 rounded-lg border border-warning-border bg-warning-subtle p-3">
-                    <p className="flex items-center gap-2 text-body-sm font-medium">
+                  <div className="border-warning-border bg-warning-subtle flex flex-col gap-2 rounded-lg border p-3">
+                    <p className="text-body-sm flex items-center gap-2 font-medium">
                       <AlertTriangle aria-hidden="true" className="size-4" />
                       Looks like an existing community
                     </p>
-                    <ul className="flex flex-col gap-1 text-body-sm text-muted-foreground">
+                    <ul className="text-body-sm text-muted-foreground flex flex-col gap-1">
                       {proposal.similarTo.map((similar) => (
                         <li key={similar.id}>{similar.name}</li>
                       ))}
@@ -205,7 +205,7 @@ export default function PrototypeOperationsScreen() {
                   <Button type="button" size="sm" variant="ghost">
                     Decline
                   </Button>
-                  <span className="ml-auto flex items-center gap-2 text-caption text-muted-foreground">
+                  <span className="text-caption text-muted-foreground ml-auto flex items-center gap-2">
                     <Avatar name={proposal.proposedBy.name} size="xs" />
                     {proposal.proposedBy.name}
                     <span aria-hidden="true">·</span>
@@ -217,8 +217,8 @@ export default function PrototypeOperationsScreen() {
           ))}
         </div>
 
-        <details className="rounded-lg border border-border bg-muted/40 px-4 py-3">
-          <summary className="cursor-pointer list-none text-body-sm font-medium">
+        <details className="border-border bg-muted/40 rounded-lg border px-4 py-3">
+          <summary className="text-body-sm cursor-pointer list-none font-medium">
             Recently decided ({decidedProposals.length})
           </summary>
           <ul className="mt-3 flex flex-col gap-3">
@@ -278,8 +278,8 @@ export default function PrototypeOperationsScreen() {
                       )}
                     </div>
                     <span className="text-caption text-muted-foreground">
-                      <span data-numeric>{suggestion.demandCount}</span> students
-                      asked
+                      <span data-numeric>{suggestion.demandCount}</span>{" "}
+                      students asked
                       <span aria-hidden="true"> · </span>
                       first suggested {formatDate(suggestion.suggestedAt)}
                     </span>

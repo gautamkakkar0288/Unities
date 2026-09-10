@@ -276,7 +276,10 @@ const TIMELINESS_HORIZON_DAYS = 45
 
 const DAY_MS = 86_400_000
 
-function timelinessScore(timelyAt: string | null | undefined, now: Date): number {
+function timelinessScore(
+  timelyAt: string | null | undefined,
+  now: Date,
+): number {
   if (!timelyAt) return 0
 
   const at = new Date(timelyAt).getTime()
@@ -327,7 +330,8 @@ export function scoreSearchResult(
   // bare zero keeps "did this match?" answerable from the score alone.
   if (textual === 0) return 0
 
-  const timely = timelinessScore(candidate.timelyAt, options.now) * WEIGHT_TIMELINESS
+  const timely =
+    timelinessScore(candidate.timelyAt, options.now) * WEIGHT_TIMELINESS
 
   // Rounded so that two rows differing only by floating-point dust compare
   // equal and fall through to the deterministic tie-breaks below.

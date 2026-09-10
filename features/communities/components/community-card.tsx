@@ -96,7 +96,7 @@ export function CommunityCard({
         <CardTitle>
           <Link
             href={href}
-            className="rounded-sm hover:text-primary focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none"
+            className="hover:text-primary focus-visible:ring-ring/50 rounded-sm focus-visible:ring-3 focus-visible:outline-none"
           >
             {community.name}
           </Link>
@@ -105,7 +105,7 @@ export function CommunityCard({
       </CardHeader>
 
       <CardContent className="mt-auto flex flex-col gap-1">
-        <p className="flex items-center gap-1.5 text-caption text-muted-foreground">
+        <p className="text-caption text-muted-foreground flex items-center gap-1.5">
           <Users aria-hidden="true" className="size-3.5" />
           <span data-numeric>{formatCount(community.memberCount)}</span>{" "}
           {community.memberCount === 1 ? "member" : "members"}

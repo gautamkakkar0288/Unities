@@ -25,10 +25,16 @@ export function CommentItem({
 }) {
   return (
     <article className="flex gap-3 py-4">
-      <Avatar size="sm" name={comment.author.name} src={comment.author.avatarUrl} />
+      <Avatar
+        size="sm"
+        name={comment.author.name}
+        src={comment.author.avatarUrl}
+      />
       <div className="flex min-w-0 flex-col gap-1.5">
         <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
-          <span className="text-body-sm font-medium">{comment.author.name}</span>
+          <span className="text-body-sm font-medium">
+            {comment.author.name}
+          </span>
           <Badge variant={roleBadgeVariant[comment.author.role]}>
             {roleLabels[comment.author.role]}
           </Badge>

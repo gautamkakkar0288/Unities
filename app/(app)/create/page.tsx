@@ -5,7 +5,12 @@ import type { LucideIcon } from "lucide-react"
 
 import { Badge } from "@/components/ui/badge"
 import { buttonVariants } from "@/components/ui/button"
-import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import {
+  Card,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
 import { PageHeader } from "@/features/shell/components/page-header"
 import { cn } from "@/lib/utils"
 
@@ -88,7 +93,7 @@ export default function CreatePage() {
               >
                 <CardHeader>
                   <div className="flex items-start justify-between gap-3">
-                    <span className="flex size-10 items-center justify-center rounded-lg bg-primary-subtle text-primary">
+                    <span className="bg-primary-subtle text-primary flex size-10 items-center justify-center rounded-lg">
                       <Icon className="size-5" aria-hidden="true" />
                     </span>
                     {!available && (
@@ -110,7 +115,7 @@ export default function CreatePage() {
                         `Create ${option.title.toLowerCase()}`}
                     </Link>
                   ) : (
-                    <p className="mt-2 text-body-sm text-muted-foreground">
+                    <p className="text-body-sm text-muted-foreground mt-2">
                       {option.unavailableReason}
                     </p>
                   )}

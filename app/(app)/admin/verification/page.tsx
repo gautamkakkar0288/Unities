@@ -58,7 +58,7 @@ export default async function VerificationQueuePage() {
 
       <div className="flex flex-col gap-10">
         <section aria-labelledby="pending-requests">
-          <h2 id="pending-requests" className="pb-3 text-h4">
+          <h2 id="pending-requests" className="text-h4 pb-3">
             Waiting for a decision
           </h2>
 
@@ -70,7 +70,7 @@ export default async function VerificationQueuePage() {
               verified.
             </p>
           ) : (
-            <ul className="flex flex-col divide-y divide-border">
+            <ul className="divide-border flex flex-col divide-y">
               {pending.data.map((request) => {
                 const requester = request.requestedBy
                 const name = requester?.name ?? "A former member"
@@ -124,10 +124,10 @@ export default async function VerificationQueuePage() {
         </section>
 
         <section aria-labelledby="audit-trail">
-          <h2 id="audit-trail" className="pb-1 text-h4">
+          <h2 id="audit-trail" className="text-h4 pb-1">
             Recent activity
           </h2>
-          <p className="pb-3 text-body-sm text-muted-foreground">
+          <p className="text-body-sm text-muted-foreground pb-3">
             Every decision is recorded, including who made it.
           </p>
 
@@ -138,7 +138,7 @@ export default async function VerificationQueuePage() {
               Nothing has happened yet.
             </p>
           ) : (
-            <ul className="flex flex-col divide-y divide-border">
+            <ul className="divide-border flex flex-col divide-y">
               {trail.data.map((entry) => (
                 <li
                   key={entry.id}

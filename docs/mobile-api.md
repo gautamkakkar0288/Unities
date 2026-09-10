@@ -14,7 +14,7 @@ modified to build this.
 Success:
 
 ```json
-{ "data": { }, "meta": { } }
+{ "data": {}, "meta": {} }
 ```
 
 Lists always carry `meta`:
@@ -35,16 +35,16 @@ it still works.
 
 ### Error codes
 
-| Code | Status | Means |
-| --- | --- | --- |
-| `UNAUTHORIZED` | 401 | No session, or a session whose user no longer exists. |
-| `FORBIDDEN` | 403 | Authenticated, but not allowed. |
-| `NOT_FOUND` | 404 | No such resource, or none this viewer may see. |
-| `VALIDATION_ERROR` | 422 | A parameter or body field is wrong. |
-| `CONFLICT` | 409 | Well-formed, but the world says no (closed, cancelled, sole owner). |
-| `BAD_REQUEST` | 400 | Malformed body, or a body trying to act for another user. |
-| `MISSING_BACKEND_CAPABILITY` | 501 | The feature does not exist server-side yet. |
-| `INTERNAL_ERROR` | 500 | Something threw. Details are logged, never returned. |
+| Code                         | Status | Means                                                               |
+| ---------------------------- | ------ | ------------------------------------------------------------------- |
+| `UNAUTHORIZED`               | 401    | No session, or a session whose user no longer exists.               |
+| `FORBIDDEN`                  | 403    | Authenticated, but not allowed.                                     |
+| `NOT_FOUND`                  | 404    | No such resource, or none this viewer may see.                      |
+| `VALIDATION_ERROR`           | 422    | A parameter or body field is wrong.                                 |
+| `CONFLICT`                   | 409    | Well-formed, but the world says no (closed, cancelled, sole owner). |
+| `BAD_REQUEST`                | 400    | Malformed body, or a body trying to act for another user.           |
+| `MISSING_BACKEND_CAPABILITY` | 501    | The feature does not exist server-side yet.                         |
+| `INTERNAL_ERROR`             | 500    | Something threw. Details are logged, never returned.                |
 
 Messages are the service layer's own wording wherever a service refused, because
 those sentences were already written for a student and are already what the web
@@ -116,7 +116,9 @@ The signed-in student's profile.
     "roleChangedSinceSignIn": false,
     "university": { "id": "plc_1", "slug": "iit-b", "name": "IIT Bombay" },
     "interests": [{ "id": "int_1", "slug": "football", "label": "Football" }],
-    "communities": [{ "id": "cmy_1", "slug": "fc", "name": "FC", "state": "MEMBER" }]
+    "communities": [
+      { "id": "cmy_1", "slug": "fc", "name": "FC", "state": "MEMBER" }
+    ]
   }
 }
 ```
@@ -189,7 +191,12 @@ Everything the detail screen needs.
     "waitlistCount": 3,
     "feeInPaise": null,
     "agenda": [{ "at": "18:00", "title": "Doors" }],
-    "community": { "id": "cmy_1", "slug": "music", "name": "Music Club", "verification": "VERIFIED" },
+    "community": {
+      "id": "cmy_1",
+      "slug": "music",
+      "name": "Music Club",
+      "verification": "VERIFIED"
+    },
     "communityId": "cmy_1",
     "interest": { "id": "int_2", "slug": "music", "label": "Music" },
     "interestId": "int_2",
@@ -214,7 +221,14 @@ no screen may imply otherwise.
   path reads a user identifier from the body or URL.
 
 ```json
-{ "data": { "eventSlug": "open-mic-night", "state": "REGISTERED", "viewerRegistration": "REGISTERED", "viewerRegistrationState": "REGISTERED" } }
+{
+  "data": {
+    "eventSlug": "open-mic-night",
+    "state": "REGISTERED",
+    "viewerRegistration": "REGISTERED",
+    "viewerRegistrationState": "REGISTERED"
+  }
+}
 ```
 
 Two behaviours worth knowing, both the service's and both intentional:
@@ -278,7 +292,16 @@ directory outgrows a single page.
     "verification": "VERIFIED",
     "memberCount": 214,
     "viewerMembership": "MEMBER",
-    "moderators": [{ "id": "usr_9", "name": "Ravi", "avatarUrl": null, "imageUrl": null, "role": "OWNER", "state": "OWNER" }]
+    "moderators": [
+      {
+        "id": "usr_9",
+        "name": "Ravi",
+        "avatarUrl": null,
+        "imageUrl": null,
+        "role": "OWNER",
+        "state": "OWNER"
+      }
+    ]
   }
 }
 ```
@@ -295,16 +318,23 @@ Moderator entries carry a name and avatar and never an email address.
   add you.").
 
 ```json
-{ "data": { "communitySlug": "music", "state": "MEMBER", "viewerMembership": "MEMBER", "pending": false } }
+{
+  "data": {
+    "communitySlug": "music",
+    "state": "MEMBER",
+    "viewerMembership": "MEMBER",
+    "pending": false
+  }
+}
 ```
 
-| Community | Result |
-| --- | --- |
-| `OPEN` | 200, `MEMBER`, member count incremented in the same transaction |
-| `APPROVAL` | 200, `PENDING`, `pending: true` |
-| `INVITE` | 403 |
-| Already a member | 200, existing state, nothing written |
-| Missing or archived | 404 |
+| Community           | Result                                                          |
+| ------------------- | --------------------------------------------------------------- |
+| `OPEN`              | 200, `MEMBER`, member count incremented in the same transaction |
+| `APPROVAL`          | 200, `PENDING`, `pending: true`                                 |
+| `INVITE`            | 403                                                             |
+| Already a member    | 200, existing state, nothing written                            |
+| Missing or archived | 404                                                             |
 
 Success is 200 with a state rather than 201, because the client cannot know in
 advance whether it is joining or queuing and the useful answer is what its
@@ -340,7 +370,12 @@ membership is now.
       "href": "/events/open-mic-night"
     }
   ],
-  "meta": { "nextCursor": "2026-08-31T12:30:00.000Z", "hasMore": true, "limit": 20, "unreadCount": 4 }
+  "meta": {
+    "nextCursor": "2026-08-31T12:30:00.000Z",
+    "hasMore": true,
+    "limit": 20,
+    "unreadCount": 4
+  }
 }
 ```
 
@@ -376,12 +411,19 @@ Registers where a device could be reached. **Nothing sends to these yet.**
 - **Errors** `UNAUTHORIZED`, `BAD_REQUEST`, `VALIDATION_ERROR`.
 
 ```json
-{ "data": { "id": "dev_1", "platform": "ANDROID", "createdAt": "...", "updatedAt": "..." } }
+{
+  "data": {
+    "id": "dev_1",
+    "platform": "ANDROID",
+    "createdAt": "...",
+    "updatedAt": "..."
+  }
+}
 ```
 
 201. The token is never echoed back - it is a capability to interrupt somebody's
-phone, and a response containing it would end up in the first debug log anyone
-adds.
+     phone, and a response containing it would end up in the first debug log anyone
+     adds.
 
 The unique constraint is on the token alone, not on the pair with a user, and the
 write is an upsert on it. A push token identifies an installation rather than a
@@ -423,11 +465,11 @@ The only unauthenticated mobile route.
 ```
 
 201. Three flags rather than a session: **this endpoint does not sign anybody
-in.** Minting a session here would be a second authentication path, and Auth.js
-already owns that - the client posts the credentials to
-`/api/auth/callback/credentials` afterwards. `emailVerificationRequired` is
-always true because the account is stored unverified.
-`onboardingRequired` is always true because a new account has no interests yet.
+     in.** Minting a session here would be a second authentication path, and Auth.js
+     already owns that - the client posts the credentials to
+     `/api/auth/callback/credentials` afterwards. `emailVerificationRequired` is
+     always true because the account is stored unverified.
+     `onboardingRequired` is always true because a new account has no interests yet.
 
 The server action collapses every failure into one human sentence, which is right
 for a form and useless to a client deciding between highlighting a password field

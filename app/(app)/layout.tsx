@@ -5,10 +5,7 @@ import { auth } from "@/auth"
 import { AppSidebar } from "@/features/shell/components/app-sidebar"
 import { AppTopBar } from "@/features/shell/components/app-top-bar"
 import { MobileNav } from "@/features/shell/components/mobile-nav"
-import {
-  accountGate,
-  gateDestination,
-} from "@/lib/domain/verification-gate"
+import { accountGate, gateDestination } from "@/lib/domain/verification-gate"
 import { hasVerifiedEmail } from "@/lib/services/account"
 import { hasCompletedOnboarding } from "@/lib/services/interests"
 import { countUnreadNotifications } from "@/lib/services/notifications"
@@ -40,11 +37,7 @@ import { countUnreadNotifications } from "@/lib/services/notifications"
  * page and three chances for the sidebar and the bottom bar to show different
  * numbers on the same screen.
  */
-export default async function AppLayout({
-  children,
-}: {
-  children: ReactNode
-}) {
+export default async function AppLayout({ children }: { children: ReactNode }) {
   const session = await auth()
 
   if (!session?.user) redirect("/sign-in")
@@ -67,7 +60,7 @@ export default async function AppLayout({
     <div className="flex min-h-full flex-col">
       <a
         href="#content"
-        className="sr-only focus:not-sr-only focus:absolute focus:top-3 focus:left-3 focus:z-[60] focus:rounded-lg focus:bg-primary focus:px-4 focus:py-2 focus:text-body-sm focus:text-primary-foreground"
+        className="focus:bg-primary focus:text-body-sm focus:text-primary-foreground sr-only focus:not-sr-only focus:absolute focus:top-3 focus:left-3 focus:z-[60] focus:rounded-lg focus:px-4 focus:py-2"
       >
         Skip to content
       </a>
@@ -88,7 +81,7 @@ export default async function AppLayout({
            * Bottom padding clears the fixed mobile bar. Without it the last
            * item of any list sits permanently underneath the navigation.
            */}
-          <div className="mx-auto w-full max-w-page px-4 py-6 pb-28 sm:px-6 lg:px-8 lg:pb-10">
+          <div className="max-w-page mx-auto w-full px-4 py-6 pb-28 sm:px-6 lg:px-8 lg:pb-10">
             {children}
           </div>
         </main>

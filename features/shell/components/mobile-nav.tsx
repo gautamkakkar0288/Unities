@@ -25,14 +25,13 @@ export function MobileNav({ unreadCount = 0 }: { unreadCount?: number }) {
   return (
     <nav
       aria-label="Main"
-      className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-background/95 pb-[env(safe-area-inset-bottom)] backdrop-blur-md lg:hidden"
+      className="border-border bg-background/95 fixed inset-x-0 bottom-0 z-40 border-t pb-[env(safe-area-inset-bottom)] backdrop-blur-md lg:hidden"
     >
       <ul className="flex items-stretch justify-around">
         {mobileNav.map((item) => {
           const active = isActiveRoute(pathname, item.href)
           const Icon = item.icon
-          const badgeCount =
-            item.href === "/notifications" ? unreadCount : 0
+          const badgeCount = item.href === "/notifications" ? unreadCount : 0
 
           return (
             <li key={item.href} className="flex-1">
@@ -40,9 +39,9 @@ export function MobileNav({ unreadCount = 0 }: { unreadCount?: number }) {
                 href={item.href}
                 aria-current={active ? "page" : undefined}
                 className={cn(
-                  "relative flex min-h-14 flex-col items-center justify-center gap-1 px-1 py-2 text-[0.6875rem] transition-colors duration-100 focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none focus-visible:ring-inset",
+                  "focus-visible:ring-ring/50 relative flex min-h-14 flex-col items-center justify-center gap-1 px-1 py-2 text-[0.6875rem] transition-colors duration-100 focus-visible:ring-3 focus-visible:outline-none focus-visible:ring-inset",
                   active
-                    ? "font-medium text-primary"
+                    ? "text-primary font-medium"
                     : "text-muted-foreground hover:text-foreground",
                 )}
               >

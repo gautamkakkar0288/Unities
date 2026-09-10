@@ -11,12 +11,7 @@ import { VerificationBadge } from "@/components/domain/verification-badge"
 import { Avatar } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
 import { ScreenHeader } from "@/features/prototype/components/screen-header"
 import { roleBadgeVariant, roleLabels } from "@/lib/auth/roles"
@@ -43,7 +38,10 @@ export default function PrototypeEventPage() {
   const filledPercent =
     event.capacity === null
       ? 0
-      : Math.min(100, Math.round((event.registeredCount / event.capacity) * 100))
+      : Math.min(
+          100,
+          Math.round((event.registeredCount / event.capacity) * 100),
+        )
 
   return (
     <div className="flex flex-col">
@@ -87,10 +85,10 @@ export default function PrototypeEventPage() {
                 )}
               </div>
               <h2 className="text-h1">{event.title}</h2>
-              <p className="flex flex-wrap items-center gap-2 text-body-sm text-muted-foreground">
+              <p className="text-body-sm text-muted-foreground flex flex-wrap items-center gap-2">
                 <Link
                   href="/prototype/community"
-                  className="rounded-sm font-medium hover:text-primary focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none"
+                  className="hover:text-primary focus-visible:ring-ring/50 rounded-sm font-medium focus-visible:ring-3 focus-visible:outline-none"
                 >
                   {event.community.name}
                 </Link>
@@ -98,7 +96,10 @@ export default function PrototypeEventPage() {
               </p>
             </header>
 
-            <section aria-labelledby="about-event-heading" className="flex flex-col gap-3">
+            <section
+              aria-labelledby="about-event-heading"
+              className="flex flex-col gap-3"
+            >
               <h3 id="about-event-heading" className="text-h3">
                 What this is
               </h3>
@@ -109,7 +110,10 @@ export default function PrototypeEventPage() {
 
             <Separator />
 
-            <section aria-labelledby="agenda-heading" className="flex flex-col gap-4">
+            <section
+              aria-labelledby="agenda-heading"
+              className="flex flex-col gap-4"
+            >
               <h3 id="agenda-heading" className="text-h3">
                 Agenda
               </h3>
@@ -117,10 +121,10 @@ export default function PrototypeEventPage() {
                 {event.agenda.map((item, index) => (
                   <li
                     key={item.title}
-                    className="flex gap-4 border-l border-border pb-4 pl-4 last:pb-0"
+                    className="border-border flex gap-4 border-l pb-4 pl-4 last:pb-0"
                   >
                     <span
-                      className="w-20 shrink-0 text-caption font-medium text-primary"
+                      className="text-caption text-primary w-20 shrink-0 font-medium"
                       data-numeric
                     >
                       {formatTime(item.at)}
@@ -128,7 +132,7 @@ export default function PrototypeEventPage() {
                     <span className="text-body-sm">
                       {item.title}
                       {index === 0 && (
-                        <span className="ml-2 text-caption text-muted-foreground">
+                        <span className="text-caption text-muted-foreground ml-2">
                           Doors open 15 minutes early
                         </span>
                       )}
@@ -140,7 +144,10 @@ export default function PrototypeEventPage() {
 
             <Separator />
 
-            <section aria-labelledby="organisers-heading" className="flex flex-col gap-4">
+            <section
+              aria-labelledby="organisers-heading"
+              className="flex flex-col gap-4"
+            >
               <h3 id="organisers-heading" className="text-h3">
                 Organised by
               </h3>
@@ -155,7 +162,7 @@ export default function PrototypeEventPage() {
                     <div className="flex min-w-0 flex-col">
                       <Link
                         href="/prototype/profile"
-                        className="truncate rounded-sm text-body-sm font-medium hover:text-primary focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none"
+                        className="text-body-sm hover:text-primary focus-visible:ring-ring/50 truncate rounded-sm font-medium focus-visible:ring-3 focus-visible:outline-none"
                       >
                         {organiser.name}
                       </Link>
@@ -175,7 +182,10 @@ export default function PrototypeEventPage() {
             </section>
           </div>
 
-          <aside aria-label="Registration" className="lg:sticky lg:top-20 lg:self-start">
+          <aside
+            aria-label="Registration"
+            className="lg:sticky lg:top-20 lg:self-start"
+          >
             <Card>
               <CardHeader className="gap-1">
                 <CardTitle>Registration</CardTitle>
@@ -186,12 +196,12 @@ export default function PrototypeEventPage() {
               </CardHeader>
 
               <CardContent className="flex flex-col gap-4">
-                <dl className="flex flex-col gap-3 text-body-sm">
+                <dl className="text-body-sm flex flex-col gap-3">
                   <div className="flex items-start gap-2">
                     <dt className="contents">
                       <CalendarDays
                         aria-hidden="true"
-                        className="mt-0.5 size-4 shrink-0 text-muted-foreground"
+                        className="text-muted-foreground mt-0.5 size-4 shrink-0"
                       />
                       <span className="sr-only">When</span>
                     </dt>
@@ -201,7 +211,7 @@ export default function PrototypeEventPage() {
                     <dt className="contents">
                       <MapPin
                         aria-hidden="true"
-                        className="mt-0.5 size-4 shrink-0 text-muted-foreground"
+                        className="text-muted-foreground mt-0.5 size-4 shrink-0"
                       />
                       <span className="sr-only">Where</span>
                     </dt>
@@ -211,7 +221,7 @@ export default function PrototypeEventPage() {
                     <dt className="contents">
                       <IndianRupee
                         aria-hidden="true"
-                        className="mt-0.5 size-4 shrink-0 text-muted-foreground"
+                        className="text-muted-foreground mt-0.5 size-4 shrink-0"
                       />
                       <span className="sr-only">Fee</span>
                     </dt>
@@ -221,7 +231,7 @@ export default function PrototypeEventPage() {
                     <dt className="contents">
                       <Users
                         aria-hidden="true"
-                        className="mt-0.5 size-4 shrink-0 text-muted-foreground"
+                        className="text-muted-foreground mt-0.5 size-4 shrink-0"
                       />
                       <span className="sr-only">Seats</span>
                     </dt>
@@ -232,11 +242,11 @@ export default function PrototypeEventPage() {
                 {event.capacity !== null && (
                   <div className="flex flex-col gap-1.5">
                     <div
-                      className="h-1.5 w-full overflow-hidden rounded-full bg-muted"
+                      className="bg-muted h-1.5 w-full overflow-hidden rounded-full"
                       aria-hidden="true"
                     >
                       <div
-                        className="h-full rounded-full bg-primary"
+                        className="bg-primary h-full rounded-full"
                         style={{ width: `${filledPercent}%` }}
                       />
                     </div>
@@ -263,7 +273,12 @@ export default function PrototypeEventPage() {
                   {registration.ctaLabel}
                 </Button>
 
-                <Button type="button" variant="outline" size="lg" className="w-full">
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="lg"
+                  className="w-full"
+                >
                   Add to calendar
                 </Button>
 
@@ -281,7 +296,7 @@ export default function PrototypeEventPage() {
                         />
                       </li>
                     ))}
-                    <li className="ml-1 text-caption text-muted-foreground">
+                    <li className="text-caption text-muted-foreground ml-1">
                       and {event.registeredCount - event.attendeePreview.length}{" "}
                       others
                     </li>

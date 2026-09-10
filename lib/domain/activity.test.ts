@@ -37,7 +37,9 @@ describe("validatePostInput", () => {
   })
 
   it("accepts an empty body - a one-line announcement is complete", () => {
-    expect(validatePostInput({ title: "Tryouts cancelled", body: "" })).toEqual([])
+    expect(validatePostInput({ title: "Tryouts cancelled", body: "" })).toEqual(
+      [],
+    )
   })
 
   it("rejects an over-long title", () => {
@@ -225,15 +227,15 @@ describe("canDecideReport", () => {
 
 describe("describeReaction", () => {
   it("speaks the count, not just the state", () => {
-    expect(describeReaction({ reacted: false, count: 3, title: "Tryouts" })).toBe(
-      "3 people liked Tryouts. Press to like.",
-    )
+    expect(
+      describeReaction({ reacted: false, count: 3, title: "Tryouts" }),
+    ).toBe("3 people liked Tryouts. Press to like.")
   })
 
   it("uses the singular for one person", () => {
-    expect(describeReaction({ reacted: false, count: 1, title: "Tryouts" })).toBe(
-      "1 person liked Tryouts. Press to like.",
-    )
+    expect(
+      describeReaction({ reacted: false, count: 1, title: "Tryouts" }),
+    ).toBe("1 person liked Tryouts. Press to like.")
   })
 
   it("offers removal when the viewer has already reacted", () => {

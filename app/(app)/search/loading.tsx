@@ -9,7 +9,7 @@ import { Skeleton } from "@/components/ui/skeleton"
  */
 export default function SearchLoading() {
   return (
-    <div className="mx-auto w-full max-w-page space-y-8 px-4 py-8 sm:px-6 lg:px-8">
+    <div className="max-w-page mx-auto w-full space-y-8 px-4 py-8 sm:px-6 lg:px-8">
       <div className="space-y-3">
         <Skeleton className="h-8 w-48" />
         <Skeleton className="h-4 w-72" />

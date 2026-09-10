@@ -35,7 +35,8 @@ export const communityKindTone: Record<CommunityKind, Tone> = {
 export const communityKindDescription: Record<CommunityKind, string> = {
   OFFICIAL:
     "Run by the university, a registered club, or a verified organiser.",
-  INTEREST: "Seeded from the interest taxonomy. Open to everyone, owned by nobody.",
+  INTEREST:
+    "Seeded from the interest taxonomy. Open to everyone, owned by nobody.",
   STUDENT: "Proposed by a student and approved by review.",
 }
 

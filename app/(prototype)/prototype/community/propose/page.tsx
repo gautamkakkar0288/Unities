@@ -97,16 +97,16 @@ export default function PrototypeProposeCommunityScreen() {
                   type="text"
                   defaultValue={typedName}
                   aria-describedby="duplicate-warning"
-                  className="h-10 w-full rounded-lg border border-warning-border bg-background px-3 text-body-sm focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none"
+                  className="border-warning-border bg-background text-body-sm focus-visible:ring-ring/50 h-10 w-full rounded-lg border px-3 focus-visible:ring-3 focus-visible:outline-none"
                 />
               </div>
 
               {matches.length > 0 && (
                 <div
                   id="duplicate-warning"
-                  className="flex flex-col gap-3 rounded-lg border border-warning-border bg-warning-subtle p-4"
+                  className="border-warning-border bg-warning-subtle flex flex-col gap-3 rounded-lg border p-4"
                 >
-                  <p className="flex items-center gap-2 text-body-sm font-medium text-warning-foreground">
+                  <p className="text-body-sm text-warning-foreground flex items-center gap-2 font-medium">
                     <AlertTriangle aria-hidden="true" className="size-4" />
                     This already exists
                   </p>
@@ -119,7 +119,7 @@ export default function PrototypeProposeCommunityScreen() {
                   {matches.map(({ community, similarity }) => (
                     <div
                       key={community.id}
-                      className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-border bg-card p-3"
+                      className="border-border bg-card flex flex-wrap items-center justify-between gap-3 rounded-lg border p-3"
                     >
                       <div className="flex flex-col gap-0.5">
                         <div className="flex flex-wrap items-center gap-2">
@@ -160,7 +160,7 @@ export default function PrototypeProposeCommunityScreen() {
                   id="proposal-reason"
                   rows={3}
                   defaultValue="There is no football group for our year. We play every evening near the hostel ground and organise over WhatsApp."
-                  className="w-full rounded-lg border border-input bg-background px-3 py-2 text-body-sm focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none"
+                  className="border-input bg-background text-body-sm focus-visible:ring-ring/50 w-full rounded-lg border px-3 py-2 focus-visible:ring-3 focus-visible:outline-none"
                 />
                 <p className="text-caption text-muted-foreground">
                   A reviewer reads this. "Because it would be cool" gets
@@ -193,7 +193,7 @@ export default function PrototypeProposeCommunityScreen() {
                 {policies.map((policy) => (
                   <label
                     key={policy}
-                    className="flex cursor-pointer items-start gap-3 rounded-lg border border-border p-3"
+                    className="border-border flex cursor-pointer items-start gap-3 rounded-lg border p-3"
                   >
                     <input
                       type="radio"
@@ -205,7 +205,7 @@ export default function PrototypeProposeCommunityScreen() {
                       <span className="text-body-sm font-medium">
                         {joinPolicyLabel[policy]}
                         {policy === "OPEN" && (
-                          <span className="ml-2 text-caption font-normal text-muted-foreground">
+                          <span className="text-caption text-muted-foreground ml-2 font-normal">
                             Default
                           </span>
                         )}
@@ -239,7 +239,7 @@ export default function PrototypeProposeCommunityScreen() {
                   <li key={step.title} className="flex gap-3">
                     <span
                       aria-hidden="true"
-                      className="flex size-6 shrink-0 items-center justify-center rounded-full bg-muted text-caption font-medium"
+                      className="bg-muted text-caption flex size-6 shrink-0 items-center justify-center rounded-full font-medium"
                       data-numeric
                     >
                       {index + 1}
@@ -260,7 +260,9 @@ export default function PrototypeProposeCommunityScreen() {
 
           <Card>
             <CardHeader>
-              <CardTitle className="text-h4">Three kinds of community</CardTitle>
+              <CardTitle className="text-h4">
+                Three kinds of community
+              </CardTitle>
               <CardDescription>
                 Only one of them is something you create.
               </CardDescription>
@@ -268,9 +270,12 @@ export default function PrototypeProposeCommunityScreen() {
             <CardContent className="flex flex-col gap-3">
               {kinds.map((kind) => (
                 <div key={kind} className="flex flex-col gap-0.5">
-                  <span className="flex items-center gap-2 text-body-sm font-medium">
+                  <span className="text-body-sm flex items-center gap-2 font-medium">
                     {kind === "STUDENT" && (
-                      <Check aria-hidden="true" className="size-3.5 text-success" />
+                      <Check
+                        aria-hidden="true"
+                        className="text-success size-3.5"
+                      />
                     )}
                     {communityKindLabel[kind]}
                   </span>

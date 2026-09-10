@@ -35,7 +35,8 @@ export type DatabaseMode = "demo" | "postgres"
  * whole Postgres data directory, so this is closer to `data/postgres` than to
  * `data/cirqles.db`.
  */
-export const DEMO_DATA_DIR = process.env.CIRQLES_DEMO_DB_DIR ?? "data/cirqles-demo"
+export const DEMO_DATA_DIR =
+  process.env.CIRQLES_DEMO_DB_DIR ?? "data/cirqles-demo"
 
 /**
  * Demo unless told otherwise.
@@ -102,7 +103,8 @@ function demoDatabase(): Database {
   }
 
   // eslint-disable-next-line @typescript-eslint/no-require-imports
-  const { createRequire } = require("node:module") as typeof import("node:module")
+  const { createRequire } =
+    require("node:module") as typeof import("node:module")
   // eslint-disable-next-line @typescript-eslint/no-require-imports
   const path = require("node:path") as typeof import("node:path")
   // eslint-disable-next-line @typescript-eslint/no-require-imports

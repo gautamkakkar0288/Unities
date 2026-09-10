@@ -37,9 +37,9 @@ export function SidebarNavLink({
       href={href}
       aria-current={active ? "page" : undefined}
       className={cn(
-        "flex items-center gap-3 rounded-lg px-3 py-2 text-body-sm transition-colors duration-150 focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none",
+        "text-body-sm focus-visible:ring-ring/50 flex items-center gap-3 rounded-lg px-3 py-2 transition-colors duration-150 focus-visible:ring-3 focus-visible:outline-none",
         active
-          ? "bg-primary-subtle font-medium text-primary"
+          ? "bg-primary-subtle text-primary font-medium"
           : "text-muted-foreground hover:bg-muted hover:text-foreground",
       )}
     >

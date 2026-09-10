@@ -23,7 +23,10 @@ function candidate(
   return { secondary: null, taxonomy: [], timelyAt: null, ...overrides }
 }
 
-function score(input: Partial<SearchCandidate> & { id: string; title: string }, query: string) {
+function score(
+  input: Partial<SearchCandidate> & { id: string; title: string },
+  query: string,
+) {
   return scoreSearchResult(candidate(input), query.split(" "), { now })
 }
 
@@ -165,7 +168,9 @@ describe("scoreFieldMatch", () => {
   it("treats regex metacharacters as literal text", () => {
     // A RegExp-based matcher either throws or matches everything here.
     expect(scoreFieldMatch("C++ Workshop", "c++")).toBeGreaterThan(0)
-    expect(scoreFieldMatch("Robotics (Beginners)", "(beginners)")).toBeGreaterThan(0)
+    expect(
+      scoreFieldMatch("Robotics (Beginners)", "(beginners)"),
+    ).toBeGreaterThan(0)
     expect(scoreFieldMatch("robotics", ".*")).toBe(0)
     expect(scoreFieldMatch("robotics", "[a-z")).toBe(0)
   })
@@ -181,7 +186,11 @@ describe("scoreSearchResult", () => {
   it("puts a name match above a description match", () => {
     const byName = score({ id: "a", title: "Hackathon Kickoff" }, "hackathon")
     const byDescription = score(
-      { id: "b", title: "Poetry Night", secondary: "Between the hackathon rounds" },
+      {
+        id: "b",
+        title: "Poetry Night",
+        secondary: "Between the hackathon rounds",
+      },
       "hackathon",
     )
 
@@ -252,7 +261,10 @@ describe("scoreSearchResult", () => {
 
   it("ignores an unparseable timestamp instead of producing NaN", () => {
     expect(
-      score({ id: "a", title: "Hackathon", timelyAt: "not-a-date" }, "hackathon"),
+      score(
+        { id: "a", title: "Hackathon", timelyAt: "not-a-date" },
+        "hackathon",
+      ),
     ).toBe(1)
   })
 
@@ -300,7 +312,9 @@ describe("rankSearchResults", () => {
     ]
 
     const forward = rankSearchResults(rows, ["hackathon"], { now })
-    const reversed = rankSearchResults([...rows].reverse(), ["hackathon"], { now })
+    const reversed = rankSearchResults([...rows].reverse(), ["hackathon"], {
+      now,
+    })
 
     expect(forward.map((entry) => entry.id)).toEqual(
       reversed.map((entry) => entry.id),
@@ -332,7 +346,9 @@ describe("rankSearchResults", () => {
 
   it("returns nothing for an empty term list", () => {
     expect(
-      rankSearchResults([candidate({ id: "a", title: "Hackathon" })], [], { now }),
+      rankSearchResults([candidate({ id: "a", title: "Hackathon" })], [], {
+        now,
+      }),
     ).toEqual([])
   })
 
@@ -351,8 +367,22 @@ describe("isEmptyResultSet", () => {
 describe("existing grouping helpers", () => {
   it("still groups by kind in the documented order", () => {
     const grouped = groupResultsByKind([
-      { id: "p", kind: "POST", title: "Post", subtitle: "", href: "#", meta: "" },
-      { id: "e", kind: "EVENT", title: "Event", subtitle: "", href: "#", meta: "" },
+      {
+        id: "p",
+        kind: "POST",
+        title: "Post",
+        subtitle: "",
+        href: "#",
+        meta: "",
+      },
+      {
+        id: "e",
+        kind: "EVENT",
+        title: "Event",
+        subtitle: "",
+        href: "#",
+        meta: "",
+      },
     ])
 
     expect(grouped.map((group) => group.kind)).toEqual(["EVENT", "POST"])

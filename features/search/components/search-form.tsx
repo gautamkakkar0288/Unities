@@ -22,13 +22,7 @@ import { searchTabSlug, type SearchTab } from "@/lib/domain/search"
  * debounce against a new endpoint or a full-text index, and the brief is
  * explicit that reliable beats flashy this phase.
  */
-export function SearchForm({
-  query,
-  tab,
-}: {
-  query: string
-  tab: SearchTab
-}) {
+export function SearchForm({ query, tab }: { query: string; tab: SearchTab }) {
   return (
     <form action="/search" method="get" role="search" className="flex gap-2">
       {tab !== "ALL" ? (
@@ -41,7 +35,7 @@ export function SearchForm({
         </label>
 
         <Search
-          className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground"
+          className="text-muted-foreground pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2"
           aria-hidden="true"
         />
 

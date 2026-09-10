@@ -7,12 +7,7 @@ import { auth } from "@/auth"
 import { Alert } from "@/components/ui/alert"
 import { Badge } from "@/components/ui/badge"
 import { buttonVariants } from "@/components/ui/button"
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { EmptyState } from "@/components/ui/empty-state"
 import { CancelEventButton } from "@/features/events/components/cancel-event-button"
 import { PageHeader } from "@/features/shell/components/page-header"
@@ -135,10 +130,10 @@ export default async function ManageEventPage({
                       key={entry.id}
                       className="flex items-center justify-between gap-3"
                     >
-                      <span className="truncate text-body-sm">
+                      <span className="text-body-sm truncate">
                         {entry.person?.name ?? "A student"}
                       </span>
-                      <span className="shrink-0 text-caption text-muted-foreground">
+                      <span className="text-caption text-muted-foreground shrink-0">
                         {formatDay(entry.registeredAt)}
                       </span>
                     </li>
@@ -165,9 +160,9 @@ export default async function ManageEventPage({
                       key={entry.id}
                       className="flex items-center justify-between gap-3"
                     >
-                      <span className="truncate text-body-sm">
+                      <span className="text-body-sm truncate">
                         <span
-                          className="mr-2 text-muted-foreground"
+                          className="text-muted-foreground mr-2"
                           data-numeric
                         >
                           {index + 1}

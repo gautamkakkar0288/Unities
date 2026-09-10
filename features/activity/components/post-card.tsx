@@ -77,8 +77,8 @@ export function PostCard({
   return (
     <Card>
       <CardContent className="flex flex-col gap-3 pt-6">
-        <div className="flex flex-wrap items-center gap-x-2 text-caption text-muted-foreground">
-          <span className="font-medium text-foreground">
+        <div className="text-caption text-muted-foreground flex flex-wrap items-center gap-x-2">
+          <span className="text-foreground font-medium">
             {post.authorName ?? "A Cirqles member"}
           </span>
           <span aria-hidden="true">·</span>
@@ -105,7 +105,7 @@ export function PostCard({
             <h3 className="text-h4 wrap-anywhere">{post.title}</h3>
 
             {post.body && (
-              <p className="max-w-readable text-body whitespace-pre-line text-muted-foreground">
+              <p className="max-w-readable text-body text-muted-foreground whitespace-pre-line">
                 {post.body}
               </p>
             )}
@@ -121,7 +121,7 @@ export function PostCard({
           </>
         )}
 
-        <div className="flex flex-wrap items-center gap-1 border-t border-border pt-3">
+        <div className="border-border flex flex-wrap items-center gap-1 border-t pt-3">
           <ReactionButton
             postId={post.id}
             slug={post.community.slug}

@@ -9,7 +9,6 @@ export {
   type SmtpConfig,
 } from "./smtp-transport"
 
-
 /**
  * The one place that decides how mail leaves Cirqles.
  *

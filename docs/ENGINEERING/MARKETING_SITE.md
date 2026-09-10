@@ -4,14 +4,14 @@ The public site at `/`. Its job is narrow: take a visitor who has heard the name
 
 ## Structure
 
-| Location | Role |
-|---|---|
-| `app/(marketing)/layout.tsx` | skip link, header, footer |
-| `app/(marketing)/page.tsx` | section composition and structured data |
-| `lib/marketing/content.ts` | all copy, as typed data (D17) |
-| `lib/marketing/site.ts` | absolute site origin for metadata, robots, sitemap |
-| `features/marketing/components/*` | section components |
-| `components/brand/logo.tsx` | logo mark and wordmark |
+| Location                          | Role                                               |
+| --------------------------------- | -------------------------------------------------- |
+| `app/(marketing)/layout.tsx`      | skip link, header, footer                          |
+| `app/(marketing)/page.tsx`        | section composition and structured data            |
+| `lib/marketing/content.ts`        | all copy, as typed data (D17)                      |
+| `lib/marketing/site.ts`           | absolute site origin for metadata, robots, sitemap |
+| `features/marketing/components/*` | section components                                 |
+| `components/brand/logo.tsx`       | logo mark and wordmark                             |
 
 ## Page narrative
 

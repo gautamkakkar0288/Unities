@@ -224,7 +224,9 @@ export async function listModerationQueue(args: {
   if (rows.length === 0) return ok([])
 
   // Hydrate targets in two queries for the whole page, not one per report.
-  const postIds = rows.filter((r) => r.targetKind === "POST").map((r) => r.targetId)
+  const postIds = rows
+    .filter((r) => r.targetKind === "POST")
+    .map((r) => r.targetId)
   const commentIds = rows
     .filter((r) => r.targetKind === "COMMENT")
     .map((r) => r.targetId)
@@ -426,7 +428,8 @@ export async function decideReport(args: {
   }
 
   const now = args.now ?? new Date()
-  const shouldRemove = args.decision === "RESOLVED" && args.removeContent === true
+  const shouldRemove =
+    args.decision === "RESOLVED" && args.removeContent === true
 
   await db.transaction(async (tx) => {
     await tx

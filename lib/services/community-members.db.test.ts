@@ -148,7 +148,9 @@ describe.skipIf(!hasDatabase)("listCommunityLeads", () => {
   })
 
   it("scopes leads to the community asked for", async () => {
-    expect(await listCommunityLeads({ communityId: OTHER_COMMUNITY })).toEqual([])
+    expect(await listCommunityLeads({ communityId: OTHER_COMMUNITY })).toEqual(
+      [],
+    )
   })
 
   it("returns nothing for a community that does not exist", async () => {

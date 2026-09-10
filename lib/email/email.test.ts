@@ -37,7 +37,6 @@ describe("consoleTransport", () => {
     vi.unstubAllEnvs()
   })
 
-
   it("does not log the message body to avoid credential leakage", async () => {
     const spy = vi.spyOn(console, "info").mockImplementation(() => {})
     await consoleTransport.send({
@@ -168,8 +167,12 @@ describe("verificationEmail", () => {
       verifyUrl: "http://localhost:3000/verify-email?token=abc123",
       expiresInMinutes: 60,
     })
-    expect(msg.text).toContain("http://localhost:3000/verify-email?token=abc123")
-    expect(msg.html).toContain("http://localhost:3000/verify-email?token=abc123")
+    expect(msg.text).toContain(
+      "http://localhost:3000/verify-email?token=abc123",
+    )
+    expect(msg.html).toContain(
+      "http://localhost:3000/verify-email?token=abc123",
+    )
   })
 
   it("escapes HTML in the verify URL to prevent injection", () => {
@@ -177,7 +180,7 @@ describe("verificationEmail", () => {
       to: "a@chitkara.edu.in",
       name: null,
       universityName: "Chitkara",
-      verifyUrl: 'http://localhost/?x=1&y=<script>',
+      verifyUrl: "http://localhost/?x=1&y=<script>",
       expiresInMinutes: 30,
     })
     expect(msg.html).not.toContain("<script>")

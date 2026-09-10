@@ -204,7 +204,11 @@ export async function listCommunitiesForViewer(args: {
     .leftJoin(places, eq(places.id, communities.placeId))
     .leftJoin(memberships, viewerMembershipJoin(args.viewerId))
     .where(and(isNull(communities.archivedAt), visible))
-    .orderBy(asc(scopeRank), desc(communities.memberCount), asc(communities.name))
+    .orderBy(
+      asc(scopeRank),
+      desc(communities.memberCount),
+      asc(communities.name),
+    )
 
   const rows = args.limit ? await query.limit(args.limit) : await query
 
@@ -214,7 +218,9 @@ export async function listCommunitiesForViewer(args: {
 export async function getCommunityBySlug(args: {
   slug: string
   viewerId: string | null
-}): Promise<(CommunitySummary & { about: string; guidelines: string[] }) | null> {
+}): Promise<
+  (CommunitySummary & { about: string; guidelines: string[] }) | null
+> {
   const [row] = await db
     .select({
       ...communitySelection,

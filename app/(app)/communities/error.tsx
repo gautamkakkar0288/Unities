@@ -31,7 +31,7 @@ export default function CommunitiesError({
       <Alert variant="error" title="We could not load communities">
         Something went wrong on our side. Trying again usually works.
         {error.digest && (
-          <span className="mt-1 block text-caption text-muted-foreground">
+          <span className="text-caption text-muted-foreground mt-1 block">
             Reference: {error.digest}
           </span>
         )}

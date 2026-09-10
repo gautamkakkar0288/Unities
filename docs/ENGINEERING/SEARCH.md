@@ -11,18 +11,18 @@ search store, and nothing about it is faked for the demo.
 
 Three layers, with one rule each.
 
-| Layer | File | Owns |
-| --- | --- | --- |
-| Domain | `lib/domain/search.ts` | What the query means, and what order results appear in |
-| Service | `lib/services/search.ts` | Which rows match, and who is allowed to see them |
-| Route | `app/(app)/search/page.tsx` | Layout, and nothing else |
+| Layer   | File                        | Owns                                                   |
+| ------- | --------------------------- | ------------------------------------------------------ |
+| Domain  | `lib/domain/search.ts`      | What the query means, and what order results appear in |
+| Service | `lib/services/search.ts`    | Which rows match, and who is allowed to see them       |
+| Route   | `app/(app)/search/page.tsx` | Layout, and nothing else                               |
 
 **Matching is SQL. Ranking is domain.** This is the central decision. Postgres
 is far better at filtering than JavaScript is, and far worse at expressing
 "exact name beats prefix beats description" without a hand-maintained pile of
 `case` expressions that no test can read and no reviewer can check. So the
-database answers *is this a result*, and a pure function answers *where does it
-go*. The consequence worth having: every ranking rule is unit-testable against
+database answers _is this a result_, and a pure function answers _where does it
+go_. The consequence worth having: every ranking rule is unit-testable against
 string literals, with no database and no fixtures.
 
 The domain layer has no imports from `lib/db` or React, takes its clock as a
@@ -32,18 +32,18 @@ parameter, and never constructs a `RegExp` from user input.
 
 Only public, already-visible content. The fields searched per category:
 
-| Category | Fields matched | Ranked as name / prose / taxonomy |
-| --- | --- | --- |
-| Events | `title`, `description`, `venue`, `kind`, interest label | title / description / kind, venue, interest, community |
-| Communities | `name`, `slug`, `tagline`, `about`, interest label | name / tagline + about / slug, interest, place |
-| Opportunities | `title`, `description`, `kind`, interest label, offering community's `name` | title / description / kind, interest, community |
-| Updates | `title`, `body`, community `name` | title / body / community |
+| Category      | Fields matched                                                              | Ranked as name / prose / taxonomy                      |
+| ------------- | --------------------------------------------------------------------------- | ------------------------------------------------------ |
+| Events        | `title`, `description`, `venue`, `kind`, interest label                     | title / description / kind, venue, interest, community |
+| Communities   | `name`, `slug`, `tagline`, `about`, interest label                          | name / tagline + about / slug, interest, place         |
+| Opportunities | `title`, `description`, `kind`, interest label, offering community's `name` | title / description / kind, interest, community        |
+| Updates       | `title`, `body`, community `name`                                           | title / body / community                               |
 
 `slug` is searched for communities because students paste and type URLs, and
 `coding-club` should find the Coding Club.
 
 `kind` is searched because "workshop" and "internship" are words students type.
-It is weighted as taxonomy, so a workshop actually *called* "Workshop" still
+It is weighted as taxonomy, so a workshop actually _called_ "Workshop" still
 wins - matching on kind is a weak signal precisely because every row of that
 type shares it.
 
@@ -68,25 +68,25 @@ grouped-result helpers; the `SearchTab` union is what the route actually offers.
 
 For each term, each field is scored 0-1 by match strength:
 
-| Match | Score |
-| --- | --- |
-| Field equals the term | 1.0 |
-| Field starts with the term | 0.8 |
-| Term starts a word within the field | 0.62 |
-| Term appears mid-word | 0.42 |
-| No match | 0 |
+| Match                               | Score |
+| ----------------------------------- | ----- |
+| Field equals the term               | 1.0   |
+| Field starts with the term          | 0.8   |
+| Term starts a word within the field | 0.62  |
+| Term appears mid-word               | 0.42  |
+| No match                            | 0     |
 
 Those scores are then weighted by which field matched:
 
-| Field | Weight |
-| --- | --- |
-| Title or name | 1.0 |
-| Description, tagline, body | 0.34 |
-| Taxonomy - kind, interest, venue, community | 0.18 |
-| Timeliness | 0.12 |
+| Field                                       | Weight |
+| ------------------------------------------- | ------ |
+| Title or name                               | 1.0    |
+| Description, tagline, body                  | 0.34   |
+| Taxonomy - kind, interest, venue, community | 0.18   |
+| Timeliness                                  | 0.12   |
 
 The gaps are wide deliberately. An exact name match has to outrank a prefix
-candidate that *also* matches on description and taxonomy, otherwise typing a
+candidate that _also_ matches on description and taxonomy, otherwise typing a
 club's exact name does not put that club first - the one behaviour everybody
 expects a search box to get right.
 
@@ -113,10 +113,10 @@ Ranking is deterministic and pure. No AI, no LLM, no randomness, no `Date.now()`
 
 ## Query parameters
 
-| Parameter | Meaning | Invalid input |
-| --- | --- | --- |
-| `q` | The query. Trimmed, lowercased and whitespace-collapsed for matching; the raw form is echoed back to the input and the empty state. | Missing or blank is the landing state |
-| `type` | `events`, `communities`, `opportunities`, `updates`. Absent means All. | Falls back to All |
+| Parameter | Meaning                                                                                                                             | Invalid input                         |
+| --------- | ----------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------- |
+| `q`       | The query. Trimmed, lowercased and whitespace-collapsed for matching; the raw form is echoed back to the input and the empty state. | Missing or blank is the landing state |
+| `type`    | `events`, `communities`, `opportunities`, `updates`. Absent means All.                                                              | Falls back to All                     |
 
 `/search?q=hackathon` and `/search?q=hackathon&type=events`.
 

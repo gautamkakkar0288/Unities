@@ -45,9 +45,7 @@ export default async function VerifyEmailPage({
   const { token, email, resend } = await searchParams
 
   const result =
-    token && email
-      ? await verifyEmailToken({ input: { token, email } })
-      : null
+    token && email ? await verifyEmailToken({ input: { token, email } }) : null
 
   // Only consult the session when there is no link to redeem - a student
   // clicking a link from their phone may have no session at all, and that is a
@@ -89,8 +87,8 @@ export default async function VerifyEmailPage({
         <>
           <Alert variant="warning" title="Confirm your email to continue">
             We are waiting for you to open the link we sent to {waitingFor}.
-            Cirqles stays locked until then, so that everyone here is a
-            verified student.
+            Cirqles stays locked until then, so that everyone here is a verified
+            student.
           </Alert>
 
           <form action={resendVerificationEmailAction}>
@@ -122,11 +120,11 @@ export default async function VerifyEmailPage({
         </Alert>
       )}
 
-      <p className="text-center text-sm text-muted-foreground">
+      <p className="text-muted-foreground text-center text-sm">
         {result?.ok === true ? (
           <Link
             href="/home"
-            className="font-medium text-foreground underline-offset-4 hover:underline"
+            className="text-foreground font-medium underline-offset-4 hover:underline"
           >
             Continue to Cirqles
           </Link>
@@ -137,7 +135,7 @@ export default async function VerifyEmailPage({
             Need another link?{" "}
             <Link
               href="/sign-in"
-              className="font-medium text-foreground underline-offset-4 hover:underline"
+              className="text-foreground font-medium underline-offset-4 hover:underline"
             >
               Sign in
             </Link>{" "}

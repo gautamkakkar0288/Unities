@@ -1,4 +1,8 @@
-import type { EventSummary, EventTimeBucket, Timestamp } from "@/lib/domain/types"
+import type {
+  EventSummary,
+  EventTimeBucket,
+  Timestamp,
+} from "@/lib/domain/types"
 
 /**
  * "Today", "Tomorrow", "This weekend" - in campus time, not the server's.

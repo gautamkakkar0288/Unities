@@ -43,7 +43,13 @@ export const createEventSchema = z.object({
     .nullable()
     .default(null),
   /** Integer paise. Recorded for display only; nothing collects it. */
-  feeInPaise: z.number().int().nonnegative().max(10000000).nullable().default(null),
+  feeInPaise: z
+    .number()
+    .int()
+    .nonnegative()
+    .max(10000000)
+    .nullable()
+    .default(null),
 })
 
 export type CreateEventInput = z.infer<typeof createEventSchema>

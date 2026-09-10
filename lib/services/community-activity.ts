@@ -26,7 +26,10 @@ import {
   validatePostInput,
 } from "@/lib/domain/activity"
 import type { MembershipState, VerificationState } from "@/lib/domain/types"
-import { createNotifications, hasNotification } from "@/lib/services/notifications"
+import {
+  createNotifications,
+  hasNotification,
+} from "@/lib/services/notifications"
 import { fail, ok, type ServiceResult } from "@/lib/services/result"
 
 /**
@@ -282,7 +285,10 @@ export async function listCommunityActivity(args: {
   if (rows.length === 0) return []
 
   const [hydrated, viewerState] = await Promise.all([
-    hydrateActivity({ postIds: rows.map((row) => row.id), viewerId: args.viewerId }),
+    hydrateActivity({
+      postIds: rows.map((row) => row.id),
+      viewerId: args.viewerId,
+    }),
     args.viewerId
       ? membershipStateFor({
           userId: args.viewerId,
@@ -315,7 +321,10 @@ export async function activityStateFor(args: {
   postIds: string[]
   viewerId: string | null
 }): Promise<
-  Map<string, { reactionCount: number; commentCount: number; viewerHasReacted: boolean }>
+  Map<
+    string,
+    { reactionCount: number; commentCount: number; viewerHasReacted: boolean }
+  >
 > {
   const hydrated = await hydrateActivity(args)
 
@@ -355,7 +364,11 @@ export async function publishPost(args: {
   }
 
   const [community] = await db
-    .select({ id: communities.id, name: communities.name, archivedAt: communities.archivedAt })
+    .select({
+      id: communities.id,
+      name: communities.name,
+      archivedAt: communities.archivedAt,
+    })
     .from(communities)
     .where(eq(communities.id, args.communityId))
     .limit(1)

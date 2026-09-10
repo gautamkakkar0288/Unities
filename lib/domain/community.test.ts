@@ -72,10 +72,7 @@ describe("nameSimilarity", () => {
   })
 
   it("scores partial overlap between the threshold and 1", () => {
-    const score = nameSimilarity(
-      "Photography Walk Club",
-      "Photography Club",
-    )
+    const score = nameSimilarity("Photography Walk Club", "Photography Club")
     expect(score).toBeGreaterThanOrEqual(DUPLICATE_THRESHOLD)
     expect(score).toBeLessThan(1)
   })

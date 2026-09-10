@@ -11,10 +11,7 @@ import { Label } from "@/components/ui/label"
 import { Separator } from "@/components/ui/separator"
 import { Textarea } from "@/components/ui/textarea"
 import { ScreenHeader } from "@/features/prototype/components/screen-header"
-import {
-  isMutable,
-  notificationKindLabel,
-} from "@/lib/domain/notifications"
+import { isMutable, notificationKindLabel } from "@/lib/domain/notifications"
 import type { NotificationKind } from "@/lib/domain/types"
 import { viewerProfile } from "@/lib/prototype/fixtures"
 import { cn } from "@/lib/utils"
@@ -57,14 +54,14 @@ function SettingSwitch({
         aria-checked={checked}
         disabled={locked}
         className={cn(
-          "relative inline-flex h-6 w-11 shrink-0 items-center rounded-full border border-transparent transition-colors duration-150 ease-standard focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none disabled:opacity-60",
+          "ease-standard focus-visible:ring-ring/50 relative inline-flex h-6 w-11 shrink-0 items-center rounded-full border border-transparent transition-colors duration-150 focus-visible:ring-3 focus-visible:outline-none disabled:opacity-60",
           checked ? "bg-primary" : "bg-muted border-border",
         )}
       >
         <span
           aria-hidden="true"
           className={cn(
-            "size-5 rounded-full bg-card shadow-card transition-transform duration-150 ease-standard",
+            "bg-card shadow-card ease-standard size-5 rounded-full transition-transform duration-150",
             checked ? "translate-x-5" : "translate-x-0.5",
           )}
         />
@@ -150,7 +147,7 @@ export default function PrototypeSettingsPage() {
               findable, not discover they always were.
             </CardDescription>
           </CardHeader>
-          <CardContent className="divide-y divide-border">
+          <CardContent className="divide-border divide-y">
             <SettingSwitch
               id="privacy-discoverable"
               label="Show me in search"
@@ -180,7 +177,7 @@ export default function PrototypeSettingsPage() {
               event you registered for.
             </CardDescription>
           </CardHeader>
-          <CardContent className="divide-y divide-border">
+          <CardContent className="divide-border divide-y">
             {notificationKinds.map((kind) => (
               <SettingSwitch
                 key={kind}

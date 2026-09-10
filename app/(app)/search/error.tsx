@@ -13,7 +13,7 @@ import { EmptyState } from "@/components/ui/empty-state"
  */
 export default function SearchError({ reset }: { reset: () => void }) {
   return (
-    <div className="mx-auto w-full max-w-page px-4 py-16 sm:px-6 lg:px-8">
+    <div className="max-w-page mx-auto w-full px-4 py-16 sm:px-6 lg:px-8">
       <EmptyState
         title="Search is not working right now"
         description="Something went wrong looking that up. Your query is still in the address bar, so trying again is safe."

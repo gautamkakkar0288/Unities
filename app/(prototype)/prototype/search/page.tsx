@@ -47,17 +47,17 @@ export default function PrototypeSearchPage() {
       <div className="flex max-w-3xl flex-col gap-8">
         <div className="flex flex-col gap-2">
           <Label htmlFor="search-input">Search campus</Label>
-          <div className="flex items-center gap-2 rounded-lg border border-border bg-card px-3 py-2 shadow-card focus-within:ring-3 focus-within:ring-ring/50">
+          <div className="border-border bg-card shadow-card focus-within:ring-ring/50 flex items-center gap-2 rounded-lg border px-3 py-2 focus-within:ring-3">
             <Search
               aria-hidden="true"
-              className="size-4 shrink-0 text-muted-foreground"
+              className="text-muted-foreground size-4 shrink-0"
             />
             <input
               id="search-input"
               type="search"
               defaultValue={searchQuery}
               placeholder="Communities, events, people"
-              className="w-full bg-transparent text-body-sm outline-none placeholder:text-muted-foreground"
+              className="text-body-sm placeholder:text-muted-foreground w-full bg-transparent outline-none"
             />
           </div>
           <p className="text-caption text-muted-foreground">
@@ -66,7 +66,10 @@ export default function PrototypeSearchPage() {
           </p>
         </div>
 
-        <section aria-labelledby="recent-heading" className="flex flex-col gap-3">
+        <section
+          aria-labelledby="recent-heading"
+          className="flex flex-col gap-3"
+        >
           <h2 id="recent-heading" className="text-h4">
             Recent searches
           </h2>
@@ -75,7 +78,7 @@ export default function PrototypeSearchPage() {
               <li key={term}>
                 <Link
                   href="/prototype/search"
-                  className="inline-flex items-center rounded-full border border-border px-3 py-1.5 text-caption transition-colors duration-150 ease-standard hover:bg-muted focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none"
+                  className="border-border text-caption ease-standard hover:bg-muted focus-visible:ring-ring/50 inline-flex items-center rounded-full border px-3 py-1.5 transition-colors duration-150 focus-visible:ring-3 focus-visible:outline-none"
                 >
                   {term}
                 </Link>
@@ -105,14 +108,17 @@ export default function PrototypeSearchPage() {
                     <CardContent className="flex flex-col gap-1">
                       <Link
                         href={result.href}
-                        className="rounded-sm text-body-sm font-medium hover:text-primary focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none"
+                        className="text-body-sm hover:text-primary focus-visible:ring-ring/50 rounded-sm font-medium focus-visible:ring-3 focus-visible:outline-none"
                       >
                         {result.title}
                       </Link>
                       <p className="text-caption text-muted-foreground">
                         {result.subtitle}
                       </p>
-                      <p className="text-caption text-muted-foreground" data-numeric>
+                      <p
+                        className="text-caption text-muted-foreground"
+                        data-numeric
+                      >
                         {result.meta}
                       </p>
                     </CardContent>

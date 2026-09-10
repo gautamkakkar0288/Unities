@@ -53,7 +53,7 @@ function Swatch({ name, className }: { name: string; className: string }) {
   return (
     <div className="flex flex-col gap-1.5">
       <div
-        className={`h-14 rounded-lg border border-border ${className}`}
+        className={`border-border h-14 rounded-lg border ${className}`}
         aria-hidden="true"
       />
       <span className="text-caption text-muted-foreground">{name}</span>
@@ -163,9 +163,9 @@ export default function DesignSystemPage() {
           <Alert variant="info" title="Verify your student email">
             Verified students get early access to limited-capacity events.
           </Alert>
-          <Alert variant="success" title="You&apos;re registered" />
+          <Alert variant="success" title="You're registered" />
           <Alert variant="warning" title="Only 6 seats left" />
-          <Alert variant="error" title="We couldn&apos;t save your changes">
+          <Alert variant="error" title="We couldn't save your changes">
             Check your connection and try again.
           </Alert>
         </div>

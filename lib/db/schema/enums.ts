@@ -26,11 +26,7 @@ export const reviewStatuses = [
 export type ReviewStatus = (typeof reviewStatuses)[number]
 
 /** Trust is a product feature (PRD section 3), so it is a column, not a flag. */
-export const verificationStates = [
-  "UNVERIFIED",
-  "PENDING",
-  "VERIFIED",
-] as const
+export const verificationStates = ["UNVERIFIED", "PENDING", "VERIFIED"] as const
 
 export type VerificationState = (typeof verificationStates)[number]
 

@@ -47,7 +47,7 @@ describe("join policy: what the button says and what the server does", () => {
       outcome: "REFUSED",
     },
   ])(
-    "$joinPolicy shows \"$label\" and resolves to $outcome",
+    '$joinPolicy shows "$label" and resolves to $outcome',
     ({ joinPolicy, label, disabled, outcome }) => {
       const ui = action(joinPolicy, "NONE")
 

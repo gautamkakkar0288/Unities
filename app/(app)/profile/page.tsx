@@ -100,7 +100,7 @@ export default async function ProfilePage() {
                 {profile.interests.map((interest) => (
                   <li
                     key={interest.id}
-                    className="rounded-full border border-border bg-muted px-3 py-1 text-body-sm"
+                    className="border-border bg-muted text-body-sm rounded-full border px-3 py-1"
                   >
                     {interest.label}
                   </li>
@@ -131,12 +131,12 @@ export default async function ProfilePage() {
           </CardHeader>
           <CardContent>
             {profile.communities.length > 0 ? (
-              <ul className="flex flex-col divide-y divide-border">
+              <ul className="divide-border flex flex-col divide-y">
                 {profile.communities.map((community) => (
                   <li key={community.id}>
                     <Link
                       href={`/communities/${community.slug}`}
-                      className="flex items-center justify-between gap-3 py-3 transition-colors duration-150 hover:text-primary focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none"
+                      className="hover:text-primary focus-visible:ring-ring/50 flex items-center justify-between gap-3 py-3 transition-colors duration-150 focus-visible:ring-3 focus-visible:outline-none"
                     >
                       <span className="text-body font-medium">
                         {community.name}
@@ -157,7 +157,10 @@ export default async function ProfilePage() {
                 </p>
                 <Link
                   href="/communities"
-                  className={cn(buttonVariants({ variant: "outline" }), "w-fit")}
+                  className={cn(
+                    buttonVariants({ variant: "outline" }),
+                    "w-fit",
+                  )}
                 >
                   Browse communities
                 </Link>
@@ -174,9 +177,9 @@ export default async function ProfilePage() {
         <nav aria-label="Your activity" className="grid gap-3 sm:grid-cols-2">
           <Link
             href="/communities"
-            className="flex items-center gap-3 rounded-xl border border-border bg-card p-4 transition-colors duration-150 hover:bg-muted focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none"
+            className="border-border bg-card hover:bg-muted focus-visible:ring-ring/50 flex items-center gap-3 rounded-xl border p-4 transition-colors duration-150 focus-visible:ring-3 focus-visible:outline-none"
           >
-            <Users className="size-5 text-primary" aria-hidden="true" />
+            <Users className="text-primary size-5" aria-hidden="true" />
             <span className="flex flex-col">
               <span className="text-body font-medium">Communities</span>
               <span className="text-caption text-muted-foreground">
@@ -187,9 +190,9 @@ export default async function ProfilePage() {
 
           <Link
             href="/saved"
-            className="flex items-center gap-3 rounded-xl border border-border bg-card p-4 transition-colors duration-150 hover:bg-muted focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none"
+            className="border-border bg-card hover:bg-muted focus-visible:ring-ring/50 flex items-center gap-3 rounded-xl border p-4 transition-colors duration-150 focus-visible:ring-3 focus-visible:outline-none"
           >
-            <Bookmark className="size-5 text-primary" aria-hidden="true" />
+            <Bookmark className="text-primary size-5" aria-hidden="true" />
             <span className="flex flex-col">
               <span className="text-body font-medium">Saved</span>
               <span className="text-caption text-muted-foreground">

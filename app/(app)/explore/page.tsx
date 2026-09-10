@@ -125,7 +125,10 @@ export default async function ExplorePage({
                 title="Nothing happening here yet"
                 description="No upcoming events match these filters. Try clearing them, or look a little further ahead."
                 action={
-                  <Link href="/explore?type=events" className={buttonVariants()}>
+                  <Link
+                    href="/explore?type=events"
+                    className={buttonVariants()}
+                  >
                     Clear filters
                   </Link>
                 }
@@ -258,7 +261,10 @@ export default async function ExplorePage({
                 title="No announcements match that"
                 description="Club announcements appear here as they are posted."
                 action={
-                  <Link href="/explore?type=updates" className={buttonVariants()}>
+                  <Link
+                    href="/explore?type=updates"
+                    className={buttonVariants()}
+                  >
                     Show all updates
                   </Link>
                 }

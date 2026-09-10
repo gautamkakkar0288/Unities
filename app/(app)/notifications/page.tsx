@@ -64,7 +64,10 @@ export default async function NotificationsPage() {
       ) : (
         <div className="flex flex-col gap-8">
           <div className="flex flex-wrap items-center justify-between gap-3">
-            <p className="text-body-sm text-muted-foreground" aria-live="polite">
+            <p
+              className="text-body-sm text-muted-foreground"
+              aria-live="polite"
+            >
               {summary ?? "Nothing new right now."}
             </p>
             <MarkAllReadButton unreadCount={unread.length} />

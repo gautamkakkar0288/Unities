@@ -13,8 +13,7 @@ import {
 } from "@/lib/services/verification"
 
 export type RegisterResult =
-  | { status: "success" }
-  | { status: "error"; message: string }
+  { status: "success" } | { status: "error"; message: string }
 
 /**
  * Registration business logic lives here rather than in the form component, so
@@ -94,8 +93,7 @@ export async function registerUser(input: unknown): Promise<RegisterResult> {
 }
 
 export type ResendResult =
-  | { status: "success"; message: string }
-  | { status: "error"; message: string }
+  { status: "success"; message: string } | { status: "error"; message: string }
 
 /**
  * Send another verification link to the signed-in student's own address.

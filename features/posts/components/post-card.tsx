@@ -67,16 +67,16 @@ export function PostCard({
                 <Badge variant={kindBadge.tone}>{kindBadge.label}</Badge>
               )}
               {post.pinned && (
-                <span className="inline-flex items-center gap-1 text-caption text-muted-foreground">
+                <span className="text-caption text-muted-foreground inline-flex items-center gap-1">
                   <Pin aria-hidden="true" className="size-3" />
                   Pinned
                 </span>
               )}
             </div>
-            <p className="flex flex-wrap items-center gap-x-1.5 text-caption text-muted-foreground">
+            <p className="text-caption text-muted-foreground flex flex-wrap items-center gap-x-1.5">
               <Link
                 href={communityHref}
-                className="rounded-sm hover:text-foreground focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none"
+                className="hover:text-foreground focus-visible:ring-ring/50 rounded-sm focus-visible:ring-3 focus-visible:outline-none"
               >
                 {post.community.name}
               </Link>
@@ -91,7 +91,7 @@ export function PostCard({
 
         <Link
           href={href}
-          className="rounded-sm text-body-sm whitespace-pre-line focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none"
+          className="text-body-sm focus-visible:ring-ring/50 rounded-sm whitespace-pre-line focus-visible:ring-3 focus-visible:outline-none"
         >
           <span className="line-clamp-4">{post.body}</span>
         </Link>
@@ -112,7 +112,12 @@ export function PostCard({
           <span data-numeric>{formatCount(post.reactionCount)}</span>
         </Button>
 
-        <Button type="button" variant="ghost" size="sm" render={<Link href={href} />}>
+        <Button
+          type="button"
+          variant="ghost"
+          size="sm"
+          render={<Link href={href} />}
+        >
           <MessageCircle aria-hidden="true" />
           <span data-numeric>{formatCount(post.commentCount)}</span>
           <span className="sr-only">comments</span>

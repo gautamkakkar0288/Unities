@@ -31,10 +31,10 @@ export function UpdateResultCard({
   return (
     <Card interactive className="h-full">
       <CardContent className="flex h-full flex-col gap-3 p-5">
-        <div className="flex flex-wrap items-center gap-2 text-caption text-muted-foreground">
+        <div className="text-caption text-muted-foreground flex flex-wrap items-center gap-2">
           <Link
             href={update.href}
-            className="font-medium text-foreground hover:underline focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none"
+            className="text-foreground focus-visible:ring-ring/50 font-medium hover:underline focus-visible:ring-3 focus-visible:outline-none"
           >
             {update.community.name}
           </Link>
@@ -57,20 +57,20 @@ export function UpdateResultCard({
         <h3 className="text-h4">
           <Link
             href={update.href}
-            className="hover:underline focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none"
+            className="focus-visible:ring-ring/50 hover:underline focus-visible:ring-3 focus-visible:outline-none"
           >
             {update.title}
           </Link>
         </h3>
 
-        <p className="line-clamp-3 text-body-sm text-muted-foreground">
+        <p className="text-body-sm text-muted-foreground line-clamp-3">
           {update.excerpt}
         </p>
 
         {update.event ? (
           <Link
             href={`/events/${update.event.slug}`}
-            className="mt-auto inline-flex items-center gap-2 text-body-sm font-medium text-foreground hover:underline focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none"
+            className="text-body-sm text-foreground focus-visible:ring-ring/50 mt-auto inline-flex items-center gap-2 font-medium hover:underline focus-visible:ring-3 focus-visible:outline-none"
           >
             <CalendarDays className="size-4 shrink-0" aria-hidden="true" />
             {update.event.title}

@@ -117,7 +117,7 @@ export function CreateEventForm({
   return (
     <form
       onSubmit={handleSubmit(submit)}
-      className="flex max-w-readable flex-col gap-4"
+      className="max-w-readable flex flex-col gap-4"
       noValidate
     >
       <Field id="title" label="Title" error={errors.title?.message} required>
@@ -147,7 +147,12 @@ export function CreateEventForm({
         )}
       </Field>
 
-      <Field id="mode" label="How is it run?" error={errors.mode?.message} required>
+      <Field
+        id="mode"
+        label="How is it run?"
+        error={errors.mode?.message}
+        required
+      >
         {(field) => (
           <select className={controlClassName} {...field} {...register("mode")}>
             {MODES.map((mode) => (
@@ -168,7 +173,12 @@ export function CreateEventForm({
         {(field) => <Input {...field} {...register("venue")} />}
       </Field>
 
-      <Field id="startsAt" label="Starts" error={errors.startsAt?.message} required>
+      <Field
+        id="startsAt"
+        label="Starts"
+        error={errors.startsAt?.message}
+        required
+      >
         {(field) => (
           <Input type="datetime-local" {...field} {...register("startsAt")} />
         )}

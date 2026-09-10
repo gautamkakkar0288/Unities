@@ -4,14 +4,14 @@ The authenticated frame at `app/(app)/`. Every feature from Phase 6 onward rende
 
 ## Structure
 
-| Location | Role |
-|---|---|
-| `app/(app)/layout.tsx` | session guard, skip link, shell composition |
-| `app/(app)/loading.tsx` | layout-mirroring skeleton |
-| `lib/navigation/config.ts` | navigation model and active-route matching |
-| `lib/auth/roles.ts` | role labels and badge treatment |
+| Location                      | Role                                                 |
+| ----------------------------- | ---------------------------------------------------- |
+| `app/(app)/layout.tsx`        | session guard, skip link, shell composition          |
+| `app/(app)/loading.tsx`       | layout-mirroring skeleton                            |
+| `lib/navigation/config.ts`    | navigation model and active-route matching           |
+| `lib/auth/roles.ts`           | role labels and badge treatment                      |
 | `features/shell/components/*` | sidebar, top bar, mobile bar, user card, page header |
-| `features/shell/actions.ts` | sign-out server action |
+| `features/shell/actions.ts`   | sign-out server action                               |
 
 ## Navigation model
 

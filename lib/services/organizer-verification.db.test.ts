@@ -311,7 +311,11 @@ describe.skipIf(!hasDatabase)("organiser verification", () => {
 
       const result = await reviewVerificationRequest({
         reviewerId: ADMIN,
-        input: { requestId, decision: "APPROVED", note: "Checked the register." },
+        input: {
+          requestId,
+          decision: "APPROVED",
+          note: "Checked the register.",
+        },
       })
       expect(result.ok).toBe(true)
 

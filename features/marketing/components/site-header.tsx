@@ -38,8 +38,8 @@ export function SiteHeader() {
   }, [open])
 
   return (
-    <header className="sticky top-0 z-50 border-b border-border bg-background/80 backdrop-blur-md">
-      <div className="mx-auto flex w-full max-w-page items-center justify-between gap-4 px-4 py-3 sm:px-6 lg:px-8 xl:px-12">
+    <header className="border-border bg-background/80 sticky top-0 z-50 border-b backdrop-blur-md">
+      <div className="max-w-page mx-auto flex w-full items-center justify-between gap-4 px-4 py-3 sm:px-6 lg:px-8 xl:px-12">
         <Logo />
 
         <nav aria-label="Main" className="hidden items-center gap-1 lg:flex">
@@ -47,7 +47,7 @@ export function SiteHeader() {
             <Link
               key={link.href}
               href={link.href}
-              className="rounded-md px-3 py-2 text-body-sm text-muted-foreground transition-colors duration-150 hover:text-foreground focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none"
+              className="text-body-sm text-muted-foreground hover:text-foreground focus-visible:ring-ring/50 rounded-md px-3 py-2 transition-colors duration-150 focus-visible:ring-3 focus-visible:outline-none"
             >
               {link.label}
             </Link>
@@ -67,7 +67,10 @@ export function SiteHeader() {
           </Link>
           <Link
             href="/sign-up"
-            className={cn(buttonVariants({ size: "sm" }), "hidden sm:inline-flex")}
+            className={cn(
+              buttonVariants({ size: "sm" }),
+              "hidden sm:inline-flex",
+            )}
           >
             Get started
           </Link>
@@ -78,7 +81,7 @@ export function SiteHeader() {
             aria-expanded={open}
             aria-controls="mobile-nav"
             aria-label={open ? "Close menu" : "Open menu"}
-            className="inline-flex size-9 items-center justify-center rounded-lg border border-border text-foreground transition-colors duration-150 hover:bg-muted focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none lg:hidden"
+            className="border-border text-foreground hover:bg-muted focus-visible:ring-ring/50 inline-flex size-9 items-center justify-center rounded-lg border transition-colors duration-150 focus-visible:ring-3 focus-visible:outline-none lg:hidden"
           >
             {open ? (
               <X className="size-4" aria-hidden="true" />
@@ -92,24 +95,24 @@ export function SiteHeader() {
       {open && (
         <div
           id="mobile-nav"
-          className="border-t border-border bg-background lg:hidden"
+          className="border-border bg-background border-t lg:hidden"
         >
           <nav
             aria-label="Mobile"
-            className="mx-auto flex w-full max-w-page flex-col gap-1 px-4 py-4 sm:px-6"
+            className="max-w-page mx-auto flex w-full flex-col gap-1 px-4 py-4 sm:px-6"
           >
             {marketingNav.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
                 onClick={() => setOpen(false)}
-                className="rounded-md px-3 py-2.5 text-body text-foreground transition-colors duration-150 hover:bg-muted focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none"
+                className="text-body text-foreground hover:bg-muted focus-visible:ring-ring/50 rounded-md px-3 py-2.5 transition-colors duration-150 focus-visible:ring-3 focus-visible:outline-none"
               >
                 {link.label}
               </Link>
             ))}
 
-            <div className="mt-2 flex flex-col gap-2 border-t border-border pt-4">
+            <div className="border-border mt-2 flex flex-col gap-2 border-t pt-4">
               <Link
                 href="/sign-in"
                 onClick={() => setOpen(false)}

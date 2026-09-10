@@ -103,7 +103,9 @@ export function validatePostInput(input: {
  * Unlike a post body, empty is refused: a comment with no text is not a
  * shorter contribution, it is a misclick.
  */
-export function validateCommentInput(input: { body: string }): ActivityFieldError[] {
+export function validateCommentInput(input: {
+  body: string
+}): ActivityFieldError[] {
   const body = normaliseBody(input.body)
 
   if (body.length === 0) {
@@ -376,8 +378,7 @@ export function describeActivity(
     ctaVariant: "default",
     ctaDisabled: false,
     accessibleCtaLabel: `Join ${activity.title}`,
-    status:
-      spotsLeft === 1 ? { label: "1 spot left", tone: "warning" } : null,
+    status: spotsLeft === 1 ? { label: "1 spot left", tone: "warning" } : null,
   }
 }
 
@@ -409,4 +410,3 @@ export function excerptOf(body: string, limit = 220): string {
   const lastSpace = cut.lastIndexOf(" ")
   return `${(lastSpace > limit * 0.6 ? cut.slice(0, lastSpace) : cut).trimEnd()}\u2026`
 }
-

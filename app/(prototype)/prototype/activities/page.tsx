@@ -14,7 +14,11 @@ import {
 import { activityKindLabel, liveActivities } from "@/lib/domain/activity"
 import { bucketFor, bucketLabel } from "@/lib/domain/time-buckets"
 import type { ActivityKind } from "@/lib/domain/types"
-import { activities, expiredActivity, prototypeNow } from "@/lib/prototype/fixtures"
+import {
+  activities,
+  expiredActivity,
+  prototypeNow,
+} from "@/lib/prototype/fixtures"
 
 /**
  * "Find people" - the lightest thing anyone can post.
@@ -84,7 +88,7 @@ export default function PrototypeActivitiesScreen() {
               id="activity-title"
               type="text"
               defaultValue="Badminton doubles at 6"
-              className="h-10 w-full rounded-lg border border-input bg-background px-3 text-body-sm focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none"
+              className="border-input bg-background text-body-sm focus-visible:ring-ring/50 h-10 w-full rounded-lg border px-3 focus-visible:ring-3 focus-visible:outline-none"
             />
           </div>
 
@@ -100,7 +104,7 @@ export default function PrototypeActivitiesScreen() {
                 id="activity-when"
                 type="text"
                 defaultValue="Today, 6:00 pm"
-                className="h-10 w-full rounded-lg border border-input bg-background px-3 text-body-sm focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none"
+                className="border-input bg-background text-body-sm focus-visible:ring-ring/50 h-10 w-full rounded-lg border px-3 focus-visible:ring-3 focus-visible:outline-none"
               />
             </div>
             <div className="flex flex-col gap-2">
@@ -114,7 +118,7 @@ export default function PrototypeActivitiesScreen() {
                 id="activity-where"
                 type="text"
                 defaultValue="Sports Complex, Court 3"
-                className="h-10 w-full rounded-lg border border-input bg-background px-3 text-body-sm focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none"
+                className="border-input bg-background text-body-sm focus-visible:ring-ring/50 h-10 w-full rounded-lg border px-3 focus-visible:ring-3 focus-visible:outline-none"
               />
             </div>
             <div className="flex flex-col gap-2">
@@ -128,7 +132,7 @@ export default function PrototypeActivitiesScreen() {
                 id="activity-spots"
                 type="number"
                 defaultValue={2}
-                className="h-10 w-full rounded-lg border border-input bg-background px-3 text-body-sm focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none"
+                className="border-input bg-background text-body-sm focus-visible:ring-ring/50 h-10 w-full rounded-lg border px-3 focus-visible:ring-3 focus-visible:outline-none"
                 data-numeric
               />
             </div>

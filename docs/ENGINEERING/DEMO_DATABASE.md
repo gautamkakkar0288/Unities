@@ -45,11 +45,11 @@ it is a Postgres data directory.
 One function, `createDatabase` in `lib/db/driver.ts`. Every service imports `db`
 from `lib/db` and none of them can tell which engine answered.
 
-| Situation | Mode |
-| --- | --- |
-| No `DATABASE_URL` | demo |
-| `DATABASE_URL` set | postgres |
-| `CIRQLES_DB=demo` | demo, even with `DATABASE_URL` set |
+| Situation             | Mode                                              |
+| --------------------- | ------------------------------------------------- |
+| No `DATABASE_URL`     | demo                                              |
+| `DATABASE_URL` set    | postgres                                          |
+| `CIRQLES_DB=demo`     | demo, even with `DATABASE_URL` set                |
 | `CIRQLES_DB=postgres` | postgres, and errors if `DATABASE_URL` is missing |
 
 Demo is the default deliberately. A fresh clone with no `.env.local` should
@@ -64,12 +64,12 @@ use it.
 
 ## Commands
 
-| Command | What it does |
-| --- | --- |
-| `npm run db:setup` | Create the demo database if absent, migrate, seed. Safe to re-run. |
-| `npm run db:reset` | Delete `data/cirqles-demo/`, then do the above. Destructive. |
-| `npm run db:seed` | Seed only. Idempotent - every insert is `onConflictDoNothing`. |
-| `npm run db:migrate` | Apply migrations to a real Postgres. Unchanged. |
+| Command              | What it does                                                       |
+| -------------------- | ------------------------------------------------------------------ |
+| `npm run db:setup`   | Create the demo database if absent, migrate, seed. Safe to re-run. |
+| `npm run db:reset`   | Delete `data/cirqles-demo/`, then do the above. Destructive.       |
+| `npm run db:seed`    | Seed only. Idempotent - every insert is `onConflictDoNothing`.     |
+| `npm run db:migrate` | Apply migrations to a real Postgres. Unchanged.                    |
 
 `db:setup` is not destructive and `db:reset` is. That distinction is the whole
 reason there are two commands: `db:reset` is the one to run five minutes before

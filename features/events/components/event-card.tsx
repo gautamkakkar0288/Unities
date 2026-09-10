@@ -50,7 +50,7 @@ export function EventCard({
       <CardHeader className="gap-3">
         <div className="flex items-start gap-4">
           <div
-            className="flex w-14 shrink-0 flex-col items-center rounded-lg border border-primary-border bg-primary-subtle px-2 py-1.5 text-primary"
+            className="border-primary-border bg-primary-subtle text-primary flex w-14 shrink-0 flex-col items-center rounded-lg border px-2 py-1.5"
             aria-hidden="true"
           >
             <span className="text-caption font-medium uppercase">
@@ -65,7 +65,7 @@ export function EventCard({
             <CardTitle className="text-h4">
               <Link
                 href={href}
-                className="rounded-sm hover:text-primary focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none"
+                className="hover:text-primary focus-visible:ring-ring/50 rounded-sm focus-visible:ring-3 focus-visible:outline-none"
               >
                 {event.title}
               </Link>
@@ -89,7 +89,7 @@ export function EventCard({
       </CardHeader>
 
       <CardContent className="mt-auto">
-        <dl className="flex flex-col gap-1.5 text-caption text-muted-foreground">
+        <dl className="text-caption text-muted-foreground flex flex-col gap-1.5">
           <div className="flex items-center gap-1.5">
             <dt className="contents">
               <Clock aria-hidden="true" className="size-3.5" />

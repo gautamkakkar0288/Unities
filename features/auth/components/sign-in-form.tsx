@@ -48,7 +48,12 @@ export function SignInForm() {
     >
       <Field id="email" label="Email" error={errors.email?.message} required>
         {(field) => (
-          <Input type="email" autoComplete="email" {...field} {...register("email")} />
+          <Input
+            type="email"
+            autoComplete="email"
+            {...field}
+            {...register("email")}
+          />
         )}
       </Field>
 

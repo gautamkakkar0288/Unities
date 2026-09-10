@@ -99,7 +99,11 @@ export default function PrototypeHomeScreen() {
         title="Trending this week"
         description="Ranked by how fast seats are going, how soon it is, and how many people signed up - not by who shouted loudest."
         action={
-          <Button variant="ghost" size="sm" render={<Link href="/prototype/events" />}>
+          <Button
+            variant="ghost"
+            size="sm"
+            render={<Link href="/prototype/events" />}
+          >
             All events
             <ArrowRight aria-hidden="true" />
           </Button>
@@ -167,7 +171,11 @@ export default function PrototypeHomeScreen() {
         title="Students looking for one more"
         description="Not events. Someone needs a doubles partner, a teammate, or a study group, and it expires when it happens."
         action={
-          <Button variant="outline" size="sm" render={<Link href="/prototype/activities" />}>
+          <Button
+            variant="outline"
+            size="sm"
+            render={<Link href="/prototype/activities" />}
+          >
             <Plus aria-hidden="true" />
             Post one
           </Button>
@@ -175,7 +183,11 @@ export default function PrototypeHomeScreen() {
       >
         <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
           {openActivities.map((activity) => (
-            <ActivityCard key={activity.id} activity={activity} now={prototypeNow} />
+            <ActivityCard
+              key={activity.id}
+              activity={activity}
+              now={prototypeNow}
+            />
           ))}
         </div>
       </Section>
@@ -184,7 +196,11 @@ export default function PrototypeHomeScreen() {
         eyebrow="Your communities"
         title="Where you belong"
         action={
-          <Button variant="ghost" size="sm" render={<Link href="/prototype/communities" />}>
+          <Button
+            variant="ghost"
+            size="sm"
+            render={<Link href="/prototype/communities" />}
+          >
             Directory
             <ArrowRight aria-hidden="true" />
           </Button>
@@ -211,12 +227,12 @@ export default function PrototypeHomeScreen() {
           <p className="text-label text-muted-foreground">Catch up</p>
           <h2 className="text-h3">From your communities</h2>
           <p className="max-w-readable text-body-sm text-muted-foreground">
-            The last few posts from communities you joined. Not infinite, and not
-            ranked - just what you missed.
+            The last few posts from communities you joined. Not infinite, and
+            not ranked - just what you missed.
           </p>
         </div>
 
-        <div className="flex max-w-readable flex-col gap-4">
+        <div className="max-w-readable flex flex-col gap-4">
           {feedPosts.slice(0, 4).map((post) => (
             <PostCard
               key={post.id}
@@ -229,7 +245,9 @@ export default function PrototypeHomeScreen() {
 
           <Card>
             <CardContent className="flex flex-col items-start gap-2 py-6">
-              <p className="text-body-sm font-medium">That is everything new.</p>
+              <p className="text-body-sm font-medium">
+                That is everything new.
+              </p>
               <p className="text-body-sm text-muted-foreground">
                 The feed ends on purpose. If you are here to decide what to do
                 this week, the top of this page is the part that helps.

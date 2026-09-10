@@ -73,11 +73,16 @@ describe("JoinButton", () => {
   it("accepts an invitation through join, not leave", async () => {
     render(
       <JoinButton
-        community={community({ joinPolicy: "INVITE", viewerMembership: "INVITED" })}
+        community={community({
+          joinPolicy: "INVITE",
+          viewerMembership: "INVITED",
+        })}
       />,
     )
 
-    fireEvent.click(screen.getByRole("button", { name: /Accept your invitation/ }))
+    fireEvent.click(
+      screen.getByRole("button", { name: /Accept your invitation/ }),
+    )
 
     await vi.waitFor(() => {
       expect(joinCommunityAction).toHaveBeenCalledWith(target)
@@ -99,9 +104,13 @@ describe("JoinButton", () => {
   })
 
   it("withdraws a request instead of leaving something never joined", async () => {
-    render(<JoinButton community={community({ viewerMembership: "PENDING" })} />)
+    render(
+      <JoinButton community={community({ viewerMembership: "PENDING" })} />,
+    )
 
-    fireEvent.click(screen.getByRole("button", { name: /Withdraw your request/ }))
+    fireEvent.click(
+      screen.getByRole("button", { name: /Withdraw your request/ }),
+    )
 
     await vi.waitFor(() => {
       expect(leaveCommunityAction).toHaveBeenCalledWith(target)
@@ -114,7 +123,8 @@ describe("JoinButton", () => {
     leaveCommunityAction.mockResolvedValue({
       ok: false,
       code: "CONFLICT",
-      message: "You are the only owner. Make someone else an owner before you leave.",
+      message:
+        "You are the only owner. Make someone else an owner before you leave.",
     })
 
     render(<JoinButton community={community({ viewerMembership: "OWNER" })} />)
@@ -141,7 +151,8 @@ describe("JoinButton", () => {
     leaveCommunityAction.mockResolvedValueOnce({
       ok: false,
       code: "CONFLICT",
-      message: "You are the only owner. Make someone else an owner before you leave.",
+      message:
+        "You are the only owner. Make someone else an owner before you leave.",
     })
 
     render(<JoinButton community={community({ viewerMembership: "MEMBER" })} />)

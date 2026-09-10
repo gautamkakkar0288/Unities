@@ -35,14 +35,16 @@ export function UserCard({ name, email, role }: UserCardProps) {
       <Avatar name={name} size="sm" />
 
       <div className="min-w-0 flex-1">
-        <p className="truncate text-body-sm font-medium">{name}</p>
+        <p className="text-body-sm truncate font-medium">{name}</p>
         {validRole ? (
           <Badge variant={roleBadgeVariant[role]} className="mt-1">
             {roleLabels[role]}
           </Badge>
         ) : (
           email && (
-            <p className="truncate text-caption text-muted-foreground">{email}</p>
+            <p className="text-caption text-muted-foreground truncate">
+              {email}
+            </p>
           )
         )}
       </div>
@@ -51,7 +53,7 @@ export function UserCard({ name, email, role }: UserCardProps) {
         <button
           type="submit"
           // 44x44 minimum touch target per docs/UX/02.
-          className="flex size-11 items-center justify-center rounded-lg text-muted-foreground transition-colors duration-150 hover:bg-muted hover:text-foreground focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none lg:size-9"
+          className="text-muted-foreground hover:bg-muted hover:text-foreground focus-visible:ring-ring/50 flex size-11 items-center justify-center rounded-lg transition-colors duration-150 focus-visible:ring-3 focus-visible:outline-none lg:size-9"
           aria-label="Sign out"
         >
           <LogOut className="size-4" aria-hidden="true" />

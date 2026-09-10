@@ -16,7 +16,7 @@ export function FeatureGrid() {
           <li key={title} className="flex">
             <Card className="gap-4">
               <CardHeader className="gap-3">
-                <span className="flex size-10 items-center justify-center rounded-lg bg-primary-subtle text-primary">
+                <span className="bg-primary-subtle text-primary flex size-10 items-center justify-center rounded-lg">
                   <Icon className="size-5" aria-hidden="true" />
                 </span>
                 <CardTitle>{title}</CardTitle>

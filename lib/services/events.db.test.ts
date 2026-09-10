@@ -435,7 +435,11 @@ describe.skipIf(!hasDatabase)("events service", () => {
     })
 
     it("still tells a registered student they are registered", async () => {
-      await registerForEvent({ userId: STUDENT_A, eventId: UNLIMITED, now: NOW })
+      await registerForEvent({
+        userId: STUDENT_A,
+        eventId: UNLIMITED,
+        now: NOW,
+      })
 
       const event = await getEventBySlug({
         slug: "ev-unlimited",
@@ -494,7 +498,11 @@ describe.skipIf(!hasDatabase)("events service", () => {
 
   describe("cancelEvent", () => {
     it("lets an owner call it off and keeps the registrations", async () => {
-      await registerForEvent({ userId: STUDENT_A, eventId: UNLIMITED, now: NOW })
+      await registerForEvent({
+        userId: STUDENT_A,
+        eventId: UNLIMITED,
+        now: NOW,
+      })
 
       const result = await cancelEvent({ actorId: OWNER, eventId: UNLIMITED })
       expect(result.ok).toBe(true)
@@ -527,7 +535,11 @@ describe.skipIf(!hasDatabase)("events service", () => {
 
   describe("listRegistrations", () => {
     it("shows the owner who is coming, without any email addresses", async () => {
-      await registerForEvent({ userId: STUDENT_A, eventId: UNLIMITED, now: NOW })
+      await registerForEvent({
+        userId: STUDENT_A,
+        eventId: UNLIMITED,
+        now: NOW,
+      })
 
       const result = await listRegistrations({
         organiserId: OWNER,

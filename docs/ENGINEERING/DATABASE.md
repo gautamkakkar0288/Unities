@@ -16,14 +16,13 @@
 
 ## 1. Status
 
-| Tables | Landed in | Present on |
-| --- | --- | --- |
-| `places`, `users`, `accounts`, `sessions`, `verification_tokens`, `interests`, `user_interests`, `interest_suggestions`, `interest_suggestion_supporters`, `communities`, `memberships`, `community_proposals`, `community_proposal_supporters` | Phase 0–1 | `main` |
-| `verification_requests`, `audit_log` | Phase 2.3 (PR #18) | `main` |
-| `events`, `event_registrations` | Phase 3.1 (PR #19) | `main` |
+| Tables                                                                                                                                                                                                                                          | Landed in          | Present on |
+| ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------ | ---------- |
+| `places`, `users`, `accounts`, `sessions`, `verification_tokens`, `interests`, `user_interests`, `interest_suggestions`, `interest_suggestion_supporters`, `communities`, `memberships`, `community_proposals`, `community_proposal_supporters` | Phase 0–1          | `main`     |
+| `verification_requests`, `audit_log`                                                                                                                                                                                                            | Phase 2.3 (PR #18) | `main`     |
+| `events`, `event_registrations`                                                                                                                                                                                                                 | Phase 3.1 (PR #19) | `main`     |
 
 All migrations have been merged. `main` is at **Phase 0–3 complete**.
-
 
 ---
 
@@ -59,16 +58,16 @@ All migrations have been merged. `main` is at **Phase 0–3 complete**.
 Universities and cities in one table. Replaces the never-built `universities`
 table.
 
-| Column | Type | Notes |
-| --- | --- | --- |
-| `id` | text PK | uuid |
-| `kind` | text | `UNIVERSITY` \| `CITY` |
-| `name` | text | |
-| `slug` | text | unique |
-| `status` | text | `ACTIVE` \| `PENDING` \| `SUSPENDED`, default `PENDING` |
+| Column            | Type               | Notes                                                     |
+| ----------------- | ------------------ | --------------------------------------------------------- |
+| `id`              | text PK            | uuid                                                      |
+| `kind`            | text               | `UNIVERSITY` \| `CITY`                                    |
+| `name`            | text               |                                                           |
+| `slug`            | text               | unique                                                    |
+| `status`          | text               | `ACTIVE` \| `PENDING` \| `SUSPENDED`, default `PENDING`   |
 | `parent_place_id` | text → `places.id` | self-referencing, `set null`. A campus sits inside a city |
-| `email_domain` | text | e.g. `chitkara.edu.in`. Null for cities |
-| `created_at` | timestamp | |
+| `email_domain`    | text               | e.g. `chitkara.edu.in`. Null for cities                   |
+| `created_at`      | timestamp          |                                                           |
 
 Indexes: `places_kind_idx`, `places_parent_idx`.
 
@@ -79,17 +78,17 @@ Tricity → interests (D28) walks one edge instead of consulting a hardcoded map
 
 Auth.js adapter-compatible, extended with role and campus.
 
-| Column | Type | Notes |
-| --- | --- | --- |
-| `id` | text PK | uuid |
-| `name` | text | nullable |
-| `email` | text | **not null, unique** |
-| `email_verified` | timestamp | null until the university email is confirmed |
-| `image` | text | nullable |
-| `password_hash` | text | nullable — null for future OAuth-only accounts |
-| `role` | text | `STUDENT` \| `ORGANIZER` \| `COMMUNITY_MODERATOR` \| `UNIVERSITY_ADMIN` \| `PLATFORM_ADMIN`, default `STUDENT` |
-| `university_id` | text → `places.id` | `set null` |
-| `created_at` | timestamp | |
+| Column           | Type               | Notes                                                                                                          |
+| ---------------- | ------------------ | -------------------------------------------------------------------------------------------------------------- |
+| `id`             | text PK            | uuid                                                                                                           |
+| `name`           | text               | nullable                                                                                                       |
+| `email`          | text               | **not null, unique**                                                                                           |
+| `email_verified` | timestamp          | null until the university email is confirmed                                                                   |
+| `image`          | text               | nullable                                                                                                       |
+| `password_hash`  | text               | nullable — null for future OAuth-only accounts                                                                 |
+| `role`           | text               | `STUDENT` \| `ORGANIZER` \| `COMMUNITY_MODERATOR` \| `UNIVERSITY_ADMIN` \| `PLATFORM_ADMIN`, default `STUDENT` |
+| `university_id`  | text → `places.id` | `set null`                                                                                                     |
+| `created_at`     | timestamp          |                                                                                                                |
 
 `university_id` points at `places`, and the application only ever writes a place
 of kind `UNIVERSITY` there. Postgres cannot express that across a foreign key
@@ -158,23 +157,23 @@ by refreshing.
 
 ### `communities`
 
-| Column | Type | Notes |
-| --- | --- | --- |
-| `id` | text PK | uuid |
-| `slug` | text | unique |
-| `name` | text | |
-| `tagline`, `about` | text | default `""` |
-| `guidelines` | jsonb `string[]` | default `[]`. Always read whole, never queried |
-| `kind` | text | `OFFICIAL` \| `INTEREST` \| `STUDENT` (D26) |
-| `scope` | text | `UNIVERSITY` \| `CITY` \| `INTEREST` \| `GLOBAL`, default `UNIVERSITY` |
-| `place_id` | text → `places.id` | `set null`. Null for interest and global |
-| `interest_id` | text → `interests.id` | **not null**, `restrict` |
-| `join_policy` | text | `OPEN` \| `APPROVAL` \| `INVITE`, default `OPEN` (D29) |
-| `verification` | text | `UNVERIFIED` \| `PENDING` \| `VERIFIED`, default `UNVERIFIED` |
-| `member_count` | integer | denormalised, transactional |
-| `created_by_id` | text → `users.id` | `set null` |
-| `created_at` | timestamp | |
-| `archived_at` | timestamp | archived rather than deleted: posts and events outlive the community |
+| Column             | Type                  | Notes                                                                  |
+| ------------------ | --------------------- | ---------------------------------------------------------------------- |
+| `id`               | text PK               | uuid                                                                   |
+| `slug`             | text                  | unique                                                                 |
+| `name`             | text                  |                                                                        |
+| `tagline`, `about` | text                  | default `""`                                                           |
+| `guidelines`       | jsonb `string[]`      | default `[]`. Always read whole, never queried                         |
+| `kind`             | text                  | `OFFICIAL` \| `INTEREST` \| `STUDENT` (D26)                            |
+| `scope`            | text                  | `UNIVERSITY` \| `CITY` \| `INTEREST` \| `GLOBAL`, default `UNIVERSITY` |
+| `place_id`         | text → `places.id`    | `set null`. Null for interest and global                               |
+| `interest_id`      | text → `interests.id` | **not null**, `restrict`                                               |
+| `join_policy`      | text                  | `OPEN` \| `APPROVAL` \| `INVITE`, default `OPEN` (D29)                 |
+| `verification`     | text                  | `UNVERIFIED` \| `PENDING` \| `VERIFIED`, default `UNVERIFIED`          |
+| `member_count`     | integer               | denormalised, transactional                                            |
+| `created_by_id`    | text → `users.id`     | `set null`                                                             |
+| `created_at`       | timestamp             |                                                                        |
+| `archived_at`      | timestamp             | archived rather than deleted: posts and events outlive the community   |
 
 Indexes: `communities_scope_place_idx`, `communities_interest_idx`,
 `communities_kind_idx`.
@@ -188,16 +187,16 @@ belong to whoever typed it first.
 
 ### `memberships`
 
-| Column | Type | Notes |
-| --- | --- | --- |
-| `id` | text PK | |
-| `community_id` | text → `communities.id` | cascade |
-| `user_id` | text → `users.id` | cascade |
-| `state` | text | `INVITED` \| `PENDING` \| `MEMBER` \| `MODERATOR` \| `OWNER`, default `MEMBER` |
-| `requested_at` | timestamp | set for `PENDING`, kept afterwards |
-| `joined_at` | timestamp | null while pending or invited |
-| `invited_by_id`, `decided_by_id` | text → `users.id` | `set null` |
-| `decided_at`, `created_at` | timestamp | |
+| Column                           | Type                    | Notes                                                                          |
+| -------------------------------- | ----------------------- | ------------------------------------------------------------------------------ |
+| `id`                             | text PK                 |                                                                                |
+| `community_id`                   | text → `communities.id` | cascade                                                                        |
+| `user_id`                        | text → `users.id`       | cascade                                                                        |
+| `state`                          | text                    | `INVITED` \| `PENDING` \| `MEMBER` \| `MODERATOR` \| `OWNER`, default `MEMBER` |
+| `requested_at`                   | timestamp               | set for `PENDING`, kept afterwards                                             |
+| `joined_at`                      | timestamp               | null while pending or invited                                                  |
+| `invited_by_id`, `decided_by_id` | text → `users.id`       | `set null`                                                                     |
+| `decided_at`, `created_at`       | timestamp               |                                                                                |
 
 Constraints: unique `memberships_community_user_idx` on `(community_id,
 user_id)` — one row per person per community, in any state.
@@ -217,7 +216,7 @@ This table, not `users.role`, is what grants authority over a single community.
 Indexes: `community_proposals_status_idx` on `(status, created_at)`,
 `community_proposals_normalised_idx`.
 
-A proposal is not a draft community. Approving one *creates* a community, which
+A proposal is not a draft community. Approving one _creates_ a community, which
 is why `created_community_id` is a separate nullable reference rather than the
 proposal row growing into the community row. `MERGED` is distinct from
 `REJECTED`: "this already exists as Football" and "no" are different answers.
@@ -232,16 +231,16 @@ PK `(proposal_id, user_id)`. Demand, not a vote — the reviewer decides.
 
 ### `verification_requests`
 
-| Column | Type | Notes |
-| --- | --- | --- |
-| `id` | text PK | |
-| `community_id` | text → `communities.id` | cascade |
-| `requested_by_id` | text → `users.id` | `set null` — the decision outlives the requester |
-| `evidence` | text | **not null**. A reviewer needs something to judge |
-| `status` | text | `PENDING` \| `APPROVED` \| `REJECTED` |
-| `reviewed_by_id` | text → `users.id` | `set null` |
-| `reviewer_note` | text | a rejection with no reason is one nobody can act on |
-| `created_at`, `decided_at` | timestamp | |
+| Column                     | Type                    | Notes                                               |
+| -------------------------- | ----------------------- | --------------------------------------------------- |
+| `id`                       | text PK                 |                                                     |
+| `community_id`             | text → `communities.id` | cascade                                             |
+| `requested_by_id`          | text → `users.id`       | `set null` — the decision outlives the requester    |
+| `evidence`                 | text                    | **not null**. A reviewer needs something to judge   |
+| `status`                   | text                    | `PENDING` \| `APPROVED` \| `REJECTED`               |
+| `reviewed_by_id`           | text → `users.id`       | `set null`                                          |
+| `reviewer_note`            | text                    | a rejection with no reason is one nobody can act on |
+| `created_at`, `decided_at` | timestamp               |                                                     |
 
 Constraints: **partial** unique index `verification_requests_pending_idx` on
 `community_id` `WHERE status = 'PENDING'`. One open request per community,
@@ -253,20 +252,20 @@ again.
 Indexes: `verification_requests_status_idx` on `(status, created_at)` for the
 reviewer queue, `verification_requests_community_idx`.
 
-The verified *state* is not stored here. It lives on
+The verified _state_ is not stored here. It lives on
 `communities.verification`.
 
 ### `audit_log`
 
-| Column | Type | Notes |
-| --- | --- | --- |
-| `id` | text PK | |
-| `actor_id` | text → `users.id` | `set null` — deleting an account is not a way to erase what it did |
-| `action` | text | dotted name such as `verification.approved`. Deliberately not an enum; the vocabulary is typed in `lib/domain/audit.ts` so adding an action is not a migration |
-| `target_kind` | text | `POST` \| `COMMENT` \| `EVENT` \| `COMMUNITY` \| `ACTIVITY` \| `USER` |
-| `target_id` | text | **not a foreign key** — the target may be any of six tables |
-| `summary` | text | the sentence a human reads, written at the time of the action |
-| `created_at` | timestamp | |
+| Column        | Type              | Notes                                                                                                                                                          |
+| ------------- | ----------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `id`          | text PK           |                                                                                                                                                                |
+| `actor_id`    | text → `users.id` | `set null` — deleting an account is not a way to erase what it did                                                                                             |
+| `action`      | text              | dotted name such as `verification.approved`. Deliberately not an enum; the vocabulary is typed in `lib/domain/audit.ts` so adding an action is not a migration |
+| `target_kind` | text              | `POST` \| `COMMENT` \| `EVENT` \| `COMMUNITY` \| `ACTIVITY` \| `USER`                                                                                          |
+| `target_id`   | text              | **not a foreign key** — the target may be any of six tables                                                                                                    |
+| `summary`     | text              | the sentence a human reads, written at the time of the action                                                                                                  |
+| `created_at`  | timestamp         |                                                                                                                                                                |
 
 Indexes: `audit_log_created_idx`, `audit_log_target_idx` on `(target_kind,
 target_id)`, `audit_log_actor_idx`.
@@ -281,26 +280,26 @@ the gaps are silent.
 
 ### `events`
 
-| Column | Type | Notes |
-| --- | --- | --- |
-| `id` | text PK | uuid |
-| `slug` | text | unique |
-| `title` | text | |
-| `description` | text | default `""` |
-| `kind` | text | `WORKSHOP` \| `TALK` \| `TOURNAMENT` \| `PERFORMANCE` \| `TRIP` \| `MEETUP` \| `DRIVE` |
-| `mode` | text | `IN_PERSON` \| `ONLINE` \| `HYBRID`, default `IN_PERSON` |
-| `venue` | text | free text, default `""`. A room number is not worth a `places` row |
-| `status` | text | `DRAFT` \| `PUBLISHED` \| `CANCELLED`, default `DRAFT` |
-| `agenda` | jsonb `Array<{at, title}>` | default `[]` |
-| `starts_at`, `ends_at` | timestamp | **not null** |
-| `registration_closes_at` | timestamp | **null means "closes when the event starts"** |
-| `capacity` | integer | **null means unlimited** |
-| `registered_count` | integer | denormalised, **confirmed seats only** — never waitlist entries |
-| `fee_in_paise` | integer | null for free. Recorded for display; **nothing collects it** |
-| `community_id` | text → `communities.id` | **not null**, cascade |
-| `interest_id` | text → `interests.id` | **not null**, `restrict` |
-| `created_by_id` | text → `users.id` | `set null` |
-| `created_at`, `cancelled_at` | timestamp | |
+| Column                       | Type                       | Notes                                                                                  |
+| ---------------------------- | -------------------------- | -------------------------------------------------------------------------------------- |
+| `id`                         | text PK                    | uuid                                                                                   |
+| `slug`                       | text                       | unique                                                                                 |
+| `title`                      | text                       |                                                                                        |
+| `description`                | text                       | default `""`                                                                           |
+| `kind`                       | text                       | `WORKSHOP` \| `TALK` \| `TOURNAMENT` \| `PERFORMANCE` \| `TRIP` \| `MEETUP` \| `DRIVE` |
+| `mode`                       | text                       | `IN_PERSON` \| `ONLINE` \| `HYBRID`, default `IN_PERSON`                               |
+| `venue`                      | text                       | free text, default `""`. A room number is not worth a `places` row                     |
+| `status`                     | text                       | `DRAFT` \| `PUBLISHED` \| `CANCELLED`, default `DRAFT`                                 |
+| `agenda`                     | jsonb `Array<{at, title}>` | default `[]`                                                                           |
+| `starts_at`, `ends_at`       | timestamp                  | **not null**                                                                           |
+| `registration_closes_at`     | timestamp                  | **null means "closes when the event starts"**                                          |
+| `capacity`                   | integer                    | **null means unlimited**                                                               |
+| `registered_count`           | integer                    | denormalised, **confirmed seats only** — never waitlist entries                        |
+| `fee_in_paise`               | integer                    | null for free. Recorded for display; **nothing collects it**                           |
+| `community_id`               | text → `communities.id`    | **not null**, cascade                                                                  |
+| `interest_id`                | text → `interests.id`      | **not null**, `restrict`                                                               |
+| `created_by_id`              | text → `users.id`          | `set null`                                                                             |
+| `created_at`, `cancelled_at` | timestamp                  |                                                                                        |
 
 Indexes: `events_status_starts_idx` (the discovery query: published, soonest
 first), `events_community_starts_idx`, `events_interest_idx`.
@@ -317,15 +316,15 @@ anyone.
 
 ### `event_registrations`
 
-| Column | Type | Notes |
-| --- | --- | --- |
-| `id` | text PK | |
-| `event_id` | text → `events.id` | cascade |
-| `user_id` | text → `users.id` | cascade |
-| `state` | text | `REGISTERED` \| `WAITLISTED` \| `CANCELLED`, default `REGISTERED` |
-| `created_at` | timestamp | **the waitlist ordering key — deliberately survives promotion** |
-| `promoted_at` | timestamp | set when a waitlist entry became a confirmed seat |
-| `cancelled_at` | timestamp | |
+| Column         | Type               | Notes                                                             |
+| -------------- | ------------------ | ----------------------------------------------------------------- |
+| `id`           | text PK            |                                                                   |
+| `event_id`     | text → `events.id` | cascade                                                           |
+| `user_id`      | text → `users.id`  | cascade                                                           |
+| `state`        | text               | `REGISTERED` \| `WAITLISTED` \| `CANCELLED`, default `REGISTERED` |
+| `created_at`   | timestamp          | **the waitlist ordering key — deliberately survives promotion**   |
+| `promoted_at`  | timestamp          | set when a waitlist entry became a confirmed seat                 |
+| `cancelled_at` | timestamp          |                                                                   |
 
 Constraints: unique `event_registrations_event_user_idx` on `(event_id,
 user_id)`. A student cannot be registered and waitlisted at once, and
@@ -339,12 +338,12 @@ waitlist entry to promote. `event_registrations_user_idx` on `(user_id, state)`.
 **Stored vs computed states.** The domain's `RegistrationState` has four values
 and only two are storable:
 
-| Domain value | Where it comes from |
-| --- | --- |
-| `NONE` | absence of a row |
-| `REGISTERED` | stored |
-| `WAITLISTED` | stored |
-| `CLOSED` | computed from the clock in `describeRegistration`, never stored |
+| Domain value | Where it comes from                                             |
+| ------------ | --------------------------------------------------------------- |
+| `NONE`       | absence of a row                                                |
+| `REGISTERED` | stored                                                          |
+| `WAITLISTED` | stored                                                          |
+| `CLOSED`     | computed from the clock in `describeRegistration`, never stored |
 
 `CANCELLED` runs the other way: it exists in the table but not in the domain
 union, because a student who drops out and signs up again must not collide with
@@ -363,19 +362,19 @@ These appeared in the original specification and were deliberately not built.
 They are recorded so the reasoning is not lost and so nobody re-adds them by
 reading an old draft.
 
-| Proposed | What happened instead | Why |
-| --- | --- | --- |
-| `University` entity | `places` with `kind = 'UNIVERSITY'` | A city is a discovery scope in exactly the same way a campus is. Two tables would make every scope-aware query a union |
+| Proposed                       | What happened instead                            | Why                                                                                                                                                 |
+| ------------------------------ | ------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `University` entity            | `places` with `kind = 'UNIVERSITY'`              | A city is a discovery scope in exactly the same way a campus is. Two tables would make every scope-aware query a union                              |
 | `Role` + `user_roles` junction | `users.role` single column + `memberships.state` | Nobody needs two platform roles at once. Community-level authority is already a membership state, so the junction table would model authority twice |
-| `Profile` table | columns on `users` | Splitting identity from presentation buys a join and nothing else at this size. `PersonSummary.username` / `.programme` remain unpersisted |
-| `Tag` + `EntityTag` | `interests` + `interest_id` foreign keys | A curated taxonomy is the point (D27). Free-form tags are the failure mode it was designed to avoid |
-| `Opportunity` | not built | Phase 4+ |
-| `Post` | not built | Phase 4.2 |
-| `Notification` | not built | Phase 4.6 |
-| `Thread` / `Message` | not built | Explicitly out of scope until the core loop works |
-| `Report` / `ModerationAction` | `audit_log` | Reports arrive in Phase 5 and will point at `auditTargetKinds`. A second moderation vocabulary would disagree with the first within a month |
-| `SavedItem` | not built | Phase 4.3 |
-| Postgres `enum` types | `text` + TypeScript unions + `parity.test.ts` | Adding a value must not require a migration |
+| `Profile` table                | columns on `users`                               | Splitting identity from presentation buys a join and nothing else at this size. `PersonSummary.username` / `.programme` remain unpersisted          |
+| `Tag` + `EntityTag`            | `interests` + `interest_id` foreign keys         | A curated taxonomy is the point (D27). Free-form tags are the failure mode it was designed to avoid                                                 |
+| `Opportunity`                  | not built                                        | Phase 4+                                                                                                                                            |
+| `Post`                         | not built                                        | Phase 4.2                                                                                                                                           |
+| `Notification`                 | not built                                        | Phase 4.6                                                                                                                                           |
+| `Thread` / `Message`           | not built                                        | Explicitly out of scope until the core loop works                                                                                                   |
+| `Report` / `ModerationAction`  | `audit_log`                                      | Reports arrive in Phase 5 and will point at `auditTargetKinds`. A second moderation vocabulary would disagree with the first within a month         |
+| `SavedItem`                    | not built                                        | Phase 4.3                                                                                                                                           |
+| Postgres `enum` types          | `text` + TypeScript unions + `parity.test.ts`    | Adding a value must not require a migration                                                                                                         |
 
 ---
 
@@ -400,11 +399,11 @@ snapshot JSON alongside it even less so.
 
 Migration order:
 
-| # | Contents |
-| --- | --- |
-| `0000_certain_living_lightning` | everything through Phase 1 |
-| `0001` | `verification_requests`, `audit_log` (PR #18) |
-| `0002` | `events`, `event_registrations` (PR #19) |
+| #                               | Contents                                      |
+| ------------------------------- | --------------------------------------------- |
+| `0000_certain_living_lightning` | everything through Phase 1                    |
+| `0001`                          | `verification_requests`, `audit_log` (PR #18) |
+| `0002`                          | `events`, `event_registrations` (PR #19)      |
 
 Both PRs must not generate `0001` independently. #18 merges first, then
 `phase-3/events` merges `main` and regenerates as `0002`.

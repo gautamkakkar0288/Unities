@@ -7,10 +7,10 @@ export function FinalCta() {
   return (
     <section
       aria-labelledby="final-cta-heading"
-      className="border-t border-border bg-card py-20 sm:py-24"
+      className="border-border bg-card border-t py-20 sm:py-24"
     >
-      <div className="mx-auto flex w-full max-w-page flex-col items-center gap-6 px-4 text-center sm:px-6 lg:px-8 xl:px-12">
-        <h2 id="final-cta-heading" className="max-w-2xl text-h1">
+      <div className="max-w-page mx-auto flex w-full flex-col items-center gap-6 px-4 text-center sm:px-6 lg:px-8 xl:px-12">
+        <h2 id="final-cta-heading" className="text-h1 max-w-2xl">
           {finalCta.headline}
         </h2>
         <p className="max-w-readable text-body-lg text-muted-foreground">

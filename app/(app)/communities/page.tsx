@@ -92,7 +92,10 @@ export default async function CommunitiesPage({
               : "No communities in this scope yet. Try another one."
           }
           action={
-            <Link href="/communities" className={buttonVariants({ variant: "outline" })}>
+            <Link
+              href="/communities"
+              className={buttonVariants({ variant: "outline" })}
+            >
               Clear filters
             </Link>
           }
@@ -116,7 +119,7 @@ export default async function CommunitiesPage({
             <section key={group.scope} aria-labelledby={`scope-${group.scope}`}>
               <h2
                 id={`scope-${group.scope}`}
-                className="pb-3 text-h4 text-muted-foreground"
+                className="text-h4 text-muted-foreground pb-3"
               >
                 {communityScopeLabel[group.scope]}
               </h2>
@@ -138,8 +141,11 @@ export default async function CommunitiesPage({
       )}
 
       {results.length > 0 && (
-        <p className="pt-8 text-center text-body-sm text-muted-foreground">
-          <Compass className="mr-1 inline size-4 align-text-bottom" aria-hidden="true" />
+        <p className="text-body-sm text-muted-foreground pt-8 text-center">
+          <Compass
+            className="mr-1 inline size-4 align-text-bottom"
+            aria-hidden="true"
+          />
           Cannot find what you are looking for?{" "}
           <Link
             href="/communities/propose"

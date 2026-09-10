@@ -47,11 +47,7 @@ const kindIcon: Record<NotificationKind, LucideIcon> = {
  * each row navigates to the thing it is about. Unread state is carried by a
  * visible dot and by text, never by colour alone.
  */
-function NotificationRow({
-  notification,
-}: {
-  notification: AppNotification
-}) {
+function NotificationRow({ notification }: { notification: AppNotification }) {
   const Icon = kindIcon[notification.kind]
 
   return (
@@ -71,7 +67,7 @@ function NotificationRow({
           />
         ) : (
           <span
-            className="inline-flex size-8 shrink-0 items-center justify-center rounded-full bg-muted text-muted-foreground"
+            className="bg-muted text-muted-foreground inline-flex size-8 shrink-0 items-center justify-center rounded-full"
             aria-hidden="true"
           >
             <Icon className="size-4" />
@@ -84,14 +80,14 @@ function NotificationRow({
               {notificationKindLabel[notification.kind]}
             </Badge>
             {!notification.read && (
-              <span className="text-caption font-medium text-primary">
+              <span className="text-caption text-primary font-medium">
                 Unread
               </span>
             )}
           </div>
           <Link
             href={notification.href}
-            className="rounded-sm text-body-sm font-medium hover:text-primary focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none"
+            className="text-body-sm hover:text-primary focus-visible:ring-ring/50 rounded-sm font-medium focus-visible:ring-3 focus-visible:outline-none"
           >
             {notification.title}
           </Link>
@@ -137,7 +133,10 @@ export default function PrototypeNotificationsPage() {
           </Button>
         </div>
 
-        <section aria-labelledby="unread-heading" className="flex flex-col gap-3">
+        <section
+          aria-labelledby="unread-heading"
+          className="flex flex-col gap-3"
+        >
           <h2 id="unread-heading" className="text-h3">
             New
           </h2>
@@ -150,7 +149,10 @@ export default function PrototypeNotificationsPage() {
           </ul>
         </section>
 
-        <section aria-labelledby="earlier-heading" className="flex flex-col gap-3">
+        <section
+          aria-labelledby="earlier-heading"
+          className="flex flex-col gap-3"
+        >
           <h2 id="earlier-heading" className="text-h3">
             Earlier
           </h2>

@@ -51,7 +51,7 @@ export default function PrototypeOnboardingScreen() {
 
       <Card className="border-success-border bg-success-subtle">
         <CardContent className="flex flex-wrap items-center gap-3 py-4">
-          <ShieldCheck aria-hidden="true" className="size-5 text-success" />
+          <ShieldCheck aria-hidden="true" className="text-success size-5" />
           <div className="flex min-w-0 flex-col">
             <p className="text-body-sm font-medium">
               University email verified
@@ -76,10 +76,10 @@ export default function PrototypeOnboardingScreen() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="flex items-start gap-3 rounded-lg border border-border p-4">
+          <div className="border-border flex items-start gap-3 rounded-lg border p-4">
             <span
               aria-hidden="true"
-              className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-primary text-primary-foreground"
+              className="bg-primary text-primary-foreground flex size-10 shrink-0 items-center justify-center rounded-xl"
             >
               <Building2 className="size-5" />
             </span>
@@ -130,7 +130,7 @@ export default function PrototypeOnboardingScreen() {
                   <button
                     type="button"
                     aria-pressed={selected}
-                    className="inline-flex items-center gap-1.5 rounded-full border border-border px-3 py-1.5 text-body-sm transition-colors hover:bg-muted focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none aria-pressed:border-primary-border aria-pressed:bg-primary-subtle aria-pressed:text-primary"
+                    className="border-border text-body-sm hover:bg-muted focus-visible:ring-ring/50 aria-pressed:border-primary-border aria-pressed:bg-primary-subtle aria-pressed:text-primary inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 transition-colors focus-visible:ring-3 focus-visible:outline-none"
                   >
                     {selected && (
                       <Check aria-hidden="true" className="size-3.5" />
@@ -146,7 +146,7 @@ export default function PrototypeOnboardingScreen() {
             {selectedCount} of {minimumInterests} selected
           </p>
 
-          <div className="flex flex-col gap-2 rounded-lg border border-dashed border-border p-4">
+          <div className="border-border flex flex-col gap-2 rounded-lg border border-dashed p-4">
             <p className="text-body-sm font-medium">Not on the list?</p>
             <p className="text-body-sm text-muted-foreground">
               Tell us and it goes to review. Enough requests and it becomes an
@@ -157,7 +157,7 @@ export default function PrototypeOnboardingScreen() {
                 type="text"
                 aria-label="Suggest an interest"
                 placeholder="Padel, Cricket, Anime..."
-                className="h-9 min-w-40 flex-1 rounded-lg border border-input bg-background px-3 text-body-sm focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none"
+                className="border-input bg-background text-body-sm focus-visible:ring-ring/50 h-9 min-w-40 flex-1 rounded-lg border px-3 focus-visible:ring-3 focus-visible:outline-none"
               />
               <Button type="button" size="sm" variant="outline">
                 Suggest
@@ -171,7 +171,11 @@ export default function PrototypeOnboardingScreen() {
         <Button size="lg" render={<Link href="/prototype/home" />}>
           Continue
         </Button>
-        <Button variant="ghost" size="lg" render={<Link href="/prototype/home" />}>
+        <Button
+          variant="ghost"
+          size="lg"
+          render={<Link href="/prototype/home" />}
+        >
           Skip for now
         </Button>
       </div>

@@ -5,7 +5,10 @@ import { useState, useTransition } from "react"
 
 import { Alert } from "@/components/ui/alert"
 import { Button } from "@/components/ui/button"
-import { addCommentAction, removeCommentAction } from "@/features/activity/actions"
+import {
+  addCommentAction,
+  removeCommentAction,
+} from "@/features/activity/actions"
 import { ReportForm } from "@/features/activity/components/report-form"
 import { COMMENT_BODY_MAX, validateCommentInput } from "@/lib/domain/activity"
 import { formatRelativeTime } from "@/lib/format"
@@ -110,10 +113,10 @@ export function CommentSection({
               {comments.map((comment) => (
                 <li
                   key={comment.id}
-                  className="flex flex-col gap-1 border-l-2 border-border pl-3"
+                  className="border-border flex flex-col gap-1 border-l-2 pl-3"
                 >
-                  <div className="flex flex-wrap items-center gap-x-2 text-caption text-muted-foreground">
-                    <span className="font-medium text-foreground">
+                  <div className="text-caption text-muted-foreground flex flex-wrap items-center gap-x-2">
+                    <span className="text-foreground font-medium">
                       {comment.authorName ?? "A Cirqles member"}
                     </span>
                     <time dateTime={comment.createdAt}>
@@ -169,7 +172,7 @@ export function CommentSection({
                 rows={2}
                 maxLength={COMMENT_BODY_MAX}
                 placeholder="Add a comment"
-                className="w-full rounded-md border border-input bg-background px-3 py-2 text-body-sm outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
+                className="border-input bg-background text-body-sm focus-visible:ring-ring/50 w-full rounded-md border px-3 py-2 outline-none focus-visible:ring-3"
               />
               <Button
                 type="submit"

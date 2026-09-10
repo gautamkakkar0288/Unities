@@ -5,8 +5,8 @@ import { brand, footerSections } from "@/lib/marketing/content"
 
 export function SiteFooter() {
   return (
-    <footer className="border-t border-border bg-card">
-      <div className="mx-auto w-full max-w-page px-4 py-12 sm:px-6 lg:px-8 xl:px-12">
+    <footer className="border-border bg-card border-t">
+      <div className="max-w-page mx-auto w-full px-4 py-12 sm:px-6 lg:px-8 xl:px-12">
         <div className="flex flex-col gap-10 md:flex-row md:justify-between">
           <div className="flex max-w-xs flex-col gap-3">
             <Logo />
@@ -18,7 +18,7 @@ export function SiteFooter() {
           <div className="grid grid-cols-2 gap-8 sm:grid-cols-3">
             {footerSections.map((section) => (
               <div key={section.title} className="flex flex-col gap-3">
-                <h2 className="text-caption font-semibold tracking-wide text-foreground uppercase">
+                <h2 className="text-caption text-foreground font-semibold tracking-wide uppercase">
                   {section.title}
                 </h2>
                 <ul className="flex flex-col gap-2">
@@ -26,7 +26,7 @@ export function SiteFooter() {
                     <li key={`${section.title}-${link.href}`}>
                       <Link
                         href={link.href}
-                        className="rounded-md text-body-sm text-muted-foreground transition-colors duration-150 hover:text-foreground focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none"
+                        className="text-body-sm text-muted-foreground hover:text-foreground focus-visible:ring-ring/50 rounded-md transition-colors duration-150 focus-visible:ring-3 focus-visible:outline-none"
                       >
                         {link.label}
                       </Link>
@@ -38,13 +38,13 @@ export function SiteFooter() {
           </div>
         </div>
 
-        <div className="mt-10 flex flex-col gap-3 border-t border-border pt-6 sm:flex-row sm:items-center sm:justify-between">
+        <div className="border-border mt-10 flex flex-col gap-3 border-t pt-6 sm:flex-row sm:items-center sm:justify-between">
           <p className="text-caption text-muted-foreground">
             &copy; {new Date().getFullYear()} {brand.name}. Built for students.
           </p>
           <a
             href={`mailto:${brand.email}`}
-            className="rounded-md text-caption text-muted-foreground transition-colors duration-150 hover:text-foreground focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none"
+            className="text-caption text-muted-foreground hover:text-foreground focus-visible:ring-ring/50 rounded-md transition-colors duration-150 focus-visible:ring-3 focus-visible:outline-none"
           >
             {brand.email}
           </a>

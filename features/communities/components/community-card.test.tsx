@@ -5,7 +5,9 @@ import type { CommunitySummary } from "@/lib/domain/types"
 
 import { CommunityCard } from "./community-card"
 
-function community(overrides: Partial<CommunitySummary> = {}): CommunitySummary {
+function community(
+  overrides: Partial<CommunitySummary> = {},
+): CommunitySummary {
   return {
     id: "c-1",
     slug: "football",
@@ -58,13 +60,19 @@ describe("CommunityCard", () => {
     // The prototype screens rely on this. Changing the default would break
     // five pages that pass only community and href.
     render(<CommunityCard community={community()} href={href} />)
-    expect(screen.getByRole("button", { name: "Join Football" })).toBeInTheDocument()
+    expect(
+      screen.getByRole("button", { name: "Join Football" }),
+    ).toBeInTheDocument()
   })
 
   describe("in the real directory, where joining is not built yet", () => {
     it("renders no control at all rather than a button that does nothing", () => {
       render(
-        <CommunityCard community={community()} href={href} joinAction={false} />,
+        <CommunityCard
+          community={community()}
+          href={href}
+          joinAction={false}
+        />,
       )
       expect(screen.queryByRole("button")).toBeNull()
     })
@@ -97,7 +105,11 @@ describe("CommunityCard", () => {
 
     it("stays quiet about a community the viewer has no relationship with", () => {
       render(
-        <CommunityCard community={community()} href={href} joinAction={false} />,
+        <CommunityCard
+          community={community()}
+          href={href}
+          joinAction={false}
+        />,
       )
       expect(screen.queryByText("Joined")).toBeNull()
       expect(screen.queryByText("Requested")).toBeNull()

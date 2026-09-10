@@ -22,7 +22,7 @@ export default function OnboardingLayout({
 }) {
   return (
     <div className="flex min-h-full flex-1 flex-col">
-      <header className="flex items-center justify-between border-b border-border px-4 py-4 sm:px-6">
+      <header className="border-border flex items-center justify-between border-b px-4 py-4 sm:px-6">
         <Logo />
         <form action={signOutAction}>
           <Button type="submit" variant="ghost" size="sm">

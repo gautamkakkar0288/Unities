@@ -9,12 +9,7 @@ import { VerificationBadge } from "@/components/domain/verification-badge"
 import { Avatar } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { buttonVariants } from "@/components/ui/button"
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { EmptyState } from "@/components/ui/empty-state"
 import { PostCard } from "@/features/activity/components/post-card"
 import { PostComposer } from "@/features/activity/components/post-composer"
@@ -171,7 +166,7 @@ export default async function CommunityPage({
 
       <PageHeader title={community.name} description={community.tagline} />
 
-      <dl className="flex flex-wrap gap-x-6 gap-y-2 pb-4 text-caption text-muted-foreground">
+      <dl className="text-caption text-muted-foreground flex flex-wrap gap-x-6 gap-y-2 pb-4">
         <div className="flex items-center gap-1.5">
           <dt className="contents">
             <Users aria-hidden="true" className="size-3.5" />
@@ -215,7 +210,10 @@ export default async function CommunityPage({
 
       <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_20rem]">
         <div className="flex min-w-0 flex-col gap-8">
-          <section aria-labelledby="activity-heading" className="flex flex-col gap-4">
+          <section
+            aria-labelledby="activity-heading"
+            className="flex flex-col gap-4"
+          >
             <h2 id="activity-heading" className="text-h3">
               Activity
             </h2>
@@ -277,7 +275,10 @@ export default async function CommunityPage({
             )}
           </section>
 
-          <section aria-labelledby="events-heading" className="flex flex-col gap-4">
+          <section
+            aria-labelledby="events-heading"
+            className="flex flex-col gap-4"
+          >
             <div className="flex items-center justify-between gap-3">
               <h2 id="events-heading" className="text-h3">
                 Upcoming events
@@ -317,7 +318,7 @@ export default async function CommunityPage({
             </CardHeader>
             <CardContent className="flex flex-col gap-3">
               {community.about ? (
-                <p className="text-body-sm whitespace-pre-line text-muted-foreground">
+                <p className="text-body-sm text-muted-foreground whitespace-pre-line">
                   {community.about}
                 </p>
               ) : (
@@ -349,7 +350,7 @@ export default async function CommunityPage({
                 <CardTitle>Guidelines</CardTitle>
               </CardHeader>
               <CardContent>
-                <ol className="flex list-decimal flex-col gap-2 pl-5 text-body-sm text-muted-foreground">
+                <ol className="text-body-sm text-muted-foreground flex list-decimal flex-col gap-2 pl-5">
                   {community.guidelines.map((guideline) => (
                     <li key={guideline}>{guideline}</li>
                   ))}
@@ -415,7 +416,7 @@ export default async function CommunityPage({
                       <li key={lead.id} className="flex items-center gap-3">
                         <Avatar size="sm" name={name} src={lead.avatarUrl} />
                         <div className="flex min-w-0 flex-col">
-                          <span className="truncate text-body-sm font-medium">
+                          <span className="text-body-sm truncate font-medium">
                             {name}
                           </span>
                           <span className="text-caption text-muted-foreground">

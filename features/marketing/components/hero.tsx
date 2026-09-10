@@ -18,7 +18,7 @@ export function Hero() {
         className="absolute inset-x-0 top-0 -z-10 h-[32rem] bg-[radial-gradient(70%_60%_at_50%_0%,var(--primary-subtle),transparent_70%)]"
       />
 
-      <div className="mx-auto w-full max-w-page px-4 py-20 sm:px-6 sm:py-24 lg:px-8 lg:py-32 xl:px-12">
+      <div className="max-w-page mx-auto w-full px-4 py-20 sm:px-6 sm:py-24 lg:px-8 lg:py-32 xl:px-12">
         <div className="flex max-w-3xl flex-col gap-6">
           <Badge variant="brand" className="w-fit">
             {hero.eyebrow}
@@ -38,7 +38,7 @@ export function Hero() {
               {hero.primaryCta.label}
               <ArrowRight
                 aria-hidden="true"
-                className="transition-transform duration-150 ease-standard group-hover:translate-x-0.5"
+                className="ease-standard transition-transform duration-150 group-hover:translate-x-0.5"
               />
             </Link>
             <Link
@@ -57,11 +57,11 @@ export function Hero() {
             {hero.signals.map((signal) => (
               <li
                 key={signal}
-                className="flex items-center gap-2 text-body-sm text-muted-foreground"
+                className="text-body-sm text-muted-foreground flex items-center gap-2"
               >
                 <Check
                   aria-hidden="true"
-                  className="size-4 shrink-0 text-success"
+                  className="text-success size-4 shrink-0"
                 />
                 {signal}
               </li>

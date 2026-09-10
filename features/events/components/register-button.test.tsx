@@ -56,7 +56,9 @@ describe("RegisterButton", () => {
   it("registers when a seat is free", async () => {
     render(<RegisterButton event={event()} now={NOW} />)
 
-    fireEvent.click(screen.getByRole("button", { name: "Register for Robotics Night" }))
+    fireEvent.click(
+      screen.getByRole("button", { name: "Register for Robotics Night" }),
+    )
 
     await vi.waitFor(() => {
       expect(registerForEventAction).toHaveBeenCalledWith(target)
@@ -127,9 +129,7 @@ describe("RegisterButton", () => {
       />,
     )
 
-    fireEvent.click(
-      screen.getByRole("button", { name: /Leave the waitlist/ }),
-    )
+    fireEvent.click(screen.getByRole("button", { name: /Leave the waitlist/ }))
 
     await vi.waitFor(() => {
       expect(cancelRegistrationAction).toHaveBeenCalledWith(target)

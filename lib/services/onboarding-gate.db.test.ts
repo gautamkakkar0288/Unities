@@ -43,7 +43,9 @@ async function store(interestIds: string[]) {
   if (interestIds.length > 0) {
     await db
       .insert(userInterests)
-      .values(interestIds.map((interestId) => ({ userId: STUDENT, interestId })))
+      .values(
+        interestIds.map((interestId) => ({ userId: STUDENT, interestId })),
+      )
   }
 }
 

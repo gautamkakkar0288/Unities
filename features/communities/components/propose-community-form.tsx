@@ -113,7 +113,7 @@ export function ProposeCommunityForm({ interests }: { interests: Interest[] }) {
   return (
     <form
       onSubmit={handleSubmit((values) => submit(values, false))}
-      className="flex max-w-readable flex-col gap-4"
+      className="max-w-readable flex flex-col gap-4"
       noValidate
     >
       <Field id="name" label="Name" error={errors.name?.message} required>
@@ -189,8 +189,7 @@ export function ProposeCommunityForm({ interests }: { interests: Interest[] }) {
         <Alert variant="warning" title="This may already exist">
           <p>
             A split community is worse than a busy one - members, events, and
-            recommendations end up divided between two names. Have a look
-            first:
+            recommendations end up divided between two names. Have a look first:
           </p>
           <ul className="mt-2 flex flex-col gap-1">
             {status.matches.map((match) => (

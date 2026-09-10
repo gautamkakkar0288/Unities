@@ -4,12 +4,7 @@ import Link from "next/link"
 import { Avatar } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
 import { CommunityCard } from "@/features/communities/components/community-card"
 import { EventCard } from "@/features/events/components/event-card"
@@ -100,7 +95,10 @@ export default function PrototypeProfilePage() {
           </CardContent>
         </Card>
 
-        <section aria-labelledby="activity-heading" className="flex flex-col gap-4">
+        <section
+          aria-labelledby="activity-heading"
+          className="flex flex-col gap-4"
+        >
           <h2 id="activity-heading" className="text-h3">
             Activity
           </h2>
@@ -109,7 +107,7 @@ export default function PrototypeProfilePage() {
               <CardContent className="flex items-center gap-3">
                 <CalendarCheck
                   aria-hidden="true"
-                  className="size-5 text-primary"
+                  className="text-primary size-5"
                 />
                 <div>
                   <dt className="text-caption text-muted-foreground">
@@ -125,7 +123,7 @@ export default function PrototypeProfilePage() {
               <CardContent className="flex items-center gap-3">
                 <MessageSquare
                   aria-hidden="true"
-                  className="size-5 text-primary"
+                  className="text-primary size-5"
                 />
                 <div>
                   <dt className="text-caption text-muted-foreground">Posts</dt>
@@ -137,7 +135,7 @@ export default function PrototypeProfilePage() {
             </Card>
             <Card>
               <CardContent className="flex items-center gap-3">
-                <Sparkles aria-hidden="true" className="size-5 text-primary" />
+                <Sparkles aria-hidden="true" className="text-primary size-5" />
                 <div>
                   <dt className="text-caption text-muted-foreground">
                     Communities
@@ -153,7 +151,10 @@ export default function PrototypeProfilePage() {
 
         <Separator />
 
-        <section aria-labelledby="upcoming-heading" className="flex flex-col gap-4">
+        <section
+          aria-labelledby="upcoming-heading"
+          className="flex flex-col gap-4"
+        >
           <h2 id="upcoming-heading" className="text-h3">
             You are registered for
           </h2>
@@ -172,7 +173,10 @@ export default function PrototypeProfilePage() {
 
         <Separator />
 
-        <section aria-labelledby="communities-heading" className="flex flex-col gap-4">
+        <section
+          aria-labelledby="communities-heading"
+          className="flex flex-col gap-4"
+        >
           <h2 id="communities-heading" className="text-h3">
             Communities
           </h2>
@@ -190,7 +194,10 @@ export default function PrototypeProfilePage() {
 
         <Separator />
 
-        <section aria-labelledby="badges-heading" className="flex flex-col gap-4">
+        <section
+          aria-labelledby="badges-heading"
+          className="flex flex-col gap-4"
+        >
           <h2 id="badges-heading" className="text-h3">
             Badges
           </h2>

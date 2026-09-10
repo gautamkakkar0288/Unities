@@ -68,7 +68,13 @@ const request = (q: string, type?: string) => parseSearchParams({ q, type })
 describe.skipIf(!hasDatabase)("search services", () => {
   beforeAll(async () => {
     await db.insert(places).values([
-      { id: CITY, kind: "CITY", name: "Search Test City", slug: CITY, status: "ACTIVE" },
+      {
+        id: CITY,
+        kind: "CITY",
+        name: "Search Test City",
+        slug: CITY,
+        status: "ACTIVE",
+      },
       {
         id: HOME,
         kind: "UNIVERSITY",
@@ -273,7 +279,11 @@ describe.skipIf(!hasDatabase)("search services", () => {
 
   describe("searchEvents", () => {
     it("finds an event by title", async () => {
-      const results = await searchEvents(request("hackathon"), await scope(), 10)
+      const results = await searchEvents(
+        request("hackathon"),
+        await scope(),
+        10,
+      )
 
       expect(results.map((event) => event.id)).toContain(HOME_EVENT)
     })
@@ -291,7 +301,11 @@ describe.skipIf(!hasDatabase)("search services", () => {
     })
 
     it("ranks the exact title above the prefix match and the description match", async () => {
-      const results = await searchEvents(request("hackathon"), await scope(), 10)
+      const results = await searchEvents(
+        request("hackathon"),
+        await scope(),
+        10,
+      )
       const ids = results.map((event) => event.id)
 
       expect(ids.indexOf(HOME_EVENT)).toBeLessThan(ids.indexOf(PREFIX_EVENT))
@@ -311,7 +325,11 @@ describe.skipIf(!hasDatabase)("search services", () => {
     })
 
     it("never returns another university's event", async () => {
-      const results = await searchEvents(request("hackathon"), await scope(), 10)
+      const results = await searchEvents(
+        request("hackathon"),
+        await scope(),
+        10,
+      )
 
       expect(results.map((event) => event.id)).not.toContain(OTHER_EVENT)
     })
@@ -395,7 +413,11 @@ describe.skipIf(!hasDatabase)("search services", () => {
 
   describe("searchPosts", () => {
     it("finds an update by title and carries its linked event", async () => {
-      const results = await searchPosts(request("registration"), await scope(), 10)
+      const results = await searchPosts(
+        request("registration"),
+        await scope(),
+        10,
+      )
       const found = results.find((update) => update.id === HOME_POST)
 
       expect(found).toBeDefined()
@@ -405,7 +427,11 @@ describe.skipIf(!hasDatabase)("search services", () => {
     })
 
     it("finds an update by body text", async () => {
-      const results = await searchPosts(request("teams of four"), await scope(), 10)
+      const results = await searchPosts(
+        request("teams of four"),
+        await scope(),
+        10,
+      )
 
       expect(results.map((update) => update.id)).toContain(HOME_POST)
     })
@@ -439,7 +465,10 @@ describe.skipIf(!hasDatabase)("search services", () => {
     })
 
     it("only searches the requested category on a single-category tab", async () => {
-      const results = await searchAll(request("hackathon", "events"), await scope())
+      const results = await searchAll(
+        request("hackathon", "events"),
+        await scope(),
+      )
 
       expect(results.events.length).toBeGreaterThan(0)
       expect(results.updates).toEqual([])

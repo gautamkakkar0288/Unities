@@ -17,7 +17,7 @@ function Label({
     <label
       data-slot="label"
       className={cn(
-        "flex items-center gap-1 text-label font-medium text-foreground select-none",
+        "text-label text-foreground flex items-center gap-1 font-medium select-none",
         "has-[+_:disabled]:opacity-50",
         className,
       )}

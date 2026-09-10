@@ -8,7 +8,11 @@ import { buttonVariants } from "@/components/ui/button"
 import { EmptyState } from "@/components/ui/empty-state"
 import { EventCard } from "@/features/events/components/event-card"
 import { PageHeader } from "@/features/shell/components/page-header"
-import { bucketLabel, groupByBucket, isUpcoming } from "@/lib/domain/time-buckets"
+import {
+  bucketLabel,
+  groupByBucket,
+  isUpcoming,
+} from "@/lib/domain/time-buckets"
 import { listEvents } from "@/lib/services/events"
 
 export const metadata: Metadata = { title: "Events" }
@@ -52,11 +56,7 @@ export default async function EventsPage() {
       {upcoming.length === 0 ? (
         <EmptyState
           icon={events.length === 0 ? CalendarDays : CalendarX}
-          title={
-            events.length === 0
-              ? "No events yet"
-              : "Nothing coming up"
-          }
+          title={events.length === 0 ? "No events yet" : "Nothing coming up"}
           description={
             events.length === 0
               ? "Nothing has been published for your campus so far. If you are running this locally, seed the database first."
@@ -71,10 +71,13 @@ export default async function EventsPage() {
       ) : (
         <div className="flex flex-col gap-8">
           {groups.map((group) => (
-            <section key={group.bucket} aria-labelledby={`bucket-${group.bucket}`}>
+            <section
+              key={group.bucket}
+              aria-labelledby={`bucket-${group.bucket}`}
+            >
               <h2
                 id={`bucket-${group.bucket}`}
-                className="pb-3 text-h4 text-muted-foreground"
+                className="text-h4 text-muted-foreground pb-3"
               >
                 {bucketLabel[group.bucket]}
               </h2>

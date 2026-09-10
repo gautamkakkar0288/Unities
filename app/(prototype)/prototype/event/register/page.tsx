@@ -1,10 +1,4 @@
-import {
-  CalendarPlus,
-  CheckCircle2,
-  Clock,
-  Mail,
-  XCircle,
-} from "lucide-react"
+import { CalendarPlus, CheckCircle2, Clock, Mail, XCircle } from "lucide-react"
 import Link from "next/link"
 import type { ReactNode } from "react"
 
@@ -73,12 +67,11 @@ function Outcome({
         <h2 className="text-h4">{lineFollowerDetail.title}</h2>
         <p className="text-caption text-muted-foreground">
           {formatDay(lineFollowerDetail.startsAt)},{" "}
-          {formatTime(lineFollowerDetail.startsAt)} -{" "}
-          {lineFollowerDetail.venue}
+          {formatTime(lineFollowerDetail.startsAt)} - {lineFollowerDetail.venue}
         </p>
       </CardHeader>
       <CardContent className="flex flex-col gap-4">
-        <div className="flex flex-col gap-2 text-body-sm text-muted-foreground">
+        <div className="text-body-sm text-muted-foreground flex flex-col gap-2">
           {children}
         </div>
         {actions ? (
@@ -171,7 +164,11 @@ export default function PrototypeRegistrationOutcomePage() {
           <CalendarPlus aria-hidden="true" />
           Back to the event
         </Button>
-        <Button variant="outline" size="lg" render={<Link href="/prototype/community" />}>
+        <Button
+          variant="outline"
+          size="lg"
+          render={<Link href="/prototype/community" />}
+        >
           <Mail aria-hidden="true" />
           Follow Robotics Club
         </Button>

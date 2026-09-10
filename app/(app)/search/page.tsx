@@ -60,7 +60,7 @@ function ResultSection({
         {viewAllHref && viewAllLabel ? (
           <Link
             href={viewAllHref}
-            className="text-body-sm font-medium text-foreground hover:underline focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none"
+            className="text-body-sm text-foreground focus-visible:ring-ring/50 font-medium hover:underline focus-visible:ring-3 focus-visible:outline-none"
           >
             {viewAllLabel}
           </Link>
@@ -177,7 +177,7 @@ export default async function SearchPage({
   ))
 
   return (
-    <div className="mx-auto w-full max-w-page space-y-8 px-4 py-8 sm:px-6 lg:px-8">
+    <div className="max-w-page mx-auto w-full space-y-8 px-4 py-8 sm:px-6 lg:px-8">
       <PageHeader
         title="Search campus"
         description="Events, clubs, opportunities and announcements across your campus."
@@ -185,7 +185,11 @@ export default async function SearchPage({
 
       <SearchForm query={request.rawQuery} tab={request.tab} />
 
-      <SearchTabs active={request.tab} query={request.rawQuery} counts={counts} />
+      <SearchTabs
+        active={request.tab}
+        query={request.rawQuery}
+        counts={counts}
+      />
 
       {/* No query yet. */}
       {request.isEmpty ? (

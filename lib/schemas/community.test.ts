@@ -46,9 +46,9 @@ describe("proposeCommunitySchema", () => {
 
 describe("setInterestsSchema", () => {
   it("requires the onboarding minimum", () => {
-    expect(setInterestsSchema.safeParse({ interestIds: ["a", "b"] }).success).toBe(
-      false,
-    )
+    expect(
+      setInterestsSchema.safeParse({ interestIds: ["a", "b"] }).success,
+    ).toBe(false)
     expect(
       setInterestsSchema.safeParse({ interestIds: ["a", "b", "c"] }).success,
     ).toBe(true)

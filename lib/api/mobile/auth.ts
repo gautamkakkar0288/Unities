@@ -48,8 +48,7 @@ export async function getMobileSession(): Promise<MobileSession | null> {
 }
 
 export type RequiredMobileSession =
-  | { ok: true; session: MobileSession }
-  | { ok: false; response: NextResponse }
+  { ok: true; session: MobileSession } | { ok: false; response: NextResponse }
 
 /**
  * A result rather than a throw, matching `ServiceResult` in the service layer:

@@ -59,7 +59,10 @@ export default function PrototypeEventsPage() {
 
         <Separator />
 
-        <section aria-labelledby="closed-heading" className="flex flex-col gap-4">
+        <section
+          aria-labelledby="closed-heading"
+          className="flex flex-col gap-4"
+        >
           <div className="flex flex-wrap items-center justify-between gap-3">
             <h2 id="closed-heading" className="text-h3">
               Already happened
@@ -67,8 +70,8 @@ export default function PrototypeEventsPage() {
             <Badge variant="outline">{closed.length}</Badge>
           </div>
           <p className="max-w-readable text-body-sm text-muted-foreground">
-            Kept visible on purpose. Missing an event is the most common reason a
-            student finds a community worth following.
+            Kept visible on purpose. Missing an event is the most common reason
+            a student finds a community worth following.
           </p>
           <ul className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
             {closed.map(({ event }) => (

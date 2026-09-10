@@ -42,19 +42,19 @@ Three ideas the product is built on:
 
 ## Features
 
-| Area | What it does |
-| --- | --- |
-| **Accounts** | University-email sign-up, email verification, roles from student to platform admin. |
-| **Communities** | Official clubs, interest communities, city communities. Open, approval-based and invite-only joining. |
-| **Verification** | Clubs request verification; admins approve or reject with a note. An admin may not verify their own club. |
-| **Events** | Create, publish, edit and cancel. Kinds, modes, venues, fees, agendas, registration deadlines. |
-| **Registration** | Register, cancel, re-register. Capacity enforced under a row lock, so the last seat cannot be sold twice. |
-| **Waitlists** | Automatic queueing at capacity, ordered by when you joined. Freeing a seat promotes the longest-waiting student and keeps their original place in the queue. |
-| **Event editing** | Cancelled and started events are locked. Capacity cannot drop below confirmed registrations. Raising capacity promotes from the waitlist immediately. Slug and kind are immutable. |
-| **Saved items** | Bookmark events, communities and opportunities. One control everywhere, one row per save, enforced by a unique constraint. |
+| Area              | What it does                                                                                                                                                                              |
+| ----------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Accounts**      | University-email sign-up, email verification, roles from student to platform admin.                                                                                                       |
+| **Communities**   | Official clubs, interest communities, city communities. Open, approval-based and invite-only joining.                                                                                     |
+| **Verification**  | Clubs request verification; admins approve or reject with a note. An admin may not verify their own club.                                                                                 |
+| **Events**        | Create, publish, edit and cancel. Kinds, modes, venues, fees, agendas, registration deadlines.                                                                                            |
+| **Registration**  | Register, cancel, re-register. Capacity enforced under a row lock, so the last seat cannot be sold twice.                                                                                 |
+| **Waitlists**     | Automatic queueing at capacity, ordered by when you joined. Freeing a seat promotes the longest-waiting student and keeps their original place in the queue.                              |
+| **Event editing** | Cancelled and started events are locked. Capacity cannot drop below confirmed registrations. Raising capacity promotes from the waitlist immediately. Slug and kind are immutable.        |
+| **Saved items**   | Bookmark events, communities and opportunities. One control everywhere, one row per save, enforced by a unique constraint.                                                                |
 | **Notifications** | Written by the flows that cause them - registration, waitlist, promotion, cancellation, verification - inside the same transaction. Unread count in the navigation, mark one or all read. |
-| **Moderation** | Reports with reasons and severity, a queue ordered by severity then age, and an audit trail for every privileged action. |
-| **Audit log** | Who did what, to what, and when. Readable only by reviewers. |
+| **Moderation**    | Reports with reasons and severity, a queue ordered by severity then age, and an audit trail for every privileged action.                                                                  |
+| **Audit log**     | Who did what, to what, and when. Readable only by reviewers.                                                                                                                              |
 
 ---
 
@@ -128,11 +128,11 @@ unchanged.
 
 Switching to a real database is one environment variable:
 
-| Environment | Database |
-| --- | --- |
-| No `DATABASE_URL` | Local demo database |
-| `DATABASE_URL` set | PostgreSQL |
-| `CIRQLES_DB=demo` | Demo, even when `DATABASE_URL` is set |
+| Environment        | Database                              |
+| ------------------ | ------------------------------------- |
+| No `DATABASE_URL`  | Local demo database                   |
+| `DATABASE_URL` set | PostgreSQL                            |
+| `CIRQLES_DB=demo`  | Demo, even when `DATABASE_URL` is set |
 
 No application code changes, because nothing above `lib/db/driver.ts` knows
 which one answered. Full reasoning, including why SQLite was rejected, is in
@@ -140,13 +140,13 @@ which one answered. Full reasoning, including why SQLite was rejected, is in
 
 ### Commands
 
-| Command | Effect |
-| --- | --- |
-| `npm run db:setup` | Create the demo database if absent, migrate, seed. Safe to re-run. |
-| `npm run db:reset` | **Destructive.** Delete `data/cirqles-demo/`, then rebuild and reseed. |
-| `npm run db:seed` | Day-one data only: campus, interests, interest communities. |
-| `npm run db:seed:demo` | The showcase population on top of it. |
-| `npm run demo` | `db:reset` then `dev`. Destructive - it is the pre-demo command. |
+| Command                | Effect                                                                 |
+| ---------------------- | ---------------------------------------------------------------------- |
+| `npm run db:setup`     | Create the demo database if absent, migrate, seed. Safe to re-run.     |
+| `npm run db:reset`     | **Destructive.** Delete `data/cirqles-demo/`, then rebuild and reseed. |
+| `npm run db:seed`      | Day-one data only: campus, interests, interest communities.            |
+| `npm run db:seed:demo` | The showcase population on top of it.                                  |
+| `npm run demo`         | `db:reset` then `dev`. Destructive - it is the pre-demo command.       |
 
 ---
 
@@ -155,11 +155,11 @@ which one answered. Full reasoning, including why SQLite was rejected, is in
 All three use the password **`demo1234`**. There is a button for each on the
 sign-in page, and the normal email form works with them too.
 
-| Role | Email | What you can show |
-| --- | --- | --- |
-| Student | `gautam1153.becse24@chitkara.edu.in` | Joined communities, upcoming registrations, saved items, unread notifications, a waitlist place |
-| Organiser | `organizer.codingclub@chitkara.edu.in` | Owns three verified clubs; can create, edit, cancel and manage their events |
-| Admin | `admin.cirqles@chitkara.edu.in` | Verification queue, moderation reports, audit log |
+| Role      | Email                                  | What you can show                                                                               |
+| --------- | -------------------------------------- | ----------------------------------------------------------------------------------------------- |
+| Student   | `gautam1153.becse24@chitkara.edu.in`   | Joined communities, upcoming registrations, saved items, unread notifications, a waitlist place |
+| Organiser | `organizer.codingclub@chitkara.edu.in` | Owns three verified clubs; can create, edit, cancel and manage their events                     |
+| Admin     | `admin.cirqles@chitkara.edu.in`        | Verification queue, moderation reports, audit log                                               |
 
 The demo buttons are not a bypass. They submit the seeded account's real
 credentials to the same provider the form uses, so the same bcrypt check runs
@@ -237,13 +237,13 @@ since been deleted or archived is dropped rather than rendered as a dead card.
 Every notification on this screen was written by a service, inside the
 transaction that changed the state it describes:
 
-| Action | Notification |
-| --- | --- |
-| Register for an event | "You're registered for ..." |
-| Register for a full event | "You're #N on the waitlist for ..." - the position counted under the same lock |
-| A seat frees up | "You're off the waitlist for ...", to the promoted student |
-| Organiser cancels an event | Everyone registered *and* everyone waiting is told |
-| Admin approves or rejects verification | The organiser is told, with the reviewer's note when there is one |
+| Action                                 | Notification                                                                   |
+| -------------------------------------- | ------------------------------------------------------------------------------ |
+| Register for an event                  | "You're registered for ..."                                                    |
+| Register for a full event              | "You're #N on the waitlist for ..." - the position counted under the same lock |
+| A seat frees up                        | "You're off the waitlist for ...", to the promoted student                     |
+| Organiser cancels an event             | Everyone registered _and_ everyone waiting is told                             |
+| Admin approves or rejects verification | The organiser is told, with the reviewer's note when there is one              |
 
 Nothing lets a browser create a notification for anybody. There is no such
 action, by design - a notification is a claim that something happened.
@@ -267,23 +267,23 @@ vanishes at zero, survives a reload, and is scoped to the signed-in student.
 Being specific, because a demo that promises more than it does is worse than one
 that promises less.
 
-| Screen | State |
-| --- | --- |
-| Sign-up, sign-in, email verification, onboarding | Working, database-backed |
-| Demo sign-in buttons | Working |
-| Communities list and community page | Working, with join/leave |
-| Events list and event page | Working, with save and registration |
-| Registration, cancellation, waitlist, promotion | Working, and each writes a notification |
-| Event creation, editing, cancellation, management | Working |
-| **Saved** | **Working (this branch).** Real rows, filters, counts, empty states. |
-| **Notifications** | **Working (this branch).** Unread section, day grouping, mark one/all read, navigation badge. |
-| Admin verification queue and audit log | Working; a decision now notifies the organiser |
-| Profile | Working |
-| **Home feed** | **Placeholder.** Tables and seed data exist; the page and ranking service do not. |
-| **Explore** | **Placeholder.** |
-| **Search** | **Placeholder.** |
-| **Posts, opportunities, reports** | Schema and seed data only; opportunities appear on Saved, but have no screens of their own. |
-| **Organiser dashboard** | Event management works per-event; no aggregate dashboard yet. |
+| Screen                                            | State                                                                                         |
+| ------------------------------------------------- | --------------------------------------------------------------------------------------------- |
+| Sign-up, sign-in, email verification, onboarding  | Working, database-backed                                                                      |
+| Demo sign-in buttons                              | Working                                                                                       |
+| Communities list and community page               | Working, with join/leave                                                                      |
+| Events list and event page                        | Working, with save and registration                                                           |
+| Registration, cancellation, waitlist, promotion   | Working, and each writes a notification                                                       |
+| Event creation, editing, cancellation, management | Working                                                                                       |
+| **Saved**                                         | **Working (this branch).** Real rows, filters, counts, empty states.                          |
+| **Notifications**                                 | **Working (this branch).** Unread section, day grouping, mark one/all read, navigation badge. |
+| Admin verification queue and audit log            | Working; a decision now notifies the organiser                                                |
+| Profile                                           | Working                                                                                       |
+| **Home feed**                                     | **Placeholder.** Tables and seed data exist; the page and ranking service do not.             |
+| **Explore**                                       | **Placeholder.**                                                                              |
+| **Search**                                        | **Placeholder.**                                                                              |
+| **Posts, opportunities, reports**                 | Schema and seed data only; opportunities appear on Saved, but have no screens of their own.   |
+| **Organiser dashboard**                           | Event management works per-event; no aggregate dashboard yet.                                 |
 
 ---
 
@@ -368,7 +368,7 @@ npm run build
 
 Domain rules are tested as pure functions. Service tests run against a real
 Postgres and skip themselves when no database is configured - so a green run
-with no `DATABASE_URL` has *not* exercised the registration, waitlist, saved or
+with no `DATABASE_URL` has _not_ exercised the registration, waitlist, saved or
 notification logic. With the demo database available, `CIRQLES_DB=demo` lets
 those suites run locally for the first time.
 
@@ -381,14 +381,14 @@ database suites. The suites added on this branch
 
 ## Documentation
 
-| Document | Contents |
-| --- | --- |
-| [`PRD.md`](PRD.md) | Product requirements and direction |
-| [`DESIGN_SYSTEM.md`](DESIGN_SYSTEM.md) | Tokens, type scale, components |
-| [`docs/ENGINEERING/ARCHITECTURE.md`](docs/ENGINEERING/ARCHITECTURE.md) | Layering and boundaries |
-| [`docs/ENGINEERING/DATABASE.md`](docs/ENGINEERING/DATABASE.md) | Schema decisions, including designs considered and rejected |
-| [`docs/ENGINEERING/DEMO_DATABASE.md`](docs/ENGINEERING/DEMO_DATABASE.md) | The demo database, and why not SQLite |
-| [`docs/ENGINEERING/MVP_VALIDATION.md`](docs/ENGINEERING/MVP_VALIDATION.md) | Manual browser validation script and recorded outcomes |
+| Document                                                                   | Contents                                                    |
+| -------------------------------------------------------------------------- | ----------------------------------------------------------- |
+| [`PRD.md`](PRD.md)                                                         | Product requirements and direction                          |
+| [`DESIGN_SYSTEM.md`](DESIGN_SYSTEM.md)                                     | Tokens, type scale, components                              |
+| [`docs/ENGINEERING/ARCHITECTURE.md`](docs/ENGINEERING/ARCHITECTURE.md)     | Layering and boundaries                                     |
+| [`docs/ENGINEERING/DATABASE.md`](docs/ENGINEERING/DATABASE.md)             | Schema decisions, including designs considered and rejected |
+| [`docs/ENGINEERING/DEMO_DATABASE.md`](docs/ENGINEERING/DEMO_DATABASE.md)   | The demo database, and why not SQLite                       |
+| [`docs/ENGINEERING/MVP_VALIDATION.md`](docs/ENGINEERING/MVP_VALIDATION.md) | Manual browser validation script and recorded outcomes      |
 
 ---
 

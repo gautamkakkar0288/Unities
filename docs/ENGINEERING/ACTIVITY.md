@@ -27,10 +27,10 @@ new notification kind, no second audit system.
 
 Two tables, because reactions and comments had nowhere to live:
 
-| Table | Why | Notable
-| --- | --- | ---
-| `post_reactions` | Likes | `unique(post_id, user_id)`; no `kind` column; no removal state
-| `post_comments` | Flat comments | No `parent_id`; soft removal mirroring `posts`
+| Table            | Why           | Notable                                                        |
+| ---------------- | ------------- | -------------------------------------------------------------- |
+| `post_reactions` | Likes         | `unique(post_id, user_id)`; no `kind` column; no removal state |
+| `post_comments`  | Flat comments | No `parent_id`; soft removal mirroring `posts`                 |
 
 **`post_reactions` has no `kind`.** The product has one reaction. Adding the
 column now would mean inventing six emoji nobody chose; adding it later is one
@@ -76,14 +76,14 @@ who cannot use it; the service is the control.
 
 ## Authorization
 
-| Action | Who
-| --- | ---
-| Publish, comment, react | `canParticipate` - MEMBER, MODERATOR, OWNER
-| Edit a post | The author only
-| Remove a post | The author, or a moderator of that community
-| Remove a comment | The author, or a moderator of that community
-| Report | Anyone signed in except the content's author
-| Decide a report | A moderator of that community, or a campus ADMIN
+| Action                  | Who                                              |
+| ----------------------- | ------------------------------------------------ |
+| Publish, comment, react | `canParticipate` - MEMBER, MODERATOR, OWNER      |
+| Edit a post             | The author only                                  |
+| Remove a post           | The author, or a moderator of that community     |
+| Remove a comment        | The author, or a moderator of that community     |
+| Report                  | Anyone signed in except the content's author     |
+| Decide a report         | A moderator of that community, or a campus ADMIN |
 
 **Moderators cannot edit.** This is the one deliberate asymmetry. A moderator
 rewriting words that still carry someone else's name is the only moderation
@@ -92,7 +92,7 @@ what was changed. Moderators remove, which is visible, attributable, and
 recorded.
 
 **Membership, not `users.role`.** A campus admin is not a member of every club
-and cannot post in a club's name. Admin widens the *moderation* queue, never the
+and cannot post in a club's name. Admin widens the _moderation_ queue, never the
 ability to speak as a community.
 
 **Community comes from the content.** `removePost`, `removeComment`,
@@ -104,11 +104,11 @@ the content is not in.
 
 Existing kinds only.
 
-| Event | Kind | Recipients
-| --- | --- | ---
-| New announcement | `COMMUNITY_POST` | Participating members, minus the author
-| New comment | `ACTIVITY` | The post's author, unless they commented
-| First like on a post | `ACTIVITY` | The post's author, once per post
+| Event                | Kind             | Recipients                               |
+| -------------------- | ---------------- | ---------------------------------------- |
+| New announcement     | `COMMUNITY_POST` | Participating members, minus the author  |
+| New comment          | `ACTIVITY`       | The post's author, unless they commented |
+| First like on a post | `ACTIVITY`       | The post's author, once per post         |
 
 The post fan-out and the comment notification are written **in the same
 transaction** as the content, because a post that exists while its notifications
@@ -153,9 +153,9 @@ A community page is **six queries, flat**, regardless of how many announcements
 it has:
 
 1. the community, 2. its leads, 3. its activity (one join over posts,
-communities, users, events), 4. reaction counts + comment counts + viewer
-reactions (three grouped aggregates, concurrent), 5. comments for every post in
-one `in (...)`, 6. upcoming events.
+   communities, users, events), 4. reaction counts + comment counts + viewer
+   reactions (three grouped aggregates, concurrent), 5. comments for every post in
+   one `in (...)`, 6. upcoming events.
 
 Nothing is per post. `commentsForPosts` exists precisely to avoid
 `listPostComments` in a loop. Bounds: 20 announcements per page (50 hard cap),

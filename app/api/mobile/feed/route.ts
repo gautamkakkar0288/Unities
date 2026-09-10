@@ -1,10 +1,7 @@
 import { requireMobileSession } from "@/lib/api/mobile/auth"
 import { withMobileRoute } from "@/lib/api/mobile/handler"
 import { parseListQuery } from "@/lib/api/mobile/query"
-import {
-  mobileError,
-  mobileMissingCapability,
-} from "@/lib/api/mobile/response"
+import { mobileError, mobileMissingCapability } from "@/lib/api/mobile/response"
 
 /**
  * GET /api/mobile/feed - not built yet, and says so.

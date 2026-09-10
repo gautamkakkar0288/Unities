@@ -1,6 +1,9 @@
 import { describe, expect, it } from "vitest"
 
-import { MINIMUM_INTERESTS, normaliseInterestLabel } from "@/lib/domain/interest"
+import {
+  MINIMUM_INTERESTS,
+  normaliseInterestLabel,
+} from "@/lib/domain/interest"
 import { setInterestsSchema } from "@/lib/schemas/community"
 
 /**
@@ -18,15 +21,15 @@ function ids(count: number): string[] {
 
 describe("how many interests are enough", () => {
   it.each([0, 1, 2])("rejects %i interests", (count) => {
-    expect(setInterestsSchema.safeParse({ interestIds: ids(count) }).success).toBe(
-      false,
-    )
+    expect(
+      setInterestsSchema.safeParse({ interestIds: ids(count) }).success,
+    ).toBe(false)
   })
 
   it.each([3, 4, 8, 17])("accepts %i interests", (count) => {
-    expect(setInterestsSchema.safeParse({ interestIds: ids(count) }).success).toBe(
-      true,
-    )
+    expect(
+      setInterestsSchema.safeParse({ interestIds: ids(count) }).success,
+    ).toBe(true)
   })
 
   it("rejects more than the taxonomy contains", () => {

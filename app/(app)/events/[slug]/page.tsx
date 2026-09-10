@@ -114,14 +114,14 @@ export default async function EventPage({ params }: { params: Params }) {
 
           {event.agenda.length > 0 && (
             <section aria-labelledby="agenda">
-              <h2 id="agenda" className="pb-3 text-h4">
+              <h2 id="agenda" className="text-h4 pb-3">
                 Agenda
               </h2>
               <ol className="flex flex-col gap-2">
                 {event.agenda.map((item) => (
                   <li key={`${item.at}-${item.title}`} className="flex gap-3">
                     <span
-                      className="w-20 shrink-0 text-caption text-muted-foreground"
+                      className="text-caption text-muted-foreground w-20 shrink-0"
                       data-numeric
                     >
                       {formatTime(item.at)}
@@ -136,10 +136,13 @@ export default async function EventPage({ params }: { params: Params }) {
 
         <Card className="w-full lg:max-w-sm">
           <CardContent className="flex flex-col gap-4">
-            <dl className="flex flex-col gap-3 text-body-sm">
+            <dl className="text-body-sm flex flex-col gap-3">
               <div className="flex items-start gap-2">
                 <dt className="contents">
-                  <Clock aria-hidden="true" className="mt-0.5 size-4 shrink-0" />
+                  <Clock
+                    aria-hidden="true"
+                    className="mt-0.5 size-4 shrink-0"
+                  />
                   <span className="sr-only">When</span>
                 </dt>
                 <dd>
@@ -151,7 +154,10 @@ export default async function EventPage({ params }: { params: Params }) {
 
               <div className="flex items-start gap-2">
                 <dt className="contents">
-                  <MapPin aria-hidden="true" className="mt-0.5 size-4 shrink-0" />
+                  <MapPin
+                    aria-hidden="true"
+                    className="mt-0.5 size-4 shrink-0"
+                  />
                   <span className="sr-only">Where</span>
                 </dt>
                 <dd>{event.venue || eventModeLabel[event.mode]}</dd>
@@ -159,7 +165,10 @@ export default async function EventPage({ params }: { params: Params }) {
 
               <div className="flex items-start gap-2">
                 <dt className="contents">
-                  <Users aria-hidden="true" className="mt-0.5 size-4 shrink-0" />
+                  <Users
+                    aria-hidden="true"
+                    className="mt-0.5 size-4 shrink-0"
+                  />
                   <span className="sr-only">Attendance</span>
                 </dt>
                 <dd data-numeric>

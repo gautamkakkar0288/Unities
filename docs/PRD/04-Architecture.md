@@ -110,18 +110,18 @@ Can:
 ├── home
 ├── explore
 ├── events
-│   └── [eventSlug]
+│ └── [eventSlug]
 ├── communities
-│   └── [communitySlug]
+│ └── [communitySlug]
 ├── organizers
-│   └── [organizerSlug]
+│ └── [organizerSlug]
 ├── profile
 ├── notifications
 ├── settings
 └── organizer
-	├── dashboard
-	├── events
-	└── analytics
+├── dashboard
+├── events
+└── analytics
 
 ---
 
@@ -286,13 +286,13 @@ Every event has:
 
 # Permission Matrix
 
-| Action | Guest | Student | Organizer | Admin |
-|--------|-------|----------|-----------|-------|
-| View Events | ✅ | ✅ | ✅ | ✅ |
-| Register | ❌ | ✅ | ✅ | ✅ |
-| Create Event | ❌ | ❌ | ✅ | ✅ |
-| Verify Organizer | ❌ | ❌ | ❌ | ✅ |
-| Moderate Reports | ❌ | ❌ | ❌ | ✅ |
+| Action           | Guest | Student | Organizer | Admin |
+| ---------------- | ----- | ------- | --------- | ----- |
+| View Events      | ✅    | ✅      | ✅        | ✅    |
+| Register         | ❌    | ✅      | ✅        | ✅    |
+| Create Event     | ❌    | ❌      | ✅        | ✅    |
+| Verify Organizer | ❌    | ❌      | ❌        | ✅    |
+| Moderate Reports | ❌    | ❌      | ❌        | ✅    |
 
 ---
 

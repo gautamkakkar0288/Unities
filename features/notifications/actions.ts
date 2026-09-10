@@ -48,9 +48,7 @@ export async function markNotificationReadAction(
   revalidatePath("/notifications", "layout")
 }
 
-export async function markAllNotificationsReadAction(): Promise<
-  ServiceFailure | void
-> {
+export async function markAllNotificationsReadAction(): Promise<ServiceFailure | void> {
   const session = await auth()
   if (!session?.user) {
     return fail(

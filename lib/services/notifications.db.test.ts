@@ -48,9 +48,7 @@ const STARTS = new Date("2026-05-10T10:00:00.000Z")
 const ENDS = new Date("2026-05-10T12:00:00.000Z")
 
 async function cleanup() {
-  await db
-    .delete(notifications)
-    .where(inArray(notifications.userId, USER_IDS))
+  await db.delete(notifications).where(inArray(notifications.userId, USER_IDS))
   await db
     .delete(eventRegistrations)
     .where(inArray(eventRegistrations.userId, USER_IDS))

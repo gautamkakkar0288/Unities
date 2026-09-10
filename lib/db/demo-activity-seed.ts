@@ -1,6 +1,5 @@
 import { eq, like, sql } from "drizzle-orm"
 
-
 import { db } from "@/lib/db"
 import {
   communities,
@@ -57,7 +56,11 @@ const SHOWCASE_USER = "demo-student-gautam"
  * than launch copy, because the point of the seed is to show what the page looks
  * like on a normal Tuesday.
  */
-const POST_TEMPLATES: Array<{ title: string; body: string; linkEvent?: boolean }> = [
+const POST_TEMPLATES: Array<{
+  title: string
+  body: string
+  linkEvent?: boolean
+}> = [
   {
     title: "Registrations close this Friday",
     body: "Spots are filling faster than last semester. If you have registered, watch this space for the room number - we may move to the larger lab.",
@@ -129,10 +132,22 @@ const COMMENT_TEMPLATES = [
 
 /** Reports for the moderation demo, using the table's existing reasons. */
 const REPORT_TEMPLATES = [
-  { reason: "SPAM" as const, detail: "Same promotional message posted in several communities." },
-  { reason: "OFF_TOPIC" as const, detail: "Not related to this community at all." },
-  { reason: "MISINFORMATION" as const, detail: "The deadline stated here contradicts the official one." },
-  { reason: "HARASSMENT" as const, detail: "Comment targets a specific member." },
+  {
+    reason: "SPAM" as const,
+    detail: "Same promotional message posted in several communities.",
+  },
+  {
+    reason: "OFF_TOPIC" as const,
+    detail: "Not related to this community at all.",
+  },
+  {
+    reason: "MISINFORMATION" as const,
+    detail: "The deadline stated here contradicts the official one.",
+  },
+  {
+    reason: "HARASSMENT" as const,
+    detail: "Comment targets a specific member.",
+  },
 ]
 
 export async function seedCommunityActivity(): Promise<{
@@ -277,14 +292,17 @@ export async function seedCommunityActivity(): Promise<{
     const commentCount = postIndex % 3 === 2 ? 0 : 1 + Math.floor(random() * 4)
 
     for (let index = 0; index < commentCount; index += 1) {
-      const commenter = studentRows[Math.floor(random() * studentRows.length)]?.id
+      const commenter =
+        studentRows[Math.floor(random() * studentRows.length)]?.id
       if (!commenter || commenter === post.authorId) continue
 
       commentRows.push({
         id: `demo-activity-comment-${postIndex + 1}-${index + 1}`,
         postId: post.id,
         authorId: commenter,
-        body: COMMENT_TEMPLATES[(postIndex + index) % COMMENT_TEMPLATES.length]!,
+        body: COMMENT_TEMPLATES[
+          (postIndex + index) % COMMENT_TEMPLATES.length
+        ]!,
         createdAt: new Date(post.createdAt.getTime() + (index + 1) * hour),
       })
     }
@@ -345,8 +363,7 @@ export async function seedCommunityActivity(): Promise<{
   }> = []
 
   REPORT_TEMPLATES.forEach((template, index) => {
-    const target =
-      index === 3 ? commentRows[index] : postRows[index * 3 + 1]
+    const target = index === 3 ? commentRows[index] : postRows[index * 3 + 1]
 
     if (!target) return
 

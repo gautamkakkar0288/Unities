@@ -100,7 +100,9 @@ export function relevanceScore(
   signals: FeedSignals,
   now: Timestamp,
 ): number {
-  const interestMatch = signals.viewerInterestSlugs.includes(event.interest.slug)
+  const interestMatch = signals.viewerInterestSlugs.includes(
+    event.interest.slug,
+  )
   const joined = signals.joinedCommunityIds.includes(event.community.id)
   const savedCommunity = signals.savedCommunityIds.includes(event.community.id)
   const savedEvent = signals.savedEventIds.includes(event.id)

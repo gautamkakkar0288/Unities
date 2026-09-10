@@ -131,7 +131,9 @@ type NotificationRow = {
  * target that resolves to nothing is left out of the map, and the caller drops
  * the link rather than the notification: the text still says something true.
  */
-async function resolveHrefs(rows: NotificationRow[]): Promise<Map<string, string>> {
+async function resolveHrefs(
+  rows: NotificationRow[],
+): Promise<Map<string, string>> {
   const idsFor = (kind: AuditTargetKind) => [
     ...new Set(
       rows
@@ -168,7 +170,8 @@ async function resolveHrefs(rows: NotificationRow[]): Promise<Map<string, string
 
   const hrefs = new Map<string, string>()
 
-  for (const row of eventRows) hrefs.set(`EVENT:${row.id}`, `/events/${row.slug}`)
+  for (const row of eventRows)
+    hrefs.set(`EVENT:${row.id}`, `/events/${row.slug}`)
   for (const row of communityRows) {
     hrefs.set(`COMMUNITY:${row.id}`, `/communities/${row.slug}`)
   }
@@ -239,7 +242,7 @@ export async function listNotifications(args: {
     read: row.readAt !== null,
     href:
       row.targetKind && row.targetId
-        ? hrefs.get(`${row.targetKind}:${row.targetId}`) ?? null
+        ? (hrefs.get(`${row.targetKind}:${row.targetId}`) ?? null)
         : null,
   }))
 }

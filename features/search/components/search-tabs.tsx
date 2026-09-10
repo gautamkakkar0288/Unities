@@ -47,7 +47,7 @@ export function SearchTabs({
                 href={searchHref({ query, tab })}
                 aria-current={isActive ? "page" : undefined}
                 className={cn(
-                  "flex items-center gap-2 rounded-lg px-3 py-2 text-body-sm font-medium transition-colors duration-150 focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none",
+                  "text-body-sm focus-visible:ring-ring/50 flex items-center gap-2 rounded-lg px-3 py-2 font-medium transition-colors duration-150 focus-visible:ring-3 focus-visible:outline-none",
                   isActive
                     ? "bg-primary-subtle text-foreground"
                     : "text-muted-foreground hover:bg-muted hover:text-foreground",
@@ -55,7 +55,9 @@ export function SearchTabs({
               >
                 {searchTabLabel[tab]}
                 {count !== undefined && count > 0 ? (
-                  <Badge variant={isActive ? "brand" : "neutral"}>{count}</Badge>
+                  <Badge variant={isActive ? "brand" : "neutral"}>
+                    {count}
+                  </Badge>
                 ) : null}
               </Link>
             </li>

@@ -57,7 +57,7 @@ export function UpdateCard({
         <CardTitle className="text-body">
           <Link
             href={post.href}
-            className="rounded-sm hover:text-primary focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none"
+            className="hover:text-primary focus-visible:ring-ring/50 rounded-sm focus-visible:ring-3 focus-visible:outline-none"
           >
             {post.title}
           </Link>
@@ -71,7 +71,7 @@ export function UpdateCard({
 
       {post.body && (
         <CardContent>
-          <p className="line-clamp-3 text-body-sm text-muted-foreground">
+          <p className="text-body-sm text-muted-foreground line-clamp-3">
             {post.body}
           </p>
         </CardContent>
@@ -81,7 +81,7 @@ export function UpdateCard({
         <CardContent>
           <Link
             href={`/events/${post.event.slug}`}
-            className="text-caption text-primary underline-offset-4 hover:underline focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none"
+            className="text-caption text-primary focus-visible:ring-ring/50 underline-offset-4 hover:underline focus-visible:ring-3 focus-visible:outline-none"
           >
             About {post.event.title}
           </Link>
@@ -95,13 +95,13 @@ export function UpdateCard({
       */}
       {activity && (
         <CardContent className="mt-auto">
-          <p className="flex flex-wrap items-center gap-3 text-caption text-muted-foreground">
+          <p className="text-caption text-muted-foreground flex flex-wrap items-center gap-3">
             <span className="flex items-center gap-1.5">
               <Heart
                 aria-hidden="true"
                 className={
                   activity.viewerHasReacted
-                    ? "size-3.5 fill-current text-primary"
+                    ? "text-primary size-3.5 fill-current"
                     : "size-3.5"
                 }
               />

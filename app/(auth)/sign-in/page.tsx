@@ -23,17 +23,17 @@ export default function SignInPage() {
     <div className="flex flex-col gap-6">
       <div className="flex flex-col gap-1.5 text-center">
         <h1 className="text-2xl font-semibold tracking-tight">Welcome back</h1>
-        <p className="text-sm text-muted-foreground">
+        <p className="text-muted-foreground text-sm">
           Sign in to continue to Cirqles.
         </p>
       </div>
       <SignInForm />
       <DemoSignIn accounts={demoAccounts} password={DEMO_PASSWORD} />
-      <p className="text-center text-sm text-muted-foreground">
+      <p className="text-muted-foreground text-center text-sm">
         New to Cirqles?{" "}
         <Link
           href="/sign-up"
-          className="font-medium text-foreground underline-offset-4 hover:underline"
+          className="text-foreground font-medium underline-offset-4 hover:underline"
         >
           Create an account
         </Link>

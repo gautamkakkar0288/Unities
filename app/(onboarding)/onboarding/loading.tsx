@@ -10,8 +10,8 @@ export default function OnboardingLoading() {
     <div className="flex flex-col gap-8">
       <div className="flex flex-col gap-2">
         <Skeleton className="h-8 w-64" />
-        <Skeleton className="h-4 w-full max-w-readable" />
-        <Skeleton className="h-4 w-3/4 max-w-readable" />
+        <Skeleton className="max-w-readable h-4 w-full" />
+        <Skeleton className="max-w-readable h-4 w-3/4" />
       </div>
 
       <div className="flex flex-wrap gap-2">

@@ -129,7 +129,11 @@ function idContext(id: string) {
 type Envelope = {
   data?: unknown
   meta?: Record<string, unknown>
-  error?: { code: string; message: string; fieldErrors?: Record<string, string> }
+  error?: {
+    code: string
+    message: string
+    fieldErrors?: Record<string, string>
+  }
 }
 
 async function read(response: Response) {

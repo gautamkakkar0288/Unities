@@ -59,10 +59,7 @@ export async function hasCompletedOnboarding(userId: string): Promise<boolean> {
     .from(userInterests)
     .innerJoin(interests, eq(interests.id, userInterests.interestId))
     .where(
-      and(
-        eq(userInterests.userId, userId),
-        eq(interests.status, "ACTIVE"),
-      ),
+      and(eq(userInterests.userId, userId), eq(interests.status, "ACTIVE")),
     )
 
   return (row?.count ?? 0) >= MINIMUM_INTERESTS
@@ -120,9 +117,11 @@ export async function setUserInterests(args: {
     }
 
     await tx.delete(userInterests).where(eq(userInterests.userId, args.userId))
-    await tx.insert(userInterests).values(
-      requested.map((interestId) => ({ userId: args.userId, interestId })),
-    )
+    await tx
+      .insert(userInterests)
+      .values(
+        requested.map((interestId) => ({ userId: args.userId, interestId })),
+      )
 
     return ok(
       await tx

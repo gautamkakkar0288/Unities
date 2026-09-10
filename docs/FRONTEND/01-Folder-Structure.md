@@ -17,4 +17,5 @@ public/
 ```
 
 ## Rule
+
 Never fetch or manage server state directly inside a UI component. Always: Component → Hook → Service → API.

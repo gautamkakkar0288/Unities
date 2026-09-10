@@ -44,9 +44,9 @@ export function SavedFilters({
                 }
                 aria-current={isActive ? "page" : undefined}
                 className={cn(
-                  "flex items-center gap-1.5 rounded-lg px-3 py-2 text-body-sm transition-colors duration-150 focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none",
+                  "text-body-sm focus-visible:ring-ring/50 flex items-center gap-1.5 rounded-lg px-3 py-2 transition-colors duration-150 focus-visible:ring-3 focus-visible:outline-none",
                   isActive
-                    ? "bg-primary-subtle font-medium text-primary"
+                    ? "bg-primary-subtle text-primary font-medium"
                     : "text-muted-foreground hover:bg-muted hover:text-foreground",
                 )}
               >
@@ -59,7 +59,7 @@ export function SavedFilters({
                 <span
                   aria-hidden="true"
                   className={cn(
-                    "rounded-md px-1.5 text-caption",
+                    "text-caption rounded-md px-1.5",
                     isActive
                       ? "bg-primary/10 text-primary"
                       : "bg-muted text-muted-foreground",

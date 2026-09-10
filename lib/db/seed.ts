@@ -274,9 +274,11 @@ async function seed() {
     .onConflictDoNothing({ target: interests.slug })
 
   const interestIds = new Map(
-    (await db.select({ id: interests.id, slug: interests.slug }).from(interests)).map(
-      (row) => [row.slug, row.id],
-    ),
+    (
+      await db
+        .select({ id: interests.id, slug: interests.slug })
+        .from(interests)
+    ).map((row) => [row.slug, row.id]),
   )
 
   const placeIds = new Map(

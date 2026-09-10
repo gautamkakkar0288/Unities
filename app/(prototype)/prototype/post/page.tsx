@@ -88,7 +88,7 @@ export default function PrototypePostPage() {
           <h2 id="comments-heading" className="text-h3">
             {focusPostComments.length} comments
           </h2>
-          <ul className="flex flex-col divide-y divide-border">
+          <ul className="divide-border flex flex-col divide-y">
             {focusPostComments.map((comment) => (
               <li key={comment.id}>
                 <CommentItem comment={comment} now={prototypeNow} />
@@ -96,7 +96,7 @@ export default function PrototypePostPage() {
             ))}
           </ul>
           <Separator className="mt-2" />
-          <p className="pt-4 text-caption text-muted-foreground">
+          <p className="text-caption text-muted-foreground pt-4">
             That is the whole thread. Real threads paginate at 20 comments.
           </p>
         </section>

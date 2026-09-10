@@ -10,7 +10,8 @@ import { listInterests } from "@/lib/services/interests"
 
 export const metadata: Metadata = {
   title: "Propose a community",
-  description: "Ask for a club, society, or interest group that does not exist yet.",
+  description:
+    "Ask for a club, society, or interest group that does not exist yet.",
 }
 
 /**
@@ -34,7 +35,7 @@ export default async function ProposeCommunityPage() {
         description="Tell us what is missing. A reviewer reads every proposal."
       />
 
-      <div className="flex max-w-readable flex-col gap-6">
+      <div className="max-w-readable flex flex-col gap-6">
         {!canCreateCommunityDirectly(session.user.role) ? null : (
           <Alert variant="info" title="You can normally create these outright">
             Your role is allowed to create a community without review, but that

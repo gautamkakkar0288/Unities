@@ -17,15 +17,15 @@ export const metadata = {
 export default function PrototypeOverviewPage() {
   return (
     <div className="flex flex-col gap-10">
-      <header className="flex max-w-readable flex-col gap-3">
-        <p className="text-caption font-medium tracking-wide text-primary uppercase">
+      <header className="max-w-readable flex flex-col gap-3">
+        <p className="text-caption text-primary font-medium tracking-wide uppercase">
           Phase 6-P
         </p>
         <h1 className="text-h1">Every screen, before every table</h1>
         <p className="text-body-sm text-muted-foreground">
           This is the whole product as clickable screens, built from the real
           design system and typed against the real domain model in{" "}
-          <code className="rounded bg-muted px-1 py-0.5 text-caption">
+          <code className="bg-muted text-caption rounded px-1 py-0.5">
             lib/domain/types.ts
           </code>
           . Nothing here talks to a database. The point is to find what is wrong
@@ -53,7 +53,7 @@ export default function PrototypeOverviewPage() {
                           className="group/link inline-flex items-center gap-1.5 focus-visible:outline-none"
                         >
                           {screen.title}
-                          <ArrowRight className="size-4 text-muted-foreground transition-transform duration-150 ease-standard group-hover/link:translate-x-0.5" />
+                          <ArrowRight className="text-muted-foreground ease-standard size-4 transition-transform duration-150 group-hover/link:translate-x-0.5" />
                         </Link>
                       </CardTitle>
                       <Badge variant="outline">{screen.phase}</Badge>

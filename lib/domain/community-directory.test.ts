@@ -68,7 +68,9 @@ describe("filterCommunities", () => {
 
   it("returns everything when nothing is asked of it", () => {
     expect(filterCommunities(directory, {})).toHaveLength(3)
-    expect(filterCommunities(directory, { scope: null, query: "   " })).toHaveLength(3)
+    expect(
+      filterCommunities(directory, { scope: null, query: "   " }),
+    ).toHaveLength(3)
   })
 
   it("keeps only the chosen scope", () => {
@@ -83,22 +85,24 @@ describe("filterCommunities", () => {
   it("matches on a partial word, which name-similarity scoring would miss", () => {
     // "phot" shares no whole token with "Weekend photography walks", so the
     // duplicate-detection scorer rates it zero. A search box has to find it.
-    expect(filterCommunities(directory, { query: "phot" }).map((c) => c.name)).toEqual([
-      "Shutter",
-    ])
+    expect(
+      filterCommunities(directory, { query: "phot" }).map((c) => c.name),
+    ).toEqual(["Shutter"])
   })
 
   it("matches on interest and place, not just the name", () => {
-    expect(filterCommunities(directory, { query: "technology" }).map((c) => c.name)).toEqual([
-      "Open Source",
-    ])
-    expect(filterCommunities(directory, { query: "tricity" }).map((c) => c.name)).toEqual([
-      "Shutter",
-    ])
+    expect(
+      filterCommunities(directory, { query: "technology" }).map((c) => c.name),
+    ).toEqual(["Open Source"])
+    expect(
+      filterCommunities(directory, { query: "tricity" }).map((c) => c.name),
+    ).toEqual(["Shutter"])
   })
 
   it("applies scope and query together", () => {
-    expect(filterCommunities(directory, { scope: "UNIVERSITY", query: "phot" })).toEqual([])
+    expect(
+      filterCommunities(directory, { scope: "UNIVERSITY", query: "phot" }),
+    ).toEqual([])
   })
 
   it("can only ever narrow what the service returned", () => {
@@ -121,7 +125,9 @@ describe("groupByScope after filtering", () => {
       community({ name: "Shutter", scope: "CITY" }),
     ]
 
-    const groups = groupByScope(filterCommunities(directory, { query: "football" }))
+    const groups = groupByScope(
+      filterCommunities(directory, { query: "football" }),
+    )
 
     expect(groups).toHaveLength(1)
     expect(groups[0].scope).toBe("UNIVERSITY")

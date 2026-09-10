@@ -4,33 +4,33 @@ How the design specification maps to code. `DESIGN_SYSTEM.md` and `docs/DESIGN/*
 
 ## Where things live
 
-| Concern | Location |
-|---|---|
-| Token definitions | `app/globals.css` (`@theme`) |
-| Token reference | `docs/DESIGN/13-Design-Tokens.md` |
-| Primitives | `components/ui/*` |
-| Layout primitives | `components/layout/*` |
-| Theme provider | `components/providers/index.tsx` |
-| Live gallery | `/design` |
+| Concern           | Location                          |
+| ----------------- | --------------------------------- |
+| Token definitions | `app/globals.css` (`@theme`)      |
+| Token reference   | `docs/DESIGN/13-Design-Tokens.md` |
+| Primitives        | `components/ui/*`                 |
+| Layout primitives | `components/layout/*`             |
+| Theme provider    | `components/providers/index.tsx`  |
+| Live gallery      | `/design`                         |
 
 ## Primitive inventory
 
-| Primitive | Purpose | Notes |
-|---|---|---|
-| `Button` | actions | pre-existing; variants default / secondary / outline / ghost / destructive / link |
-| `Input`, `Textarea` | text entry | token borders, `aria-invalid` styling |
-| `Label` | field labels | optional `required` marker with screen-reader text |
-| `Field` | label + control + hint + error | render prop wires `aria-invalid` and `aria-describedby` |
-| `Card` + subcomponents | primary content container | `interactive` adds hover elevation and focus ring |
-| `Badge` | status and metadata | 9 variants; always carries a text label |
-| `Avatar` | identity | initials fallback, accessible name, 5 sizes |
-| `Alert` | inline feedback | picks its own icon; `alert` role for error/warning, `status` otherwise |
-| `EmptyState` | zero-data surfaces | requires a title, expects an action |
-| `Skeleton` | content loading | preferred over spinners for pages and lists |
-| `Spinner` | in-flight actions | sr-only status label by default |
-| `Separator` | visual division | `role="separator"` with orientation |
-| `Container` | horizontal rhythm | `page` / `wide` / `readable` + responsive padding |
-| `ThemeToggle` | light / dark / system | radiogroup, hydration-safe |
+| Primitive              | Purpose                        | Notes                                                                             |
+| ---------------------- | ------------------------------ | --------------------------------------------------------------------------------- |
+| `Button`               | actions                        | pre-existing; variants default / secondary / outline / ghost / destructive / link |
+| `Input`, `Textarea`    | text entry                     | token borders, `aria-invalid` styling                                             |
+| `Label`                | field labels                   | optional `required` marker with screen-reader text                                |
+| `Field`                | label + control + hint + error | render prop wires `aria-invalid` and `aria-describedby`                           |
+| `Card` + subcomponents | primary content container      | `interactive` adds hover elevation and focus ring                                 |
+| `Badge`                | status and metadata            | 9 variants; always carries a text label                                           |
+| `Avatar`               | identity                       | initials fallback, accessible name, 5 sizes                                       |
+| `Alert`                | inline feedback                | picks its own icon; `alert` role for error/warning, `status` otherwise            |
+| `EmptyState`           | zero-data surfaces             | requires a title, expects an action                                               |
+| `Skeleton`             | content loading                | preferred over spinners for pages and lists                                       |
+| `Spinner`              | in-flight actions              | sr-only status label by default                                                   |
+| `Separator`            | visual division                | `role="separator"` with orientation                                               |
+| `Container`            | horizontal rhythm              | `page` / `wide` / `readable` + responsive padding                                 |
+| `ThemeToggle`          | light / dark / system          | radiogroup, hydration-safe                                                        |
 
 ## Rules for feature work
 

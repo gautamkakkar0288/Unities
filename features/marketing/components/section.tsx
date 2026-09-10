@@ -38,7 +38,7 @@ export function Section({
       // scroll-mt clears the sticky header when jumping to an anchor.
       className={cn("scroll-mt-20 py-16 sm:py-20 lg:py-24", className)}
     >
-      <div className="mx-auto w-full max-w-page px-4 sm:px-6 lg:px-8 xl:px-12">
+      <div className="max-w-page mx-auto w-full px-4 sm:px-6 lg:px-8 xl:px-12">
         <div
           className={cn(
             "flex flex-col gap-3",
@@ -46,11 +46,11 @@ export function Section({
           )}
         >
           {eyebrow && (
-            <p className="text-caption font-semibold tracking-wide text-primary uppercase">
+            <p className="text-caption text-primary font-semibold tracking-wide uppercase">
               {eyebrow}
             </p>
           )}
-          <h2 id={headingId} className="max-w-2xl text-h2">
+          <h2 id={headingId} className="text-h2 max-w-2xl">
             {title}
           </h2>
           {description && (

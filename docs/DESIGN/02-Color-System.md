@@ -42,15 +42,15 @@ Dark mode is supported in the future but should never compromise readability or 
 
 Each color has a purpose.
 
-| Purpose | Emotion |
-|----------|---------|
-| Primary | Trust & Discovery |
-| Secondary | Community |
-| Accent | Energy & Highlights |
-| Success | Confidence |
-| Warning | Attention |
-| Error | Clarity |
-| Neutral | Balance |
+| Purpose   | Emotion             |
+| --------- | ------------------- |
+| Primary   | Trust & Discovery   |
+| Secondary | Community           |
+| Accent    | Energy & Highlights |
+| Success   | Confidence          |
+| Warning   | Attention           |
+| Error     | Clarity             |
+| Neutral   | Balance             |
 
 Never use colors purely for decoration.
 

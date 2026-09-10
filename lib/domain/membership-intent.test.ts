@@ -7,10 +7,7 @@ import {
 } from "@/lib/domain/membership"
 import type { CommunitySummary } from "@/lib/domain/types"
 
-type Viewer = Pick<
-  CommunitySummary,
-  "name" | "joinPolicy" | "viewerMembership"
->
+type Viewer = Pick<CommunitySummary, "name" | "joinPolicy" | "viewerMembership">
 
 function viewer(overrides: Partial<Viewer> = {}): Viewer {
   return {
@@ -39,25 +36,33 @@ describe("membershipIntent", () => {
   it("treats accepting an invitation as joining", () => {
     // Even for an invite-only community: the invitation is the permission.
     expect(
-      membershipIntent(viewer({ joinPolicy: "INVITE", viewerMembership: "INVITED" })),
+      membershipIntent(
+        viewer({ joinPolicy: "INVITE", viewerMembership: "INVITED" }),
+      ),
     ).toBe("JOIN")
   })
 
   it("withdraws a pending request through leave", () => {
-    expect(membershipIntent(viewer({ viewerMembership: "PENDING" }))).toBe("LEAVE")
+    expect(membershipIntent(viewer({ viewerMembership: "PENDING" }))).toBe(
+      "LEAVE",
+    )
   })
 
   it.each(["MEMBER", "MODERATOR", "OWNER"] as const)(
     "lets a %s leave",
     (state) => {
-      expect(membershipIntent(viewer({ viewerMembership: state }))).toBe("LEAVE")
+      expect(membershipIntent(viewer({ viewerMembership: state }))).toBe(
+        "LEAVE",
+      )
     },
   )
 })
 
 describe("describeLeaveAction", () => {
   it("does not say leave when there is nothing to leave yet", () => {
-    expect(describeLeaveAction(viewer({ viewerMembership: "PENDING" }))).toEqual({
+    expect(
+      describeLeaveAction(viewer({ viewerMembership: "PENDING" })),
+    ).toEqual({
       label: "Withdraw request",
       accessibleLabel: "Withdraw your request to join Robotics",
     })
@@ -65,7 +70,8 @@ describe("describeLeaveAction", () => {
 
   it("names the community, so the label survives being read alone", () => {
     expect(
-      describeLeaveAction(viewer({ viewerMembership: "MEMBER" })).accessibleLabel,
+      describeLeaveAction(viewer({ viewerMembership: "MEMBER" }))
+        .accessibleLabel,
     ).toBe("Leave Robotics")
   })
 })

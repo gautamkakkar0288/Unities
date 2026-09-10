@@ -50,11 +50,11 @@ export function DemoSignIn({
   return (
     <div className="flex flex-col gap-3">
       <div className="flex items-center gap-3">
-        <span className="h-px flex-1 bg-border" />
+        <span className="bg-border h-px flex-1" />
         <span className="text-caption text-muted-foreground">
           or explore the demo
         </span>
-        <span className="h-px flex-1 bg-border" />
+        <span className="bg-border h-px flex-1" />
       </div>
 
       {error ? <Alert variant="error">{error}</Alert> : null}

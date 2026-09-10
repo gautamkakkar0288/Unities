@@ -1,5 +1,11 @@
 import { sql } from "drizzle-orm"
-import { index, pgTable, text, timestamp, uniqueIndex } from "drizzle-orm/pg-core"
+import {
+  index,
+  pgTable,
+  text,
+  timestamp,
+  uniqueIndex,
+} from "drizzle-orm/pg-core"
 
 import { communities } from "./communities"
 import { verificationRequestStatuses } from "./enums"
@@ -66,10 +72,7 @@ export const verificationRequests = pgTable(
       .on(table.communityId)
       .where(sql`${table.status} = 'PENDING'`),
     /** The reviewer's queue: oldest pending first. */
-    index("verification_requests_status_idx").on(
-      table.status,
-      table.createdAt,
-    ),
+    index("verification_requests_status_idx").on(table.status, table.createdAt),
     index("verification_requests_community_idx").on(table.communityId),
   ],
 )

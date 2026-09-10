@@ -54,10 +54,10 @@ export default async function CommunityRequestsPage({
         description={`People waiting on a decision to join ${community.name}.`}
       />
 
-      <div className="flex max-w-readable flex-col gap-4">
+      <div className="max-w-readable flex flex-col gap-4">
         <Link
           href={`/communities/${community.slug}`}
-          className="text-body-sm text-muted-foreground underline underline-offset-2 hover:text-primary"
+          className="text-body-sm text-muted-foreground hover:text-primary underline underline-offset-2"
         >
           Back to {community.name}
         </Link>
@@ -69,7 +69,7 @@ export default async function CommunityRequestsPage({
             Nobody is waiting. Requests appear here as students ask to join.
           </p>
         ) : (
-          <ul className="flex flex-col divide-y divide-border">
+          <ul className="divide-border flex flex-col divide-y">
             {requests.data.map((request) => {
               const name = request.name ?? "A Cirqles member"
 
@@ -80,7 +80,7 @@ export default async function CommunityRequestsPage({
                 >
                   <Avatar size="sm" name={name} src={request.avatarUrl} />
                   <div className="flex min-w-0 flex-col">
-                    <span className="truncate text-body font-medium">
+                    <span className="text-body truncate font-medium">
                       {name}
                     </span>
                     <Badge

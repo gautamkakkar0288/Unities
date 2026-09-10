@@ -29,7 +29,7 @@ export function AppSidebar({
   unreadCount = 0,
 }: AppSidebarProps) {
   return (
-    <aside className="fixed inset-y-0 left-0 z-40 hidden w-64 flex-col border-r border-border bg-card lg:flex">
+    <aside className="border-border bg-card fixed inset-y-0 left-0 z-40 hidden w-64 flex-col border-r lg:flex">
       <div className="flex h-16 shrink-0 items-center px-6">
         <Logo />
       </div>
@@ -52,7 +52,7 @@ export function AppSidebar({
         </ul>
       </nav>
 
-      <div className="shrink-0 border-t border-border p-3">
+      <div className="border-border shrink-0 border-t p-3">
         <UserCard name={name} email={email} role={role} />
       </div>
     </aside>

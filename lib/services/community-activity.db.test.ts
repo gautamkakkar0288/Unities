@@ -60,7 +60,13 @@ const OUTSIDER = "activity-test-outsider"
 const MODERATOR = "activity-test-moderator"
 const PLATFORM_ADMIN_USER = "activity-test-platform-admin"
 
-const USER_IDS = [AUTHOR, OTHER_MEMBER, OUTSIDER, MODERATOR, PLATFORM_ADMIN_USER]
+const USER_IDS = [
+  AUTHOR,
+  OTHER_MEMBER,
+  OUTSIDER,
+  MODERATOR,
+  PLATFORM_ADMIN_USER,
+]
 
 /** A fixed clock, so ordering assertions do not depend on execution speed. */
 const NOW = new Date("2026-05-20T10:00:00Z")
@@ -179,13 +185,17 @@ describe.skipIf(!hasDatabase)("community activity", () => {
     const postIds = postRows.map((row) => row.id)
 
     if (postIds.length > 0) {
-      await db.delete(postReactions).where(inArray(postReactions.postId, postIds))
+      await db
+        .delete(postReactions)
+        .where(inArray(postReactions.postId, postIds))
       await db.delete(postComments).where(inArray(postComments.postId, postIds))
     }
 
     await db.delete(reports).where(inArray(reports.reporterId, USER_IDS))
     await db.delete(auditLog).where(inArray(auditLog.actorId, USER_IDS))
-    await db.delete(notifications).where(inArray(notifications.userId, USER_IDS))
+    await db
+      .delete(notifications)
+      .where(inArray(notifications.userId, USER_IDS))
 
     if (postIds.length > 0) {
       await db.delete(posts).where(inArray(posts.id, postIds))
@@ -203,7 +213,10 @@ describe.skipIf(!hasDatabase)("community activity", () => {
     await db.delete(places).where(eq(places.id, PLACE))
   })
 
-  async function publish(overrides?: { title?: string; eventId?: string | null }) {
+  async function publish(overrides?: {
+    title?: string
+    eventId?: string | null
+  }) {
     const result = await publishPost({
       authorId: AUTHOR,
       communityId: COMMUNITY,
@@ -444,7 +457,11 @@ describe.skipIf(!hasDatabase)("community activity", () => {
     it("is idempotent - reacting twice is still one like", async () => {
       const { id } = await publish({ title: "Double click" })
 
-      await setPostReaction({ actorId: OTHER_MEMBER, postId: id, reacted: true })
+      await setPostReaction({
+        actorId: OTHER_MEMBER,
+        postId: id,
+        reacted: true,
+      })
       const second = await setPostReaction({
         actorId: OTHER_MEMBER,
         postId: id,
@@ -458,7 +475,11 @@ describe.skipIf(!hasDatabase)("community activity", () => {
     it("unreacts back to zero", async () => {
       const { id } = await publish({ title: "Unreact" })
 
-      await setPostReaction({ actorId: OTHER_MEMBER, postId: id, reacted: true })
+      await setPostReaction({
+        actorId: OTHER_MEMBER,
+        postId: id,
+        reacted: true,
+      })
       const removed = await setPostReaction({
         actorId: OTHER_MEMBER,
         postId: id,
@@ -472,10 +493,18 @@ describe.skipIf(!hasDatabase)("community activity", () => {
     it("keeps one person's like separate from another's", async () => {
       const { id } = await publish({ title: "Two likers" })
 
-      await setPostReaction({ actorId: OTHER_MEMBER, postId: id, reacted: true })
+      await setPostReaction({
+        actorId: OTHER_MEMBER,
+        postId: id,
+        reacted: true,
+      })
       await setPostReaction({ actorId: MODERATOR, postId: id, reacted: true })
       // One person unreacting must not remove the other's like.
-      await setPostReaction({ actorId: OTHER_MEMBER, postId: id, reacted: false })
+      await setPostReaction({
+        actorId: OTHER_MEMBER,
+        postId: id,
+        reacted: false,
+      })
 
       const [activity] = await listCommunityActivity({
         communityId: COMMUNITY,
@@ -490,7 +519,11 @@ describe.skipIf(!hasDatabase)("community activity", () => {
     it("tells the author once, not once per like", async () => {
       const { id } = await publish({ title: "Notify once" })
 
-      await setPostReaction({ actorId: OTHER_MEMBER, postId: id, reacted: true })
+      await setPostReaction({
+        actorId: OTHER_MEMBER,
+        postId: id,
+        reacted: true,
+      })
       await setPostReaction({ actorId: MODERATOR, postId: id, reacted: true })
 
       const rows = await db
@@ -521,7 +554,10 @@ describe.skipIf(!hasDatabase)("community activity", () => {
 
       expect(result.ok).toBe(true)
 
-      const comments = await listPostComments({ postId: id, viewerId: OTHER_MEMBER })
+      const comments = await listPostComments({
+        postId: id,
+        viewerId: OTHER_MEMBER,
+      })
       expect(comments).toHaveLength(1)
       expect(comments[0]?.viewerIsAuthor).toBe(true)
 
@@ -953,7 +989,11 @@ describe.skipIf(!hasDatabase)("community activity", () => {
     it("cannot remove another user's like", async () => {
       const { id } = await publish({ title: "Someone else's like" })
 
-      await setPostReaction({ actorId: OTHER_MEMBER, postId: id, reacted: true })
+      await setPostReaction({
+        actorId: OTHER_MEMBER,
+        postId: id,
+        reacted: true,
+      })
 
       // The only reaction anyone can delete is their own: the statement is
       // scoped by the actor's id, so this is a no-op rather than a removal.

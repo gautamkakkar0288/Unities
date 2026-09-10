@@ -17,7 +17,7 @@ export default function AppLoading() {
         {[0, 1, 2].map((index) => (
           <div
             key={index}
-            className="flex flex-col gap-3 rounded-xl border border-border p-4"
+            className="border-border flex flex-col gap-3 rounded-xl border p-4"
           >
             <div className="flex items-center gap-3">
               <Skeleton className="size-10 rounded-full" />

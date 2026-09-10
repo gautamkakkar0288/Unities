@@ -8,16 +8,12 @@ import { SiteHeader } from "@/features/marketing/components/site-header"
  * shell added in Phase 5 can have completely different chrome without either
  * layout having to branch on session state.
  */
-export default function MarketingLayout({
-  children,
-}: {
-  children: ReactNode
-}) {
+export default function MarketingLayout({ children }: { children: ReactNode }) {
   return (
     <>
       <a
         href="#content"
-        className="sr-only focus:not-sr-only focus:absolute focus:top-3 focus:left-3 focus:z-[60] focus:rounded-lg focus:bg-primary focus:px-4 focus:py-2 focus:text-body-sm focus:text-primary-foreground"
+        className="focus:bg-primary focus:text-body-sm focus:text-primary-foreground sr-only focus:not-sr-only focus:absolute focus:top-3 focus:left-3 focus:z-[60] focus:rounded-lg focus:px-4 focus:py-2"
       >
         Skip to content
       </a>

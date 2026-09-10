@@ -29,16 +29,16 @@ function EmptyState({
     <div
       data-slot="empty-state"
       className={cn(
-        "flex flex-col items-center justify-center gap-4 rounded-xl border border-dashed border-border px-6 py-12 text-center",
+        "border-border flex flex-col items-center justify-center gap-4 rounded-xl border border-dashed px-6 py-12 text-center",
         className,
       )}
     >
       {Icon && (
-        <span className="flex size-11 items-center justify-center rounded-full bg-muted text-muted-foreground">
+        <span className="bg-muted text-muted-foreground flex size-11 items-center justify-center rounded-full">
           <Icon className="size-5" aria-hidden="true" />
         </span>
       )}
-      <div className="flex max-w-readable flex-col gap-1.5">
+      <div className="max-w-readable flex flex-col gap-1.5">
         <p className="text-h4">{title}</p>
         {description && (
           <p className="text-body-sm text-muted-foreground">{description}</p>

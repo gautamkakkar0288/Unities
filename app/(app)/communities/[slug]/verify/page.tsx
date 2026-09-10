@@ -40,10 +40,10 @@ export default async function CommunityVerifyPage({
         description={`Ask an administrator to confirm that ${community.name} is a real club at your university.`}
       />
 
-      <div className="flex max-w-readable flex-col gap-4">
+      <div className="max-w-readable flex flex-col gap-4">
         <Link
           href={`/communities/${community.slug}`}
-          className="text-body-sm text-muted-foreground underline underline-offset-2 hover:text-primary"
+          className="text-body-sm text-muted-foreground hover:text-primary underline underline-offset-2"
         >
           Back to {community.name}
         </Link>

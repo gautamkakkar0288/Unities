@@ -73,7 +73,7 @@ export default function PrototypeMessagesPage() {
                         </Badge>
                         {conversation.unreadCount > 0 && (
                           <span
-                            className="inline-flex min-w-5 items-center justify-center rounded-full bg-primary px-1.5 text-caption font-medium text-primary-foreground"
+                            className="bg-primary text-caption text-primary-foreground inline-flex min-w-5 items-center justify-center rounded-full px-1.5 font-medium"
                             data-numeric
                           >
                             {conversation.unreadCount}
@@ -81,10 +81,10 @@ export default function PrototypeMessagesPage() {
                           </span>
                         )}
                       </div>
-                      <p className="truncate text-body-sm font-medium">
+                      <p className="text-body-sm truncate font-medium">
                         {conversation.title}
                       </p>
-                      <p className="truncate text-caption text-muted-foreground">
+                      <p className="text-caption text-muted-foreground truncate">
                         {conversation.lastMessagePreview}
                       </p>
                       <time
@@ -106,7 +106,7 @@ export default function PrototypeMessagesPage() {
 
         <section aria-label={`Conversation: ${openConversation.title}`}>
           <Card className="gap-0">
-            <CardContent className="flex flex-col gap-1 border-b border-border pb-4">
+            <CardContent className="border-border flex flex-col gap-1 border-b pb-4">
               <div className="flex flex-wrap items-center gap-2">
                 <h2 className="text-h4">{openConversation.title}</h2>
                 <Badge variant={conversationScopeTone[openConversation.scope]}>
@@ -119,7 +119,7 @@ export default function PrototypeMessagesPage() {
             </CardContent>
 
             <CardContent className="flex flex-col gap-4 py-6">
-              <p className="flex items-start gap-2 rounded-lg border border-info-border bg-info-subtle px-3 py-2 text-caption text-info-foreground">
+              <p className="border-info-border bg-info-subtle text-caption text-info-foreground flex items-start gap-2 rounded-lg border px-3 py-2">
                 <Info aria-hidden="true" className="mt-0.5 size-3.5 shrink-0" />
                 This channel closes 48 hours after the event so it does not
                 become a group chat nobody moderates.
@@ -154,7 +154,7 @@ export default function PrototypeMessagesPage() {
                       </p>
                       <p
                         className={cn(
-                          "rounded-lg px-3 py-2 text-body-sm",
+                          "text-body-sm rounded-lg px-3 py-2",
                           message.fromViewer
                             ? "bg-primary text-primary-foreground"
                             : "bg-muted",
@@ -168,7 +168,7 @@ export default function PrototypeMessagesPage() {
               </ul>
             </CardContent>
 
-            <CardContent className="flex flex-col gap-2 border-t border-border pt-4">
+            <CardContent className="border-border flex flex-col gap-2 border-t pt-4">
               {replyAllowed ? (
                 <>
                   <Label htmlFor="message-body" className="sr-only">

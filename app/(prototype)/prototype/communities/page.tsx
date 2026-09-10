@@ -61,7 +61,7 @@ export default function PrototypeCommunitiesScreen() {
             <div className="flex items-start gap-3">
               <span
                 aria-hidden="true"
-                className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-primary text-primary-foreground"
+                className="bg-primary text-primary-foreground flex size-11 shrink-0 items-center justify-center rounded-xl"
               >
                 <Building2 className="size-5" />
               </span>
@@ -88,12 +88,18 @@ export default function PrototypeCommunitiesScreen() {
 
           <dl className="flex flex-wrap gap-x-8 gap-y-2">
             {[
-              { label: "Students", value: formatCount(campusOverview.studentCount) },
+              {
+                label: "Students",
+                value: formatCount(campusOverview.studentCount),
+              },
               {
                 label: "Upcoming events",
                 value: formatCount(campusOverview.upcomingEventCount),
               },
-              { label: "Active clubs", value: formatCount(campusOverview.clubCount) },
+              {
+                label: "Active clubs",
+                value: formatCount(campusOverview.clubCount),
+              },
             ].map((stat) => (
               <div key={stat.label} className="flex flex-col">
                 <dt className="text-caption text-muted-foreground">
@@ -157,9 +163,9 @@ export default function PrototypeCommunitiesScreen() {
             Cannot find what you are looking for?
           </p>
           <p className="max-w-readable text-body-sm text-muted-foreground">
-            Propose it. A reviewer checks whether it already exists under another
-            name, and approves it if it does not - which is how the platform grows
-            without ending up with four football communities.
+            Propose it. A reviewer checks whether it already exists under
+            another name, and approves it if it does not - which is how the
+            platform grows without ending up with four football communities.
           </p>
           <Button
             variant="outline"

@@ -129,9 +129,12 @@ describe.skipIf(!hasDatabase)("community service, against Postgres", () => {
       },
     ])
 
-    await db
-      .insert(interests)
-      .values({ id: INTEREST, slug: "vt-sports", label: "Sports", sortOrder: 1 })
+    await db.insert(interests).values({
+      id: INTEREST,
+      slug: "vt-sports",
+      label: "Sports",
+      sortOrder: 1,
+    })
 
     await db.insert(users).values([
       {
@@ -146,7 +149,12 @@ describe.skipIf(!hasDatabase)("community service, against Postgres", () => {
         email: "second@vt.test",
         universityId: CAMPUS,
       },
-      { id: OWNER, name: "Owner", email: "owner@vt.test", universityId: CAMPUS },
+      {
+        id: OWNER,
+        name: "Owner",
+        email: "owner@vt.test",
+        universityId: CAMPUS,
+      },
       {
         id: CO_OWNER,
         name: "Co-owner",
@@ -155,7 +163,11 @@ describe.skipIf(!hasDatabase)("community service, against Postgres", () => {
       },
     ])
 
-    const base = { interestId: INTEREST, kind: "STUDENT" as const, tagline: "t" }
+    const base = {
+      interestId: INTEREST,
+      kind: "STUDENT" as const,
+      tagline: "t",
+    }
 
     await db.insert(communities).values([
       {
@@ -380,7 +392,10 @@ describe.skipIf(!hasDatabase)("community service, against Postgres", () => {
     })
 
     it("cannot leave while they are the only one", async () => {
-      const result = await leaveCommunity({ userId: OWNER, communityId: OPEN_C })
+      const result = await leaveCommunity({
+        userId: OWNER,
+        communityId: OPEN_C,
+      })
 
       expect(result.ok).toBe(false)
       if (!result.ok) expect(result.code).toBe("CONFLICT")
@@ -394,7 +409,10 @@ describe.skipIf(!hasDatabase)("community service, against Postgres", () => {
         joinedAt: new Date(),
       })
 
-      const result = await leaveCommunity({ userId: OWNER, communityId: OPEN_C })
+      const result = await leaveCommunity({
+        userId: OWNER,
+        communityId: OPEN_C,
+      })
       expect(result.ok).toBe(true)
     })
   })

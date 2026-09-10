@@ -69,10 +69,13 @@ export function OpportunityCard({
               href={opportunity.url}
               target="_blank"
               rel="noreferrer"
-              className="inline-flex items-start gap-1 rounded-sm hover:text-primary focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none"
+              className="hover:text-primary focus-visible:ring-ring/50 inline-flex items-start gap-1 rounded-sm focus-visible:ring-3 focus-visible:outline-none"
             >
               {opportunity.title}
-              <ArrowUpRight aria-hidden="true" className="mt-1 size-4 shrink-0" />
+              <ArrowUpRight
+                aria-hidden="true"
+                className="mt-1 size-4 shrink-0"
+              />
               <span className="sr-only">(opens in a new tab)</span>
             </a>
           ) : (

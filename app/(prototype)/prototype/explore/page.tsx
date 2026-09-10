@@ -109,7 +109,7 @@ export default function PrototypeExploreScreen() {
                 <CardHeader className="gap-2">
                   <span
                     aria-hidden="true"
-                    className="flex size-9 items-center justify-center rounded-lg bg-primary-subtle text-primary"
+                    className="bg-primary-subtle text-primary flex size-9 items-center justify-center rounded-lg"
                   >
                     <Icon className="size-4" />
                   </span>
@@ -165,7 +165,7 @@ export default function PrototypeExploreScreen() {
             <li key={interest.id}>
               <Link
                 href="/prototype/explore"
-                className="inline-flex rounded-full focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none"
+                className="focus-visible:ring-ring/50 inline-flex rounded-full focus-visible:ring-3 focus-visible:outline-none"
               >
                 <Badge
                   variant={
@@ -185,8 +185,8 @@ export default function PrototypeExploreScreen() {
           <CardContent className="flex flex-col items-start gap-2 py-5">
             <p className="text-body-sm font-medium">Something missing?</p>
             <p className="text-body-sm text-muted-foreground">
-              Suggest it. When enough students ask for the same thing, it becomes
-              an official interest - Cricket got added that way after 96
+              Suggest it. When enough students ask for the same thing, it
+              becomes an official interest - Cricket got added that way after 96
               requests.
             </p>
             <div className="flex w-full flex-wrap gap-2">
@@ -194,7 +194,7 @@ export default function PrototypeExploreScreen() {
                 type="text"
                 aria-label="Suggest an interest"
                 placeholder="Padel"
-                className="h-9 min-w-40 flex-1 rounded-lg border border-input bg-background px-3 text-body-sm focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none"
+                className="border-input bg-background text-body-sm focus-visible:ring-ring/50 h-9 min-w-40 flex-1 rounded-lg border px-3 focus-visible:ring-3 focus-visible:outline-none"
               />
               <Button type="button" size="sm" variant="outline">
                 Suggest

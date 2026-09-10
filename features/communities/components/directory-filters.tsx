@@ -55,8 +55,8 @@ export function DirectoryFilters({
                   href={hrefFor(tab.scope)}
                   aria-current={active ? "page" : undefined}
                   className={cn(
-                    "inline-flex items-center rounded-full border px-3.5 py-1.5 text-body-sm transition-colors duration-150",
-                    "focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none",
+                    "text-body-sm inline-flex items-center rounded-full border px-3.5 py-1.5 transition-colors duration-150",
+                    "focus-visible:ring-ring/50 focus-visible:ring-3 focus-visible:outline-none",
                     active
                       ? "border-primary bg-primary text-primary-foreground"
                       : "border-border bg-card text-foreground hover:bg-muted",
@@ -90,7 +90,10 @@ export function DirectoryFilters({
           defaultValue={query}
           placeholder="Search by name, interest, or place"
         />
-        <button type="submit" className={cn(buttonVariants({ variant: "outline" }))}>
+        <button
+          type="submit"
+          className={cn(buttonVariants({ variant: "outline" }))}
+        >
           Search
         </button>
       </form>

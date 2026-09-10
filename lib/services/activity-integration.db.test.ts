@@ -231,7 +231,12 @@ describe.skipIf(!hasDatabase)("community activity integration", () => {
     it("counts reactions and comments, per viewer", async () => {
       const postId = await publish("Counting activity")
 
-      await setPostReaction({ actorId: MEMBER, postId, reacted: true, now: NOW })
+      await setPostReaction({
+        actorId: MEMBER,
+        postId,
+        reacted: true,
+        now: NOW,
+      })
       await setPostReaction({ actorId: OTHER, postId, reacted: true, now: NOW })
       await addComment({
         actorId: MEMBER,
@@ -395,7 +400,10 @@ describe.skipIf(!hasDatabase)("community activity integration", () => {
       if (decided.ok) expect(decided.data.removed).toBe(false)
 
       // Dismissal is a judgement, so it is auditable too.
-      const trail = await auditTrailFor({ targetKind: "POST", targetId: postId })
+      const trail = await auditTrailFor({
+        targetKind: "POST",
+        targetId: postId,
+      })
       expect(trail.some((entry) => entry.action === "report.dismissed")).toBe(
         true,
       )
@@ -437,7 +445,10 @@ describe.skipIf(!hasDatabase)("community activity integration", () => {
       expect(feed.some((post) => post.id === postId)).toBe(false)
 
       // ...but still reviewable by an operator.
-      const trail = await auditTrailFor({ targetKind: "POST", targetId: postId })
+      const trail = await auditTrailFor({
+        targetKind: "POST",
+        targetId: postId,
+      })
       expect(trail.some((entry) => entry.action === "report.resolved")).toBe(
         true,
       )
@@ -554,11 +565,26 @@ describe.skipIf(!hasDatabase)("community activity integration", () => {
     it("notifies a like once, not once per tap", async () => {
       const postId = await publish("Liked update")
 
-      await setPostReaction({ actorId: MEMBER, postId, reacted: true, now: NOW })
+      await setPostReaction({
+        actorId: MEMBER,
+        postId,
+        reacted: true,
+        now: NOW,
+      })
       const first = (await listNotifications({ viewerId: AUTHOR })).length
 
-      await setPostReaction({ actorId: MEMBER, postId, reacted: false, now: NOW })
-      await setPostReaction({ actorId: MEMBER, postId, reacted: true, now: NOW })
+      await setPostReaction({
+        actorId: MEMBER,
+        postId,
+        reacted: false,
+        now: NOW,
+      })
+      await setPostReaction({
+        actorId: MEMBER,
+        postId,
+        reacted: true,
+        now: NOW,
+      })
 
       const second = (await listNotifications({ viewerId: AUTHOR })).length
       expect(second).toBe(first)

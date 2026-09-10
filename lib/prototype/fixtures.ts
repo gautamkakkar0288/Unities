@@ -156,7 +156,14 @@ export const priya: PersonSummary = {
   programme: null,
 }
 
-export const people: PersonSummary[] = [viewer, ishita, kabir, aarav, meera, priya]
+export const people: PersonSummary[] = [
+  viewer,
+  ishita,
+  kabir,
+  aarav,
+  meera,
+  priya,
+]
 
 // ---------------------------------------------------------------------------
 // Communities
@@ -492,7 +499,8 @@ export const communityProposals: CommunityProposal[] = [
     status: "REJECTED",
     supporterCount: 0,
     similarTo: [],
-    reviewerNote: "Commercial promotion. Not permitted under the community guidelines.",
+    reviewerNote:
+      "Commercial promotion. Not permitted under the community guidelines.",
     mergedInto: null,
   },
 ]
@@ -545,7 +553,8 @@ export const badmintonActivity: Activity = {
   id: "act-1",
   kind: "SPORT",
   title: "Badminton doubles at 6",
-  detail: "Need two more for doubles. Court 3, bring your own racket if you have one.",
+  detail:
+    "Need two more for doubles. Court 3, bring your own racket if you have one.",
   author: aarav,
   interest: interestBySlug("sports"),
   place: "Sports Complex, Court 3",
@@ -582,7 +591,8 @@ export const studyGroupActivity: Activity = {
   id: "act-3",
   kind: "STUDY",
   title: "DSA study group before the mock interviews",
-  detail: "Graphs and DP, two hours, library second floor. Bring your own laptop.",
+  detail:
+    "Graphs and DP, two hours, library second floor. Bring your own laptop.",
   author: kabir,
   interest: interestBySlug("coding"),
   place: "Central Library, Floor 2",
@@ -601,7 +611,8 @@ export const kasolCarpoolActivity: Activity = {
   id: "act-4",
   kind: "TRAVEL",
   title: "Anyone going to Kasol? Splitting a cab",
-  detail: "Leaving Friday night from the main gate. Four seats, splitting fuel and tolls.",
+  detail:
+    "Leaving Friday night from the main gate. Four seats, splitting fuel and tolls.",
   author: ishita,
   interest: interestBySlug("travel"),
   place: "Main Gate",
@@ -942,9 +953,15 @@ export const lineFollowerDetail: EventDetail = {
   description:
     "A three hour build from bare PCB to a robot that follows a track. We cover reflectance sensor arrays, motor driver wiring, and just enough PID tuning to stop the oscillation. You leave with a working chassis and the tuning values written on the back of your hand.\n\nNo experience needed. If you have never soldered, sit at the front table.",
   agenda: [
-    { at: "2026-08-08T16:00:00+05:30", title: "Kits, safety, and soldering basics" },
+    {
+      at: "2026-08-08T16:00:00+05:30",
+      title: "Kits, safety, and soldering basics",
+    },
     { at: "2026-08-08T16:45:00+05:30", title: "Sensor array assembly" },
-    { at: "2026-08-08T17:30:00+05:30", title: "Motor drivers and first movement" },
+    {
+      at: "2026-08-08T17:30:00+05:30",
+      title: "Motor drivers and first movement",
+    },
     { at: "2026-08-08T18:15:00+05:30", title: "PID tuning and time trials" },
   ],
   organisers: [ishita, kabir],
@@ -960,7 +977,10 @@ export const kasolTripDetail: EventDetail = {
   agenda: [
     { at: "2026-08-21T22:00:00+05:30", title: "Depart from the main gate" },
     { at: "2026-08-22T08:00:00+05:30", title: "Arrive, breakfast, check in" },
-    { at: "2026-08-22T11:00:00+05:30", title: "Chalal hike and riverside afternoon" },
+    {
+      at: "2026-08-22T11:00:00+05:30",
+      title: "Chalal hike and riverside afternoon",
+    },
     { at: "2026-08-23T09:00:00+05:30", title: "Free morning in Kasol village" },
     { at: "2026-08-23T20:00:00+05:30", title: "Depart for Chandigarh" },
   ],
@@ -980,7 +1000,8 @@ export const kasolTripDetail: EventDetail = {
       "Guide for the Chalal hike",
     ],
     costExcludes: ["Lunch and dinner", "Personal expenses", "Travel insurance"],
-    emergencyContact: "Ishita Rao, +91 98xxx xxx21 (reachable through the trip)",
+    emergencyContact:
+      "Ishita Rao, +91 98xxx xxx21 (reachable through the trip)",
     consentRequired: true,
     cancellationPolicy:
       "Full refund until 14 August. Half refund until 18 August. No refund after that, because the bus and rooms are paid for by then.",
@@ -1322,7 +1343,8 @@ export const verificationRequests: VerificationRequest[] = [
     requestedBy: aarav,
     requestedAt: "2026-08-03T11:00:00+05:30",
     status: "PENDING",
-    evidence: "Annual showcase budget approval from the student affairs office.",
+    evidence:
+      "Annual showcase budget approval from the student affairs office.",
   },
 ]
 

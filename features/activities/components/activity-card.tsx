@@ -49,7 +49,11 @@ export function ActivityCard({
         <p className="text-h4 text-balance">{activity.title}</p>
 
         <div className="flex items-center gap-2">
-          <Avatar name={activity.author.name} src={activity.author.avatarUrl ?? undefined} size="xs" />
+          <Avatar
+            name={activity.author.name}
+            src={activity.author.avatarUrl ?? undefined}
+            size="xs"
+          />
           <p className="text-caption text-muted-foreground">
             {activity.author.name}
             <span aria-hidden="true"> · </span>
@@ -61,7 +65,7 @@ export function ActivityCard({
       <CardContent className="flex flex-col gap-2">
         <p className="text-body-sm text-muted-foreground">{activity.detail}</p>
 
-        <dl className="flex flex-wrap gap-x-4 gap-y-1 text-caption text-muted-foreground">
+        <dl className="text-caption text-muted-foreground flex flex-wrap gap-x-4 gap-y-1">
           <div className="flex items-center gap-1.5">
             <dt className="sr-only">Time</dt>
             <Clock aria-hidden="true" className="size-3.5" />

@@ -46,8 +46,8 @@ export function ExploreTabs({
                 aria-current={isActive ? "page" : undefined}
                 className={
                   isActive
-                    ? "flex items-center gap-2 rounded-lg bg-primary-subtle px-3 py-2 text-label text-primary focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none"
-                    : "flex items-center gap-2 rounded-lg px-3 py-2 text-label text-muted-foreground hover:bg-muted focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none"
+                    ? "bg-primary-subtle text-label text-primary focus-visible:ring-ring/50 flex items-center gap-2 rounded-lg px-3 py-2 focus-visible:ring-3 focus-visible:outline-none"
+                    : "text-label text-muted-foreground hover:bg-muted focus-visible:ring-ring/50 flex items-center gap-2 rounded-lg px-3 py-2 focus-visible:ring-3 focus-visible:outline-none"
                 }
               >
                 {exploreTabLabel[tab]}

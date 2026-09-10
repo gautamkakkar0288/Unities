@@ -28,7 +28,9 @@ function hoursFromNow(hours: number): string {
   return new Date(Date.parse(NOW) + hours * 3_600_000).toISOString()
 }
 
-function event(overrides: Partial<EventSummary> & { id: string }): EventSummary {
+function event(
+  overrides: Partial<EventSummary> & { id: string },
+): EventSummary {
   return {
     slug: `event-${overrides.id}`,
     title: `Event ${overrides.id}`,
@@ -107,7 +109,9 @@ describe("readEventFilters", () => {
   it("reports whether anything is actually filtered", () => {
     expect(hasActiveEventFilters(readEventFilters({}))).toBe(false)
     expect(hasActiveEventFilters(readEventFilters({ free: "1" }))).toBe(true)
-    expect(hasActiveEventFilters(readEventFilters({ when: "today" }))).toBe(true)
+    expect(hasActiveEventFilters(readEventFilters({ when: "today" }))).toBe(
+      true,
+    )
   })
 })
 
@@ -189,11 +193,9 @@ describe("applyEventFilters", () => {
     const talk = event({ id: "talk", kind: "TALK" })
 
     expect(
-      applyEventFilters(
-        [workshop, talk],
-        { ...base, kind: "TALK" },
-        NOW,
-      ).map((item) => item.id),
+      applyEventFilters([workshop, talk], { ...base, kind: "TALK" }, NOW).map(
+        (item) => item.id,
+      ),
     ).toEqual(["talk"])
   })
 

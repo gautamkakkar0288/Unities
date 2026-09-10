@@ -33,7 +33,12 @@ export const mobileNav: NavItem[] = [
   { label: "Home", href: "/home", icon: Home },
   { label: "Explore", href: "/explore", icon: Compass },
   { label: "Create", href: "/create", icon: Plus },
-  { label: "Notifications", href: "/notifications", icon: Bell, shortLabel: "Alerts" },
+  {
+    label: "Notifications",
+    href: "/notifications",
+    icon: Bell,
+    shortLabel: "Alerts",
+  },
   { label: "Profile", href: "/profile", icon: User },
 ]
 

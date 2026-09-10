@@ -59,7 +59,9 @@ describe("scoreEvent", () => {
       endsAt: "2026-08-30T18:00:00+05:30",
     })
 
-    expect(scoreEvent(soon, { now })).toBeGreaterThan(scoreEvent(later, { now }))
+    expect(scoreEvent(soon, { now })).toBeGreaterThan(
+      scoreEvent(later, { now }),
+    )
   })
 
   it("gives interest relevance a nudge, not a veto", () => {

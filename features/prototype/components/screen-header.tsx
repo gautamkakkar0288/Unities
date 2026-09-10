@@ -30,11 +30,11 @@ export function ScreenHeader({
         {description}
       </p>
       {notes && notes.length > 0 && (
-        <details className="max-w-readable rounded-lg border border-border bg-muted/40 px-3 py-2">
-          <summary className="cursor-pointer list-none text-caption font-medium text-muted-foreground">
+        <details className="max-w-readable border-border bg-muted/40 rounded-lg border px-3 py-2">
+          <summary className="text-caption text-muted-foreground cursor-pointer list-none font-medium">
             Not wired up on this screen ({notes.length})
           </summary>
-          <ul className="mt-2 flex list-disc flex-col gap-1 pl-4 text-caption text-muted-foreground">
+          <ul className="text-caption text-muted-foreground mt-2 flex list-disc flex-col gap-1 pl-4">
             {notes.map((note) => (
               <li key={note}>{note}</li>
             ))}

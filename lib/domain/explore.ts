@@ -52,11 +52,7 @@ export function readExploreTab(raw: string | undefined): ExploreTab {
     : "EVENTS"
 }
 
-export const eventWhenFilters = [
-  "UPCOMING",
-  "TODAY",
-  "THIS_WEEK",
-] as const
+export const eventWhenFilters = ["UPCOMING", "TODAY", "THIS_WEEK"] as const
 
 export type EventWhenFilter = (typeof eventWhenFilters)[number]
 
@@ -194,7 +190,10 @@ export function applyEventFilters(
  * This is a substring match over fields already in memory, which is honest about
  * what it is and costs no extra query.
  */
-export function matchesQuery(fields: Array<string | null>, query: string): boolean {
+export function matchesQuery(
+  fields: Array<string | null>,
+  query: string,
+): boolean {
   const needle = query.trim().toLowerCase()
   if (!needle) return true
 

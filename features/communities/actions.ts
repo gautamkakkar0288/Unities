@@ -56,7 +56,10 @@ export async function joinCommunityAction(
 ): Promise<ServiceFailure | void> {
   const session = await auth()
   if (!session?.user) {
-    return fail("FORBIDDEN", "Your session has expired. Sign in again to continue.")
+    return fail(
+      "FORBIDDEN",
+      "Your session has expired. Sign in again to continue.",
+    )
   }
 
   const target = readTarget(input)
@@ -77,7 +80,10 @@ export async function leaveCommunityAction(
 ): Promise<ServiceFailure | void> {
   const session = await auth()
   if (!session?.user) {
-    return fail("FORBIDDEN", "Your session has expired. Sign in again to continue.")
+    return fail(
+      "FORBIDDEN",
+      "Your session has expired. Sign in again to continue.",
+    )
   }
 
   const target = readTarget(input)

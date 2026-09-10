@@ -131,7 +131,9 @@ describe.skipIf(!hasDatabase)("university email verification", () => {
     })
 
     it("is case insensitive, because students type their own address", async () => {
-      const place = await findUniversityForEmail(`Student@${UNI_DOMAIN.toUpperCase()}`)
+      const place = await findUniversityForEmail(
+        `Student@${UNI_DOMAIN.toUpperCase()}`,
+      )
       expect(place?.id).toBe(UNI_ID)
     })
 

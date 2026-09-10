@@ -18,7 +18,7 @@ export function PrototypeScreenNav() {
     <nav aria-label="Prototype screens" className="flex flex-col gap-5">
       {prototypeScreenGroups.map((group) => (
         <div key={group.label} className="flex flex-col gap-0.5">
-          <p className="px-2 pb-1 text-caption font-medium tracking-wide text-muted-foreground uppercase">
+          <p className="text-caption text-muted-foreground px-2 pb-1 font-medium tracking-wide uppercase">
             {group.label}
           </p>
           {group.screens.map((screen) => {
@@ -29,8 +29,8 @@ export function PrototypeScreenNav() {
                 href={screen.href}
                 aria-current={active ? "page" : undefined}
                 className={cn(
-                  "rounded-md px-2 py-1.5 text-body-sm text-muted-foreground transition-colors duration-150 ease-standard hover:bg-muted hover:text-foreground focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none",
-                  active && "bg-primary-subtle font-medium text-primary",
+                  "text-body-sm text-muted-foreground ease-standard hover:bg-muted hover:text-foreground focus-visible:ring-ring/50 rounded-md px-2 py-1.5 transition-colors duration-150 focus-visible:ring-3 focus-visible:outline-none",
+                  active && "bg-primary-subtle text-primary font-medium",
                 )}
               >
                 {screen.title}

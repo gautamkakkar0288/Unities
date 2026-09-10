@@ -63,9 +63,7 @@ export type SavedOpportunityItem = {
 }
 
 export type SavedItem =
-  | SavedEventItem
-  | SavedCommunityItem
-  | SavedOpportunityItem
+  SavedEventItem | SavedCommunityItem | SavedOpportunityItem
 
 export function isSavedTargetKind(value: unknown): value is SavedTargetKind {
   return (

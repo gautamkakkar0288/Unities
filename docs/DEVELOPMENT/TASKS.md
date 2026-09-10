@@ -28,9 +28,9 @@
 - Status: Not started
 - Acceptance Criteria: App renders a coherent shell, routes are organized, and shared layout patterns are consistent.
 - Subtasks:
-	- Confirm route groups.
-	- Wire shared layout.
-	- Add loading and error boundaries.
+  - Confirm route groups.
+  - Wire shared layout.
+  - Add loading and error boundaries.
 
 ### Task — Define shared component boundaries
 
@@ -41,9 +41,9 @@
 - Status: Not started
 - Acceptance Criteria: Reusable components are separated from feature composition and documented.
 - Subtasks:
-	- Audit component reuse opportunities.
-	- Map existing UI primitives.
-	- Document ownership rules.
+  - Audit component reuse opportunities.
+  - Map existing UI primitives.
+  - Document ownership rules.
 
 ## Feature — Core Data Model
 
@@ -56,9 +56,9 @@
 - Status: Not started
 - Acceptance Criteria: University, user, community, event, and role relationships are defined for multi-university support.
 - Subtasks:
-	- Define entity boundaries.
-	- Identify primary keys and relationships.
-	- Align schema assumptions with API design.
+  - Define entity boundaries.
+  - Identify primary keys and relationships.
+  - Align schema assumptions with API design.
 
 ---
 
@@ -75,9 +75,9 @@
 - Status: Not started
 - Acceptance Criteria: Users can register, sign in, and resume a session securely.
 - Subtasks:
-	- Implement credential form.
-	- Add session persistence.
-	- Handle error states and recovery.
+  - Implement credential form.
+  - Add session persistence.
+  - Handle error states and recovery.
 
 ### Task — Implement role-aware access control
 
@@ -88,9 +88,9 @@
 - Status: Not started
 - Acceptance Criteria: Students, organizers, university users, and admins see only authorized surfaces.
 - Subtasks:
-	- Define roles and permissions.
-	- Protect routes and API endpoints.
-	- Add access-denied states.
+  - Define roles and permissions.
+  - Protect routes and API endpoints.
+  - Add access-denied states.
 
 ---
 
@@ -107,9 +107,9 @@
 - Status: Not started
 - Acceptance Criteria: Colors, spacing, type, radius, elevation, and motion are tokenized and documented.
 - Subtasks:
-	- Validate semantic color mapping.
-	- Define typography scale.
-	- Confirm spacing rhythm.
+  - Validate semantic color mapping.
+  - Define typography scale.
+  - Confirm spacing rhythm.
 
 ## Feature — Reusable Components
 
@@ -122,9 +122,9 @@
 - Status: Not started
 - Acceptance Criteria: Buttons, cards, inputs, navigation, feedback, and overlays each have explicit behavior rules.
 - Subtasks:
-	- Define loading states.
-	- Define empty/error patterns.
-	- Capture accessibility requirements.
+  - Define loading states.
+  - Define empty/error patterns.
+  - Capture accessibility requirements.
 
 ---
 
@@ -141,9 +141,9 @@
 - Status: Not started
 - Acceptance Criteria: New visitors understand Cirqles, its benefits, and its evolution from Wonderer.
 - Subtasks:
-	- Write value proposition.
-	- Add screenshots placeholder.
-	- Add conversion CTA.
+  - Write value proposition.
+  - Add screenshots placeholder.
+  - Add conversion CTA.
 
 ---
 
@@ -160,9 +160,9 @@
 - Status: Not started
 - Acceptance Criteria: Home surfaces relevant content with consistent section hierarchy and useful loading states.
 - Subtasks:
-	- Implement recommended content section.
-	- Add trending section.
-	- Add community updates section.
+  - Implement recommended content section.
+  - Add trending section.
+  - Add community updates section.
 
 ### Task — Implement ranking signals
 
@@ -173,9 +173,9 @@
 - Status: Not started
 - Acceptance Criteria: Ranking can use interests, memberships, university context, and behavior.
 - Subtasks:
-	- Define signal inputs.
-	- Add explainability metadata.
-	- Add fallback ranking.
+  - Define signal inputs.
+  - Add explainability metadata.
+  - Add fallback ranking.
 
 ---
 
@@ -192,9 +192,9 @@
 - Status: Not started
 - Acceptance Criteria: Users can discover, join, and understand communities with clear membership state.
 - Subtasks:
-	- Add community hero area.
-	- Show membership counts.
-	- Add community feed and upcoming events.
+  - Add community hero area.
+  - Show membership counts.
+  - Add community feed and upcoming events.
 
 ### Task — Add community membership model
 
@@ -205,9 +205,9 @@
 - Status: Not started
 - Acceptance Criteria: Memberships support join, leave, roles, and moderation scopes.
 - Subtasks:
-	- Define membership permissions.
-	- Add audit fields.
-	- Add moderation boundaries.
+  - Define membership permissions.
+  - Add audit fields.
+  - Add moderation boundaries.
 
 ---
 
@@ -224,9 +224,9 @@
 - Status: Not started
 - Acceptance Criteria: Feed can display multiple content types without feeling chaotic.
 - Subtasks:
-	- Define card variants.
-	- Add spacing and grouping rules.
-	- Add deep-link behavior.
+  - Define card variants.
+  - Add spacing and grouping rules.
+  - Add deep-link behavior.
 
 ---
 
@@ -243,9 +243,9 @@
 - Status: Not started
 - Acceptance Criteria: Users can understand an event, trust it, and act on it quickly.
 - Subtasks:
-	- Add hero summary.
-	- Add trust signals.
-	- Add sticky primary CTA.
+  - Add hero summary.
+  - Add trust signals.
+  - Add sticky primary CTA.
 
 ### Task — Build registration flow
 
@@ -256,9 +256,9 @@
 - Status: Not started
 - Acceptance Criteria: Users can register, handle validation errors, and recover from full events.
 - Subtasks:
-	- Add form validation.
-	- Add capacity checks.
-	- Add confirmation screen.
+  - Add form validation.
+  - Add capacity checks.
+  - Add confirmation screen.
 
 ---
 
@@ -275,9 +275,9 @@
 - Status: Not started
 - Acceptance Criteria: Users can edit identity, interests, affiliations, and visibility-sensitive fields.
 - Subtasks:
-	- Add profile form.
-	- Add validation.
-	- Add success feedback.
+  - Add profile form.
+  - Add validation.
+  - Add success feedback.
 
 ---
 
@@ -294,9 +294,9 @@
 - Status: Not started
 - Acceptance Criteria: Search returns relevant events, communities, opportunities, and people with filters.
 - Subtasks:
-	- Add search screen.
-	- Add suggestions.
-	- Add ranking and filters.
+  - Add search screen.
+  - Add suggestions.
+  - Add ranking and filters.
 
 ---
 
@@ -313,9 +313,9 @@
 - Status: Not started
 - Acceptance Criteria: Messaging supports approved communication paths without exposing users to spam or abuse.
 - Subtasks:
-	- Define message sources.
-	- Add moderation rules.
-	- Add notification triggers.
+  - Define message sources.
+  - Add moderation rules.
+  - Add notification triggers.
 
 ---
 
@@ -332,9 +332,9 @@
 - Status: Not started
 - Acceptance Criteria: Notifications are grouped, readable, and actionable.
 - Subtasks:
-	- Add grouping by recency.
-	- Add unread indicator.
-	- Add preference handling.
+  - Add grouping by recency.
+  - Add unread indicator.
+  - Add preference handling.
 
 ---
 
@@ -351,9 +351,9 @@
 - Status: Not started
 - Acceptance Criteria: Admins can review verification requests, reports, and content actions with auditability.
 - Subtasks:
-	- Add queue model.
-	- Add decision logging.
-	- Add moderation history.
+  - Add queue model.
+  - Add decision logging.
+  - Add moderation history.
 
 ---
 
@@ -370,9 +370,9 @@
 - Status: Not started
 - Acceptance Criteria: AI use cases are narrow, useful, and mapped to product value.
 - Subtasks:
-	- Prioritize recommendations.
-	- Prioritize summaries.
-	- Prioritize moderation support.
+  - Prioritize recommendations.
+  - Prioritize summaries.
+  - Prioritize moderation support.
 
 ---
 
@@ -389,9 +389,9 @@
 - Status: Not started
 - Acceptance Criteria: Users, communities, events, and permissions can be scoped per university or across universities.
 - Subtasks:
-	- Define tenant boundaries.
-	- Add visibility modes.
-	- Add cross-university rules.
+  - Define tenant boundaries.
+  - Add visibility modes.
+  - Add cross-university rules.
 
 ---
 

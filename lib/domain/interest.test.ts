@@ -30,8 +30,12 @@ describe("normaliseInterestLabel", () => {
   })
 
   it("still collapses ordinary plurals", () => {
-    expect(normaliseInterestLabel("Movies")).toBe(normaliseInterestLabel("Movie"))
-    expect(normaliseInterestLabel("Sports")).toBe(normaliseInterestLabel("Sport"))
+    expect(normaliseInterestLabel("Movies")).toBe(
+      normaliseInterestLabel("Movie"),
+    )
+    expect(normaliseInterestLabel("Sports")).toBe(
+      normaliseInterestLabel("Sport"),
+    )
   })
 
   it("normalises multi-word labels consistently", () => {

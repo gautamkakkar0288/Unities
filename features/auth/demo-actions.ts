@@ -3,7 +3,11 @@
 import { AuthError } from "next-auth"
 
 import { signIn } from "@/auth"
-import { DEMO_PASSWORD, findDemoAccount, isDemoAuthEnabled } from "@/lib/demo/accounts"
+import {
+  DEMO_PASSWORD,
+  findDemoAccount,
+  isDemoAuthEnabled,
+} from "@/lib/demo/accounts"
 import { fail, ok, type ServiceResult } from "@/lib/services/result"
 
 /**

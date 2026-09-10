@@ -146,7 +146,7 @@ export function EditEventForm({
   return (
     <form
       onSubmit={handleSubmit(submit)}
-      className="flex max-w-readable flex-col gap-4"
+      className="max-w-readable flex flex-col gap-4"
       noValidate
     >
       <Field id="title" label="Title" error={errors.title?.message} required>

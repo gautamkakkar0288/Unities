@@ -188,7 +188,12 @@ export async function searchEvents(
       id: event.id,
       title: event.title,
       secondary: descriptions.get(event.id) ?? null,
-      taxonomy: [event.kind, event.venue, event.interest.label, event.community.name],
+      taxonomy: [
+        event.kind,
+        event.venue,
+        event.interest.label,
+        event.community.name,
+      ],
       timelyAt: event.startsAt,
     }))
 
@@ -242,7 +247,10 @@ export async function searchCommunities(
   if (matches.length === 0) return []
 
   const prose = new Map(
-    matches.map((row) => [row.id, [row.tagline, row.about].filter(Boolean).join(" ")]),
+    matches.map((row) => [
+      row.id,
+      [row.tagline, row.about].filter(Boolean).join(" "),
+    ]),
   )
 
   const visible = await listCommunitiesForViewer({ viewerId: scope.viewerId })
@@ -254,7 +262,11 @@ export async function searchCommunities(
       id: community.id,
       title: community.name,
       secondary: prose.get(community.id) ?? null,
-      taxonomy: [community.slug, community.interest.label, community.place?.name ?? null],
+      taxonomy: [
+        community.slug,
+        community.interest.label,
+        community.place?.name ?? null,
+      ],
       // A community is not an event. Nothing about it is more or less timely.
       timelyAt: null,
     }))
@@ -316,7 +328,9 @@ export async function searchOpportunities(
 
   if (matches.length === 0) return []
 
-  const hydrated = await listOpportunities({ ids: matches.map((row) => row.id) })
+  const hydrated = await listOpportunities({
+    ids: matches.map((row) => row.id),
+  })
 
   const candidates = hydrated.map((opportunity) => ({
     opportunity,
@@ -354,7 +368,11 @@ export type UpdateSearchResult = {
   title: string
   excerpt: string
   createdAt: string
-  community: { slug: string; name: string; verification: CommunitySummary["verification"] }
+  community: {
+    slug: string
+    name: string
+    verification: CommunitySummary["verification"]
+  }
   authorName: string | null
   event: { slug: string; title: string } | null
   href: string
@@ -482,7 +500,11 @@ const EMPTY_RESULTS: SearchResults = {
   opportunities: [],
   updates: [],
   counts: { events: 0, communities: 0, opportunities: 0, updates: 0, total: 0 },
-  saved: { events: new Set(), communities: new Set(), opportunities: new Set() },
+  saved: {
+    events: new Set(),
+    communities: new Set(),
+    opportunities: new Set(),
+  },
 }
 
 /**

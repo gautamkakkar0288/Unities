@@ -73,7 +73,7 @@ export function ReportForm({
         size="sm"
         onClick={() => setOpen(true)}
         aria-expanded={false}
-        className="gap-1.5 text-muted-foreground"
+        className="text-muted-foreground gap-1.5"
       >
         <Flag aria-hidden="true" className="size-4" />
         Report
@@ -111,14 +111,16 @@ export function ReportForm({
   return (
     <form
       onSubmit={submit}
-      className="flex flex-col gap-3 rounded-md border border-border p-3"
+      className="border-border flex flex-col gap-3 rounded-md border p-3"
     >
       <fieldset className="flex flex-col gap-2">
-        <legend className="text-label pb-1">Why are you reporting this {noun}?</legend>
+        <legend className="text-label pb-1">
+          Why are you reporting this {noun}?
+        </legend>
         {REASONS.map((option) => (
           <label
             key={option.value}
-            className="flex items-center gap-2 text-body-sm"
+            className="text-body-sm flex items-center gap-2"
           >
             <input
               type="radio"
@@ -126,7 +128,7 @@ export function ReportForm({
               value={option.value}
               checked={reason === option.value}
               onChange={() => setReason(option.value)}
-              className="size-4 focus-visible:ring-3 focus-visible:ring-ring/50"
+              className="focus-visible:ring-ring/50 size-4 focus-visible:ring-3"
             />
             {option.label}
           </label>
@@ -135,7 +137,8 @@ export function ReportForm({
 
       <div className="flex flex-col gap-1.5">
         <label htmlFor={`report-detail-${targetId}`} className="text-label">
-          Anything else? <span className="text-muted-foreground">(optional)</span>
+          Anything else?{" "}
+          <span className="text-muted-foreground">(optional)</span>
         </label>
         <textarea
           id={`report-detail-${targetId}`}
@@ -143,7 +146,7 @@ export function ReportForm({
           onChange={(changeEvent) => setDetail(changeEvent.target.value)}
           rows={2}
           maxLength={1000}
-          className="w-full rounded-md border border-input bg-background px-3 py-2 text-body-sm outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
+          className="border-input bg-background text-body-sm focus-visible:ring-ring/50 w-full rounded-md border px-3 py-2 outline-none focus-visible:ring-3"
         />
       </div>
 

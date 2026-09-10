@@ -30,7 +30,7 @@ export function UnreadBadge({
         aria-hidden="true"
         data-numeric
         className={cn(
-          "flex min-w-5 items-center justify-center rounded-full bg-primary px-1.5 text-caption font-medium text-primary-foreground",
+          "bg-primary text-caption text-primary-foreground flex min-w-5 items-center justify-center rounded-full px-1.5 font-medium",
           floating && "absolute top-1 right-1 min-w-4 px-1 text-[0.625rem]",
           className,
         )}
@@ -38,7 +38,9 @@ export function UnreadBadge({
         {count > 9 ? "9+" : count}
       </span>
       <span className="sr-only">
-        {count === 1 ? "1 unread notification" : `${count} unread notifications`}
+        {count === 1
+          ? "1 unread notification"
+          : `${count} unread notifications`}
       </span>
     </>
   )

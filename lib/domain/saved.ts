@@ -37,9 +37,7 @@ export const savedFilterLabel: Record<SavedFilter, string> = {
  * show a student their saved things, not a stack trace.
  */
 export function isSavedFilter(value: unknown): value is SavedFilter {
-  return (
-    typeof value === "string" && (savedFilters as string[]).includes(value)
-  )
+  return typeof value === "string" && (savedFilters as string[]).includes(value)
 }
 
 export function readSavedFilter(value: unknown): SavedFilter {

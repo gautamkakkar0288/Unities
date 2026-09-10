@@ -73,7 +73,6 @@ async function main() {
   execSync("npm run db:seed:activity", { stdio: "inherit", env })
 }
 
-
 main()
   .then(() => {
     console.info("Start the app with `npm run dev`.")

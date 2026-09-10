@@ -12,16 +12,16 @@ export default function SignUpPage() {
         <h1 className="text-2xl font-semibold tracking-tight">
           Create your account
         </h1>
-        <p className="text-sm text-muted-foreground">
+        <p className="text-muted-foreground text-sm">
           Join your campus community on Cirqles.
         </p>
       </div>
       <SignUpForm />
-      <p className="text-center text-sm text-muted-foreground">
+      <p className="text-muted-foreground text-center text-sm">
         Already have an account?{" "}
         <Link
           href="/sign-in"
-          className="font-medium text-foreground underline-offset-4 hover:underline"
+          className="text-foreground font-medium underline-offset-4 hover:underline"
         >
           Sign in
         </Link>

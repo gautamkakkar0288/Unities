@@ -96,7 +96,7 @@ export function PostComposer({
           aria-invalid={showTitleProblem}
           aria-describedby={showTitleProblem ? "post-title-error" : undefined}
           placeholder="Tryouts moved to Saturday"
-          className="h-11 w-full rounded-md border border-input bg-background px-3 text-body outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
+          className="border-input bg-background text-body focus-visible:ring-ring/50 h-11 w-full rounded-md border px-3 outline-none focus-visible:ring-3"
         />
         {showTitleProblem && (
           <p id="post-title-error" className="text-caption text-destructive">
@@ -117,7 +117,7 @@ export function PostComposer({
           maxLength={POST_BODY_MAX}
           rows={4}
           aria-invalid={bodyProblem !== undefined}
-          className="w-full rounded-md border border-input bg-background px-3 py-2 text-body outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
+          className="border-input bg-background text-body focus-visible:ring-ring/50 w-full rounded-md border px-3 py-2 outline-none focus-visible:ring-3"
           placeholder="What do members need to know?"
         />
         {/*
@@ -134,14 +134,15 @@ export function PostComposer({
       {events.length > 0 && (
         <div className="flex flex-col gap-1.5">
           <label htmlFor="post-event" className="text-label">
-            Link an event <span className="text-muted-foreground">(optional)</span>
+            Link an event{" "}
+            <span className="text-muted-foreground">(optional)</span>
           </label>
           <select
             id="post-event"
             name="eventId"
             value={eventId ?? ""}
             onChange={(changeEvent) => setEventId(changeEvent.target.value)}
-            className="h-11 w-full rounded-md border border-input bg-background px-3 text-body outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
+            className="border-input bg-background text-body focus-visible:ring-ring/50 h-11 w-full rounded-md border px-3 outline-none focus-visible:ring-3"
           >
             <option value="">No event</option>
             {events.map((event) => (
@@ -160,7 +161,12 @@ export function PostComposer({
           {editing ? "Save changes" : "Post update"}
         </Button>
         {onDone && (
-          <Button type="button" variant="ghost" onClick={onDone} disabled={pending}>
+          <Button
+            type="button"
+            variant="ghost"
+            onClick={onDone}
+            disabled={pending}
+          >
             Cancel
           </Button>
         )}

@@ -5,12 +5,7 @@ import { VerificationBadge } from "@/components/domain/verification-badge"
 import { Avatar } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
 import { EventCard } from "@/features/events/components/event-card"
 import { PostCard } from "@/features/posts/components/post-card"
@@ -38,9 +33,7 @@ export const metadata = { title: "Community detail" }
 export default function PrototypeCommunityPage() {
   const community = roboticsClubDetail
   const action = describeMembershipAction(community)
-  const upcoming = events.filter(
-    (event) => event.community.id === community.id,
-  )
+  const upcoming = events.filter((event) => event.community.id === community.id)
 
   return (
     <div className="flex flex-col">
@@ -71,13 +64,15 @@ export default function PrototypeCommunityPage() {
             <p className="max-w-readable text-body-sm text-muted-foreground">
               {community.tagline}
             </p>
-            <dl className="flex flex-wrap gap-x-6 gap-y-2 text-caption text-muted-foreground">
+            <dl className="text-caption text-muted-foreground flex flex-wrap gap-x-6 gap-y-2">
               <div className="flex items-center gap-1.5">
                 <dt className="contents">
                   <Users aria-hidden="true" className="size-3.5" />
                   <span className="sr-only">Members</span>
                 </dt>
-                <dd data-numeric>{formatCount(community.memberCount)} members</dd>
+                <dd data-numeric>
+                  {formatCount(community.memberCount)} members
+                </dd>
               </div>
               <div className="flex items-center gap-1.5">
                 <dt className="contents">
@@ -112,7 +107,10 @@ export default function PrototypeCommunityPage() {
 
         <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_20rem]">
           <div className="flex flex-col gap-8">
-            <section aria-labelledby="posts-heading" className="flex flex-col gap-4">
+            <section
+              aria-labelledby="posts-heading"
+              className="flex flex-col gap-4"
+            >
               <h2 id="posts-heading" className="text-h3">
                 Posts
               </h2>
@@ -132,7 +130,10 @@ export default function PrototypeCommunityPage() {
 
             <Separator />
 
-            <section aria-labelledby="events-heading" className="flex flex-col gap-4">
+            <section
+              aria-labelledby="events-heading"
+              className="flex flex-col gap-4"
+            >
               <h2 id="events-heading" className="text-h3">
                 Upcoming events
               </h2>
@@ -150,13 +151,16 @@ export default function PrototypeCommunityPage() {
             </section>
           </div>
 
-          <aside className="flex flex-col gap-4" aria-label="About this community">
+          <aside
+            className="flex flex-col gap-4"
+            aria-label="About this community"
+          >
             <Card>
               <CardHeader>
                 <CardTitle>About</CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-body-sm whitespace-pre-line text-muted-foreground">
+                <p className="text-body-sm text-muted-foreground whitespace-pre-line">
                   {community.about}
                 </p>
               </CardContent>
@@ -167,7 +171,7 @@ export default function PrototypeCommunityPage() {
                 <CardTitle>Guidelines</CardTitle>
               </CardHeader>
               <CardContent>
-                <ol className="flex list-decimal flex-col gap-2 pl-4 text-body-sm text-muted-foreground">
+                <ol className="text-body-sm text-muted-foreground flex list-decimal flex-col gap-2 pl-4">
                   {community.guidelines.map((guideline) => (
                     <li key={guideline}>{guideline}</li>
                   ))}
@@ -191,7 +195,7 @@ export default function PrototypeCommunityPage() {
                       <div className="flex min-w-0 flex-col">
                         <Link
                           href="/prototype/profile"
-                          className="truncate rounded-sm text-body-sm font-medium hover:text-primary focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none"
+                          className="text-body-sm hover:text-primary focus-visible:ring-ring/50 truncate rounded-sm font-medium focus-visible:ring-3 focus-visible:outline-none"
                         >
                           {moderator.name}
                         </Link>
